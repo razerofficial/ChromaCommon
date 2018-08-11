@@ -1,0 +1,716 @@
+<html>
+<head>
+<script src="ChromaSDKImpl.js"></script>
+<script>
+var onPageLoad = function () { }
+var onPageUnload = function () { }
+</script>
+<style>
+body {
+  background-color: black;
+  color: white;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+button {
+  font-size: 1.5em;
+  padding: 0.5em;
+  background-color: 888888;
+  color: 00DD00;
+}
+a {
+  color: white;
+}
+div {
+  font-size: 1.2em;
+}
+pre {
+  font-size: 1.5em;
+}
+td {
+  font-size: 1.5em;
+}
+.tableInline {
+  display: inline-table;
+}
+.tdEmpty {
+  background-color: 222222;
+}
+.imgThumbnail {
+  width: 600px;
+  display: inline-table;
+}
+</style>
+</head>
+<body onload="onPageLoad()" onunload="onPageUnload()">
+<img name="imgEmulatorChromaLink" style="display: none" src="emulator/EmulatorChromaLink.png"/>
+<img name="imgEmulatorHeadset" style="display: none" src="emulator/EmulatorHeadset.png"/>
+<img name="imgEmulatorKeyboard" style="display: none" src="emulator/EmulatorKeyboard.png"/>
+<img name="imgEmulatorKeypad" style="display: none" src="emulator/EmulatorKeypad.png"/>
+<img name="imgEmulatorMouse" style="display: none" src="emulator/EmulatorMouse.png"/>
+<img name="imgEmulatorMousepad" style="display: none" src="emulator/EmulatorMousepad.png"/>
+<h1>Chroma Design Templates</h1>
+
+<div>The following animations are templates used to create Chroma layered examples.</div>
+
+<div id="rootAnimations"/>
+
+<script>
+var animations = [];
+animations.push('BarrelFlash1_Keyboard.chroma');
+animations.push('BarrelFlash2_Keyboard.chroma');
+animations.push('BarrelFlash3_Keyboard.chroma');
+animations.push('Clouds1_Keyboard.chroma');
+animations.push('Clouds2_Keyboard.chroma');
+animations.push('Clouds3_Keyboard.chroma');
+animations.push('Arc1_Keyboard.chroma');
+animations.push('Arc2_Keyboard.chroma');
+animations.push('Arc3_Keyboard.chroma');
+animations.push('Arc4_Keyboard.chroma');
+animations.push('Block1_Keyboard.chroma');
+animations.push('Block2_Keyboard.chroma');
+animations.push('Bolt1_Keyboard.chroma');
+animations.push('Bolt2_Keyboard.chroma');
+animations.push('Bolt3_Keyboard.chroma');
+animations.push('Bolt4_Keyboard.chroma');
+animations.push('Dragon1_Keyboard.chroma');
+animations.push('Dragon2_Keyboard.chroma');
+animations.push('Dragon3_Keyboard.chroma');
+animations.push('Claws1_Keyboard.chroma');
+animations.push('Energy1_Keyboard.chroma');
+animations.push('Fireball1_Keyboard.chroma');
+animations.push('Fork1_Keyboard.chroma');
+animations.push('Fork2_Keyboard.chroma');
+animations.push('Fork3_Keyboard.chroma');
+animations.push('Fork4_Keyboard.chroma');
+animations.push('Fork5_Keyboard.chroma');
+animations.push('FreeFall1_Keyboard.chroma');
+animations.push('FreeFall2_Keyboard.chroma');
+animations.push('Glider1_Keyboard.chroma');
+animations.push('Glider2_Keyboard.chroma');
+animations.push('LaserRotate_Keyboard.chroma');
+animations.push('LaserScroll_Keyboard.chroma');
+animations.push('Lightning1_Keyboard.chroma');
+animations.push('Lightning2_Keyboard.chroma');
+animations.push('Lightning3_Keyboard.chroma');
+animations.push('CircleExpanding_Keyboard.chroma');
+animations.push('Hatchet_Keyboard.chroma');
+animations.push('Missile1_Keyboard.chroma');
+animations.push('Missile2_Keyboard.chroma');
+animations.push('Missile3_Keyboard.chroma');
+animations.push('MovementUpLeft_Keyboard.chroma');
+animations.push('MovementUpRight_Keyboard.chroma');
+animations.push('Particle1_Keyboard.chroma');
+animations.push('Particle2_Keyboard.chroma');
+animations.push('Particle3_Keyboard.chroma');
+animations.push('ParticleTrail1_Keyboard.chroma');
+animations.push('ParticleTrail2_Keyboard.chroma');
+animations.push('ParticleTrail3_Keyboard.chroma');
+animations.push('ParticleTrail4_Keyboard.chroma');
+animations.push('Projectiles_Keyboard.chroma');
+animations.push('Rain1_Keyboard.chroma');
+animations.push('Melee1_Keyboard.chroma');
+animations.push('Ray1_Keyboard.chroma');
+animations.push('Ray2_Keyboard.chroma');
+animations.push('ReactiveSpace_Keyboard.chroma');
+animations.push('Reticle1_Keyboard.chroma');
+animations.push('Reticle2_Keyboard.chroma');
+animations.push('Reticle3_Keyboard.chroma');
+animations.push('Reticle4_Keyboard.chroma');
+animations.push('Spiral_Keyboard.chroma');
+animations.push('Spray1_Keyboard.chroma');
+animations.push('Spray2_Keyboard.chroma');
+animations.push('Spray3_Keyboard.chroma');
+animations.push('Star_Keyboard.chroma');
+animations.push('Stripes1_Keyboard.chroma');
+animations.push('ThrowUpLeft_Keyboard.chroma');
+animations.push('ThrowUpRight_Keyboard.chroma');
+animations.push('ThrowUp_Keyboard.chroma');
+animations.push('Tongue1_Keyboard.chroma');
+animations.push('Tornado1_Keyboard.chroma');
+animations.push('Trail1_Keyboard.chroma');
+animations.push('Trail2_Keyboard.chroma');
+animations.push('Trail3_Keyboard.chroma');
+animations.push('Travel1_Keyboard.chroma');
+animations.push('UpParticle1_Keyboard.chroma');
+animations.push('UpParticle2_Keyboard.chroma');
+animations.push('UpParticle3_Keyboard.chroma');
+animations.push('Wisp1_Keyboard.chroma');
+animations.push('Wisp2_Keyboard.chroma');
+animations.push('Wisp3_Keyboard.chroma');
+animations.push('X1_Keyboard.chroma');
+animations.push('X2_Keyboard.chroma');
+animations.push('WindMill1_Keyboard.chroma');
+animations.push('MachineGun1_Keyboard.chroma');
+animations.push('MachineGun2_Keyboard.chroma');
+animations.push('SearchLight1_Keyboard.chroma');
+animations.push('Logo1_Keyboard.chroma');
+animations.push('Logo2_Keyboard.chroma');
+animations.push('RocketProjectile1_Keyboard.chroma');
+animations.push('Chainsaw1_Keyboard.chroma');
+animations.push('WispLarge_Keyboard.chroma');
+animations.push('BattleBus_Keyboard.chroma');
+animations.push('BlackAndWhiteRainbow_Keyboard.chroma');
+animations.push('BarRightToLeft_Keyboard.chroma');
+animations.push('BarTopDown_Keyboard.chroma');
+animations.push('---');
+animations.push('Dust1_Keyboard.chroma');
+animations.push('Laser1_Keyboard.chroma');
+animations.push('Laser2_Keyboard.chroma');
+animations.push('Laser3_Keyboard.chroma');
+animations.push('Sparks1_Keyboard.chroma');
+animations.push('Sparks2_Keyboard.chroma');
+animations.push('Sparks3_Keyboard.chroma');
+animations.push('Silhouette1_Keyboard.chroma');
+animations.push('Silhouette2_Keyboard.chroma');
+animations.push('Silhouette3_Keyboard.chroma');
+animations.push('---');
+animations.push('Rainbow_Keyboard.chroma');
+animations.push('Melee2_Keyboard.chroma');
+animations.push('Explosion1_Keyboard.chroma');
+animations.push('Blood1_Keyboard.chroma');
+animations.push('Fire1_Keyboard.chroma');
+animations.push('FireParticle1_Keyboard.chroma');
+animations.push('FireParticle2_Keyboard.chroma');
+animations.push('FireParticle3_Keyboard.chroma');
+animations.push('FlameThrower1_Keyboard.chroma');
+animations.push('FlameThrower2_Keyboard.chroma');
+animations.push('Grenade1_Keyboard.chroma');
+animations.push('---');
+animations.push('Storm_Keyboard.chroma');
+animations.push('ChainsawKill_Keyboard.chroma');
+animations.push('Blood2_Keyboard.chroma');
+animations.push('Blood3_Keyboard.chroma');
+animations.push('---');
+animations.push('Cinematic1_Keyboard.chroma');
+animations.push('Cinematic2_Keyboard.chroma');
+animations.push('Cinematic3_Keyboard.chroma');
+animations.push('CircleLargeLeft_Keyboard.chroma');
+animations.push('CircleLargeRight_Keyboard.chroma');
+animations.push('CircleLarge_Keyboard.chroma');
+animations.push('CircleSmallLeft_Keyboard.chroma');
+animations.push('CircleSmallRight_Keyboard.chroma');
+animations.push('CircleSmall_Keyboard.chroma');
+animations.push('LaserA_Keyboard.chroma');
+animations.push('LaserB_Keyboard.chroma');
+animations.push('Llama1_Keyboard.chroma');
+animations.push('Llama2_Keyboard.chroma');
+animations.push('Llama3_Keyboard.chroma');
+animations.push('Llama4_Keyboard.chroma');
+animations.push('Ring1_Keyboard.chroma');
+animations.push('Ring2_Keyboard.chroma');
+animations.push('Ring3_Keyboard.chroma');
+animations.push('WispBuild_Keyboard.chroma');
+animations.push('XOutline_Keyboard.chroma');
+animations.push('X_Keyboard.chroma');
+/*
+animations.push('Shield_Keyboard.chroma');
+animations.push('ClashUpLeft_Keyboard.chroma');
+animations.push('ClashUpRight_Keyboard.chroma');
+animations.push('Teeth1_Keyboard.chroma');
+animations.push('Water1_Keyboard.chroma');
+animations.push('Win1_Keyboard.chroma');
+animations.push('---');
+animations.push('Message_Keyboard.chroma');
+animations.push('SwipeLeft_Keyboard.chroma');
+animations.push('SwipeRight_Keyboard.chroma');
+animations.push('Teeth_Keyboard.chroma');
+animations.push('Book_Keyboard.chroma');
+animations.push('Chest_Keyboard.chroma');
+*/
+//animations.push('Revive_Keyboard.chroma');
+//animations.push('Blank_Keyboard.chroma');
+//animations.push('Blank2_Keyboard.chroma');
+//animations.push('Emblem1_Keyboard.chroma');
+//animations.push('Emblem2_Keyboard.chroma');
+//animations.push('Emblem3_Keyboard.chroma');
+//animations.push('HealthGained_Keyboard.chroma');
+//animations.push('ItemPickup_Keyboard.chroma');
+//animations.push('LowHealth_Keyboard.chroma');
+//animations.push('ShieldGained_Keyboard.chroma');
+//animations.push('WingStick_Keyboard.chroma');
+//animations.push('Win_Keyboard.chroma');
+
+var rootAnimations = document.getElementById('rootAnimations');
+for (var i in animations) {
+  var animationName = animations[i];
+  if (animationName == '---') {
+    var br = document.createElement('br');
+    rootAnimations.appendChild(br);
+    var br = document.createElement('hr');
+    rootAnimations.appendChild(br);
+    var br = document.createElement('br');
+    rootAnimations.appendChild(br);
+    continue;
+  }
+  animationName = animationName.substring(0, animationName.length-'_Keyboard.chroma'.length);
+  var tbl = document.createElement('table');
+  tbl.setAttribute('border', '1');
+  tbl.setAttribute('class', 'tableInline');
+  var tr = document.createElement('tr');
+  var td = document.createElement('td');
+  td.innerText = animationName;
+  tr.appendChild(td);
+  var td = document.createElement('td');
+  td.setAttribute('id', 'frameCount'+animationName);
+  td.setAttribute('class', 'tdEmpty');
+  tr.appendChild(td);
+  tbl.appendChild(tr);
+
+  var tr = document.createElement('tr');
+  var td = document.createElement('td');
+  td.setAttribute('align', 'center');
+  tr.appendChild(td);
+  var button = document.createElement('button');
+  button.setAttribute('id', 'show'+animationName);
+  button.innerText = i;
+  td.appendChild(button);
+  var td = document.createElement('td');
+  var canvas = document.createElement('canvas');
+  canvas.setAttribute('id', 'canvasShow'+animationName);
+  canvas.setAttribute('width', '640');
+  canvas.setAttribute('height', '214');
+  td.appendChild(canvas);
+  tr.appendChild(td);
+  tbl.appendChild(tr);
+
+  rootAnimations.appendChild(tbl);
+}
+</script>
+
+<!--
+<table border="1" class="tableInline">
+<tr>
+  <td>Arc1</td><td class="tdEmpty"></td>
+</tr>
+<tr>
+  <td align="center"><button id="showArc1">1</button></td>
+  <td><canvas id="canvasShowArc1" width="640" height="214"></canvas></td>
+</tr>
+</table>
+-->
+
+<br/><br/>
+
+</body>
+<script>
+// browser function to determine tab is hidden
+// ref: https://stackoverflow.com/questions/7389328/detect-if-browser-tab-has-focus/46719827#46719827
+var browserTabIsVisible = true;
+handleTabVisibility = function() {
+
+  // check the visiblility of the page
+  var hidden, visibilityState, visibilityChange;
+
+  if (typeof document.hidden !== "undefined") {
+      hidden = "hidden", visibilityChange = "visibilitychange", visibilityState = "visibilityState";
+  }
+  else if (typeof document.mozHidden !== "undefined") {
+      hidden = "mozHidden", visibilityChange = "mozvisibilitychange", visibilityState = "mozVisibilityState";
+  }
+  else if (typeof document.msHidden !== "undefined") {
+      hidden = "msHidden", visibilityChange = "msvisibilitychange", visibilityState = "msVisibilityState";
+  }
+  else if (typeof document.webkitHidden !== "undefined") {
+      hidden = "webkitHidden", visibilityChange = "webkitvisibilitychange", visibilityState = "webkitVisibilityState";
+  }
+
+  if (typeof document.addEventListener === "undefined" || typeof hidden === "undefined") {
+      // not supported
+  }
+  else {
+      document.addEventListener(visibilityChange, function() {
+          //console.log('hidden', document[hidden]);
+          //console.log('visibilityState: ', document[visibilityState]);
+
+          switch (document[visibilityState]) {
+          case "visible":
+              // visible
+              browserTabIsVisible = true;
+              break;
+          case "hidden":
+              // hidden
+              browserTabIsVisible = false;
+              break;
+          }
+      }, false);
+  }
+
+};
+// end of browser function
+
+
+
+var chromaSDK = undefined;
+var initialized = false;
+var exampleInterval = undefined;
+var pageHadFocus = undefined;
+var drawInProgress = false;
+function chromaSetStaticColor(color) {
+  if (!initialized) {
+    console.log('chromaSetStaticColor', 'not initialized!');
+    return;
+  }
+  ChromaAnimation.staticColorAll(color);
+}
+detectWindowFocus = function() {
+  if (browserTabIsVisible == true) {
+    if (pageHadFocus != true) {
+      chromaSDK.init();
+      setTimeout(function() {
+        initialized = true;
+        //console.log('set static color');
+        chromaSetStaticColor(0x808080);
+      }, 100);
+      pageHadFocus = true;
+      //console.log('page has focus');
+    } else {
+      //console.log('page already has focus');
+    }
+  } else {
+    if (pageHadFocus == true) {
+      ChromaAnimation.clearAll();
+      chromaSDK.uninit();
+      pageHadFocus = false;
+      initialized = false;
+      //console.log('page lost focus');
+    }
+  }
+}
+onPageLoad = function () {
+  handleTabVisibility();
+  chromaSDK = new ChromaSDK();
+  detectWindowFocus();
+  setInterval(function() {
+    detectWindowFocus();
+  }, 1000);
+};
+onPageUnload = function () {
+  if (chromaSDK != undefined &&
+    initialized) {
+    chromaSDK.uninit()
+  }
+};
+function lerp (start, end, amt) {
+  return (1-amt)*start+amt*end;
+}
+function lerpColor (from, to, t) {
+  var red = Math.floor(lerp((from & 0xFF), (to & 0xFF), t));
+  var green = Math.floor(lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
+  var blue = Math.floor(lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
+  var color = red | (green << 8) | (blue << 16);
+  return color;
+}
+exampleReset = function () {
+  if (exampleInterval != undefined) {
+    clearInterval(exampleInterval);
+    exampleInterval = undefined;
+  }
+};
+getRGBString = function(red, green, blue) {
+  return "rgb("+red+", "+green+", "+blue+")";
+}
+getRGBAString = function(red, green, blue, alpha) {
+  return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+}
+function drawKeyboard(canvasName, animationName) {
+
+  var animation = ChromaAnimation.getAnimation(animationName);
+
+  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+    animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    return;
+  }
+
+  var canvas = document.getElementById(canvasName);
+  var ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = getRGBString(0, 0, 0);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.stroke();
+
+  var map = {};
+  map['RZKEY.RZKEY_ESC'] = [46, 5, 27, 28];
+  map['RZKEY.RZKEY_F1'] = [113, 5, 25, 28];
+  map['RZKEY.RZKEY_F2'] = [139, 5, 25, 28];
+  map['RZKEY.RZKEY_F3'] = [165, 5, 25, 28];
+  map['RZKEY.RZKEY_F4'] = [190, 5, 26, 28];
+  map['RZKEY.RZKEY_F5'] = [222, 5, 24, 28];
+  map['RZKEY.RZKEY_F6'] = [248, 5, 24, 28];
+  map['RZKEY.RZKEY_F7'] = [274, 5, 24, 28];
+  map['RZKEY.RZKEY_F8'] = [299, 5, 25, 28];
+  map['RZKEY.RZKEY_F9'] = [330, 5, 25, 28];
+  map['RZKEY.RZKEY_F10'] = [356, 5, 25, 28];
+  map['RZKEY.RZKEY_F11'] = [382, 5, 25, 28];
+  map['RZKEY.RZKEY_F12'] = [407, 5, 25, 28];
+  map['RZKEY.RZKEY_1'] = [72, 37, 26, 25];
+  map['RZKEY.RZKEY_2'] = [98, 37, 25, 25];
+  map['RZKEY.RZKEY_3'] = [124, 37, 25, 25];
+  map['RZKEY.RZKEY_4'] = [150, 37, 25, 25];
+  map['RZKEY.RZKEY_5'] = [176, 37, 24, 25];
+  map['RZKEY.RZKEY_6'] = [202, 37, 24, 25];
+  map['RZKEY.RZKEY_7'] = [228, 37, 24, 25];
+  map['RZKEY.RZKEY_8'] = [253, 37, 25, 25];
+  map['RZKEY.RZKEY_9'] = [279, 37, 25, 25];
+  map['RZKEY.RZKEY_0'] = [305, 37, 25, 25];
+  map['RZKEY.RZKEY_A'] = [92, 89, 25, 25];
+  map['RZKEY.RZKEY_B'] = [208, 114, 25, 26];
+  map['RZKEY.RZKEY_C'] = [156, 114, 26, 26];
+  map['RZKEY.RZKEY_D'] = [144, 89, 24, 25];
+  map['RZKEY.RZKEY_E'] = [137, 63, 25, 25];
+  map['RZKEY.RZKEY_F'] = [169, 89, 25, 25];
+  map['RZKEY.RZKEY_G'] = [195, 89, 25, 25];
+  map['RZKEY.RZKEY_H'] = [221, 89, 25, 25];
+  map['RZKEY.RZKEY_I'] = [266, 63, 25, 25];
+  map['RZKEY.RZKEY_J'] = [247, 89, 25, 25];
+  map['RZKEY.RZKEY_K'] = [272, 89, 25, 25];
+  map['RZKEY.RZKEY_L'] = [298, 89, 25, 25];
+  map['RZKEY.RZKEY_M'] = [259, 114, 25, 26];
+  map['RZKEY.RZKEY_N'] = [233, 114, 26, 26];
+  map['RZKEY.RZKEY_O'] = [292, 63, 25, 25];
+  map['RZKEY.RZKEY_P'] = [318, 63, 25, 25];
+  map['RZKEY.RZKEY_Q'] = [86, 63, 24, 25];
+  map['RZKEY.RZKEY_R'] = [163, 63, 25, 25];
+  map['RZKEY.RZKEY_S'] = [118, 89, 25, 25];
+  map['RZKEY.RZKEY_T'] = [188, 63, 26, 25];
+  map['RZKEY.RZKEY_U'] = [240, 63, 25, 25];
+  map['RZKEY.RZKEY_V'] = [182, 114, 25, 26];
+  map['RZKEY.RZKEY_W'] = [112, 63, 24, 25];
+  map['RZKEY.RZKEY_X'] = [131, 114, 25, 26];
+  map['RZKEY.RZKEY_Y'] = [214, 63, 25, 25];
+  map['RZKEY.RZKEY_Z'] = [105, 114, 25, 26];
+  map['RZKEY.RZKEY_NUMLOCK'] = [521, 37, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD0'] = [521, 140, 52, 26];
+  map['RZKEY.RZKEY_NUMPAD1'] = [521, 114, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD2'] = [547, 114, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD3'] = [573, 114, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD4'] = [521, 88, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD5'] = [547, 88, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD6'] = [573, 88, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD7'] = [521, 63, 26, 25];
+  map['RZKEY.RZKEY_NUMPAD8'] = [547, 63, 26, 25];
+  map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
+  map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 26, 26];
+  map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 26, 51];
+  map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 26, 52];
+  map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
+  map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
+  map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
+  map['RZKEY.RZKEY_PAUSE'] = [490, 5, 26, 28];
+  map['RZKEY.RZKEY_INSERT'] = [438, 37, 26, 27];
+  map['RZKEY.RZKEY_HOME'] = [464, 37, 26, 27];
+  map['RZKEY.RZKEY_PAGEUP'] = [490, 37, 26, 27];
+  map['RZKEY.RZKEY_DELETE'] = [438, 63, 26, 27];
+  map['RZKEY.RZKEY_END'] = [464, 63, 26, 27];
+  map['RZKEY.RZKEY_PAGEDOWN'] = [490, 63, 26, 27];
+  map['RZKEY.RZKEY_UP'] = [464, 114, 26, 26];
+  map['RZKEY.RZKEY_LEFT'] = [438, 140, 26, 26];
+  map['RZKEY.RZKEY_DOWN'] = [464, 140, 26, 26];
+  map['RZKEY.RZKEY_RIGHT'] = [490, 140, 25, 26];
+  map['RZKEY.RZKEY_TAB'] = [46, 63, 39, 25];
+  map['RZKEY.RZKEY_CAPSLOCK'] = [46, 89, 45, 25];
+  map['RZKEY.RZKEY_BACKSPACE'] = [382, 37, 50, 25];
+  map['RZKEY.RZKEY_ENTER'] = [375, 89, 57, 25];
+  map['RZKEY.RZKEY_LCTRL'] = [46, 140, 39, 26];
+  map['RZKEY.RZKEY_LWIN'] = [86, 140, 25, 26];
+  map['RZKEY.RZKEY_LALT'] = [111, 140, 38, 26];
+  map['RZKEY.RZKEY_SPACE'] = [149, 140, 156, 26];
+  map['RZKEY.RZKEY_RALT'] = [305, 140, 37, 26];
+  map['RZKEY.RZKEY_FN'] = [342, 140, 26, 26];
+  map['RZKEY.RZKEY_RMENU'] = [368, 140, 26, 26];
+  map['RZKEY.RZKEY_RCTRL'] = [395, 140, 37, 26];
+  map['RZKEY.RZKEY_LSHIFT'] = [46, 114, 58, 26];
+  map['RZKEY.RZKEY_RSHIFT'] = [362, 114, 70, 26];
+  map['RZKEY.RZKEY_MACRO1'] = [15, 37, 27, 25];
+  map['RZKEY.RZKEY_MACRO2'] = [15, 62, 27, 26];
+  map['RZKEY.RZKEY_MACRO3'] = [15, 88, 27, 26];
+  map['RZKEY.RZKEY_MACRO4'] = [15, 114, 27, 26];
+  map['RZKEY.RZKEY_MACRO5'] = [15, 140, 27, 26];
+  map['RZKEY.RZKEY_OEM_1'] = [46, 37, 26, 25];
+  map['RZKEY.RZKEY_OEM_2'] = [330, 37, 25, 25];
+  map['RZKEY.RZKEY_OEM_3'] = [356, 37, 25, 25];
+  map['RZKEY.RZKEY_OEM_4'] = [343, 63, 25, 25];
+  map['RZKEY.RZKEY_OEM_5'] = [369, 63, 25, 25];
+  map['RZKEY.RZKEY_OEM_6'] = [394, 63, 38, 25];
+  map['RZKEY.RZKEY_OEM_7'] = [324, 89, 25, 25];
+  map['RZKEY.RZKEY_OEM_8'] = [350, 89, 24, 25];
+  map['RZKEY.RZKEY_OEM_9'] = [285, 114, 25, 26];
+  map['RZKEY.RZKEY_OEM_10'] = [311, 114, 25, 26];
+  map['RZKEY.RZKEY_OEM_11'] = [337, 114, 25, 26];
+  map['RZKEY.RZKEY_EUR_1'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_EUR_2'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_JPN_1'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_JPN_2'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_JPN_3'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_JPN_4'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_JPN_5'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_1'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_2'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_3'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_4'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_5'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_6'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_KOR_7'] = [0, 0, 0, 0];
+  map['RZKEY.RZKEY_INVALID'] = [0, 0, 0, 0];
+  map['RZLED.RZLED_LOGO'] = [309, 185, 24, 25];
+
+  var frameCount = animation.getFrameCount();
+  //console.log('frameCount', frameCount);
+  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+  var frameId = animation.CurrentIndex;
+  //console.log('frameId', frameId);
+  if (frameId >= 0 && frameId < frameCount) {
+    //var frame = animation.Frames[frameId];
+    var frame = animation.Frames[animation.CurrentIndex];
+    var colors = frame.Colors;
+
+    for (var key in RZKEY) {
+      //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
+      var val = RZKEY[key];
+      if (val == RZKEY.RZKEY_INVALID) {
+        continue;
+      }
+      var i = getHighByte(val);
+      var row = colors[i];
+      var j = getLowByte(val);
+      var color = row[j];
+      var red = color & 0xFF;
+      var green = (color & 0xFF00) >> 8;
+      var blue = (color & 0xFF0000) >> 16;
+      var keyDesc = 'RZKEY.'+key;
+      var coords = map[keyDesc];
+
+      var color = getRGBString(red, green, blue);
+      ctx.fillStyle = color;
+      ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
+      ctx.stroke();
+    }
+
+    for (var key in RZLED) {
+      var val = RZKEY[key];
+      var i = getHighByte(val);
+      var row = colors[i];
+      var j = getLowByte(val);
+      var color = row[j];
+      var red = color & 0xFF;
+      var green = (color & 0xFF00) >> 8;
+      var blue = (color & 0xFF0000) >> 16;
+      var keyDesc = 'RZLED.'+key;
+      var coords = map[keyDesc];
+
+      var color = getRGBString(red, green, blue);
+      ctx.fillStyle = color;
+      var a = coords[0];
+      var b = coords[1];
+      var c = coords[2];
+      var d = coords[3];
+      ctx.fillRect(a,b,c,d);
+      ctx.stroke();
+    }
+
+    var drawWidth = canvas.width;
+    var drawHeight = canvas.height;
+    ctx.drawImage(imgEmulatorKeyboard, 0, 0, drawWidth, drawHeight);
+  }
+
+  var duration = Number(animation.getDuration());
+  duration = Math.max(duration, 0.033);
+  setTimeout(function() {
+    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
+    drawKeyboard(canvasName, animationName);
+  }, duration * 1000);
+}
+displayCanvas = function(baseLayer, canvasName) {
+  if (ChromaAnimation.getAnimation(canvasName) == undefined) {
+    ChromaAnimation.copyAnimation(baseLayer, canvasName);
+    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
+    drawKeyboard(canvasName, canvasName);
+  }
+  drawInProgress = false;
+}
+/*
+showArc1.onclick = function () {
+  exampleReset();
+
+  var baseLayer = 'animations/Arc1_Keyboard.chroma';
+  ChromaAnimation.closeAnimation(baseLayer);
+  ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+    ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+    ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+
+    displayCanvas(baseLayer, "canvasShowArc1");
+
+    if (initialized) {
+      ChromaAnimation.playAnimation(baseLayer, true);
+    }
+  });
+};
+*/
+
+var setupComplete = false;
+var onSetupComplete = { };
+onSetupComplete.click = function() {
+  setupComplete = true;
+}
+
+var setupItems = [
+];
+
+ for (var i in animations) {
+  var animationName = animations[i];
+  if (animationName == '---') {
+    continue;
+  }
+  animationName = animationName.substring(0, animationName.length-'_Keyboard.chroma'.length);
+  var setupCanvas = { };
+  setupCanvas.animationName = animationName;
+  setupCanvas.click = function() {
+
+    //console.log(this.animationName);
+
+    var baseLayer = 'animations/' + this.animationName + '_Keyboard.chroma';
+    var refAnimationName = this.animationName;
+    var refFrameCountLabel = this.frameCountLabel;
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      refFrameCountLabel.innerText = baseAnimation.getFrameCount();
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+
+      displayCanvas(baseLayer, 'canvasShow' + refAnimationName);
+
+      if (setupComplete) {
+        ChromaAnimation.playAnimation(baseLayer, true);
+      }
+    });
+  };
+  var button = document.getElementById('show'+animationName);
+  button.animationName = animationName;
+  button.onclick = setupCanvas.click;
+  var frameCountLabel = document.getElementById('frameCount'+animationName);
+  setupCanvas.frameCountLabel = frameCountLabel;
+  button.frameCountLabel = frameCountLabel;
+  setupItems.push(setupCanvas);
+}
+
+setupItems.push(onSetupComplete);
+
+var setupIndex = 0;
+var timerSetup = setInterval(function() {
+  if (!drawInProgress) {
+    if (setupIndex < setupItems.length) {
+      drawInProgress = true;
+      setupItems[setupIndex].click();
+      setupIndex++;
+    } else {
+      clearInterval(timerSetup);
+    }
+  }
+}, 100);
+</script>
+</html>
