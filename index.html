@@ -216,6 +216,10 @@ for (var i in animations) {
   canvas.setAttribute('id', 'canvasShow'+animationName);
   canvas.setAttribute('width', '640');
   canvas.setAttribute('height', '214');
+  var ctx = canvas.getContext("2d");
+  ctx.font = "30px Arial";
+  ctx.fillStyle ='rgb(127, 127, 127)';
+  ctx.fillText("Loading...",225,100);
   td.appendChild(canvas);
   tr.appendChild(td);
   tbl.appendChild(tr);
