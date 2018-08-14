@@ -194,9 +194,14 @@ for (var i in animations) {
   tbl.setAttribute('border', '1');
   tbl.setAttribute('class', 'tableInline');
   var tr = document.createElement('tr');
+  var anchor = document.createElement('a');
+  var baseLayer = 'animations/' + animationName + '_Keyboard.chroma';
+  anchor.setAttribute('target', '_blank');
+  anchor.setAttribute('href', baseLayer);
   var td = document.createElement('td');
   td.innerText = animationName;
-  tr.appendChild(td);
+  anchor.appendChild(td);
+  tr.appendChild(anchor);
   var td = document.createElement('td');
   td.setAttribute('id', 'frameCount'+animationName);
   td.setAttribute('class', 'tdEmpty');
