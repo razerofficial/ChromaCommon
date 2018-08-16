@@ -2512,6 +2512,11 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  insertDelay: function(animationName, frameId, delay) {
+    for (var i = 0; i < delay; ++i) {
+      this.insertFrame(animationName, frameId, frameId);
+    }
+  },
   duplicateFirstFrame: function(animationName, frameCount) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -2705,6 +2710,22 @@ var ChromaAnimation = {
       frames.push(frame);
     }
     animation.Frames = frames;
+  },
+  trimEndFrames: function(animationName, lastFrameId) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    this.stopAnimation(animationName);
+    if (animation.Frames.length == 0) {
+      console.error('trimEndFrames', 'Frame length is zero!', animationName)
+      return;
+    }
+    //console.log(animation.Frames);
+    while (lastFrameId >= 0 &&
+      (lastFrameId+1) < animation.Frames.length) {
+        this.trimFrame(animationName, animation.Frames.length - 1);
+    }
   },
   makeBlankFrames: function(animationName, frameCount, duration, color) {
     var animation = this.LoadedAnimations[animationName];
