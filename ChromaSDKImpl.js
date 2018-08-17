@@ -2727,6 +2727,45 @@ var ChromaAnimation = {
         this.trimFrame(animationName, animation.Frames.length - 1);
     }
   },
+  fadeStartFrames: function(animationName, fade) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    this.stopAnimation(animationName);
+    if (animation.Frames.length == 0) {
+      console.error('fadeStartFrames', 'Frame length is zero!', animationName)
+      return;
+    }
+    if (fade <= 0) {
+      return;
+    }
+    //console.log(animation.Frames);
+    for (var frameId = 0; frameId < fade; ++frameId) {
+      var t = (frameId+1) / fade;
+      this.multiplyIntensity(animationName, frameId, t);
+    }
+  },
+  fadeEndFrames: function(animationName, fade) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    this.stopAnimation(animationName);
+    if (animation.Frames.length == 0) {
+      console.error('fadeEndFrames', 'Frame length is zero!', animationName)
+      return;
+    }
+    if (fade <= 0) {
+      return;
+    }
+    //console.log(animation.Frames);
+    for (var offset = 0; offset < fade; ++offset) {
+      var frameId = animation.Frames.length - 1 - offset;
+      var t = (offset+1) / fade;
+      this.multiplyIntensity(animationName, frameId, t);
+    }
+  },
   makeBlankFrames: function(animationName, frameCount, duration, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
