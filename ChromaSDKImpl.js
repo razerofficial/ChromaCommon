@@ -2828,6 +2828,21 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  trimStartFrames: function(animationName, numberOfFrames) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    this.stopAnimation(animationName);
+    if (animation.Frames.length == 0) {
+      console.error('trimEndFrames', 'Frame length is zero!', animationName)
+      return;
+    }
+    //console.log(animation.Frames);
+    for (var i = 0; i < numberOfFrames; ++i) {
+      this.trimFrame(animationName, 0);
+    }
+  },
   trimEndFrames: function(animationName, lastFrameId) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
