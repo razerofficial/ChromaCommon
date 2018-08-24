@@ -2199,7 +2199,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColors: function(animationName, frameId, threshold, color) {
+  fillThresholdColors: function(animationName, frameId, threshold, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2233,7 +2233,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColorsAllFrames: function(animationName, threshold, color) {
+  fillThresholdColorsAllFrames: function(animationName, threshold, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2267,7 +2267,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColorsRGB: function(animationName, frameId, threshold, red, green, blue) {
+  fillThresholdColorsRGB: function(animationName, frameId, threshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2302,7 +2302,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColorsAllFramesRGB: function(animationName, threshold, red, green, blue) {
+  fillThresholdColorsAllFramesRGB: function(animationName, threshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2337,7 +2337,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColorsMinMaxRGB: function(animationName, frameId, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  fillThresholdColorsMinMaxRGB: function(animationName, frameId, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2378,7 +2378,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  fillThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2419,7 +2419,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillTresholdRGBColorsAllFramesRGB: function(animationName, redThreshold, greenThreshold, blueThreshold, red, green, blue) {
+  fillThresholdRGBColorsAllFramesRGB: function(animationName, redThreshold, greenThreshold, blueThreshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
