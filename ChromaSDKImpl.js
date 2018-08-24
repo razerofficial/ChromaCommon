@@ -2369,8 +2369,8 @@ var ChromaAnimation = {
               blue <= minThreshold) {
               row[j] = minColor;
             } else if (red >= maxThreshold &&
-              green <= maxThreshold &&
-              blue <= maxThreshold) {
+              green >= maxThreshold &&
+              blue >= maxThreshold) {
               row[j] = maxColor;
             }
           }
