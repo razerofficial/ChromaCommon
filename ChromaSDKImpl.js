@@ -883,6 +883,16 @@ var ChromaAnimation = {
 	    return undefined;
 	  }
   },
+  lerp: function(start, end, amt) {
+    return (1-amt)*start+amt*end;
+  },
+  lerpColor: function(from, to, t) {
+    var red = Math.floor(this.lerp((from & 0xFF), (to & 0xFF), t));
+    var green = Math.floor(this.lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
+    var blue = Math.floor(this.lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
+    var color = red | (green << 8) | (blue << 16);
+    return color;
+  },
   getAnimation: function(animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
