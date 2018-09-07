@@ -48,15 +48,30 @@ td {
 <img name="imgEmulatorKeypad" style="display: none" src="emulator/EmulatorKeypad.png"/>
 <img name="imgEmulatorMouse" style="display: none" src="emulator/EmulatorMouse.png"/>
 <img name="imgEmulatorMousepad" style="display: none" src="emulator/EmulatorMousepad.png"/>
-<h1>Chroma Design Templates</h1>
-
-<div>Use the following animation templates to create <b><i>unique Chroma effects</i></b>. Be sure to customize the colors, alter the playback speed, and combine multiple layers to create interesting effects. Visit the <a target="_blank" href="../ChromaGuide">[Guide]</a> to learn how to customize animation templates. Examples of layered animations can be found <a target="_blank" href="../ChromaAnimations/">[here]</a>.</div>
+<h1>Genrate Chroma Animations</h1>
 
 <br/><br/>
 
-<div id="rootAnimations"/>
+<table border="0">
+  <tr valign="top">
+    <td>
+Auto: <input id="inputAuto" type="checkbox" checked style="width: 50px; height: 50px"></input><br/></br>
+Number of Layers: <input id="inputNumberOfLayers" type="text" value="5"></input><br/><br/>
+Min Frame Count: <input id="inputMinFrameCount" type="text" value="25"></input><br/><br/>
+Max Frame Count: <input id="inputMaxFrameCount" type="text" value="100"></input><br/><br/>
+    </td>
+    <td>
+      <button id="generateHTML5">Generate HTML5</button>
+      <button id="generateCPlusPlus">Generate C++</button>
+      <button id="generateUE4">Generate UE4</button>
+      <br/><br/>
+      <textarea id="outputScript" rows="20" cols="150"></textarea>
+    </td>
+  </tr>
+</table>
 
 <script>
+var canvasTimers = [];
 var animations = [];
 animations.push('Blank_Keyboard.chroma');
 animations.push('Blank2_Keyboard.chroma');
@@ -208,9 +223,10 @@ animations.push('Damage6_Keyboard.chroma');
 animations.push('Damage7_Keyboard.chroma');
 animations.push('Damage8_Keyboard.chroma');
 
-var rootAnimations = document.getElementById('rootAnimations');
-for (var i in animations) {
-  var animationName = animations[i];
+var animationId = 1;
+
+function CreateKeyboardCanvas(animationName) {
+  var rootAnimations = document.getElementById('rootAnimations');
   if (animationName == '---') {
     var br = document.createElement('br');
     rootAnimations.appendChild(br);
@@ -218,7 +234,7 @@ for (var i in animations) {
     rootAnimations.appendChild(br);
     var br = document.createElement('br');
     rootAnimations.appendChild(br);
-    continue;
+    return;
   }
   animationName = animationName.substring(0, animationName.length-'_Keyboard.chroma'.length);
   var tbl = document.createElement('table');
@@ -230,11 +246,10 @@ for (var i in animations) {
   anchor.setAttribute('target', '_blank');
   anchor.setAttribute('href', baseLayer);
   var td = document.createElement('td');
-  td.innerText = animationName;
+  td.innerText = 'showEffect'+animationId;
   anchor.appendChild(td);
   tr.appendChild(anchor);
   var td = document.createElement('td');
-  td.setAttribute('id', 'frameCount'+animationName);
   td.setAttribute('class', 'tdEmpty');
   tr.appendChild(td);
   tbl.appendChild(tr);
@@ -244,12 +259,17 @@ for (var i in animations) {
   td.setAttribute('align', 'center');
   tr.appendChild(td);
   var button = document.createElement('button');
-  button.setAttribute('id', 'show'+animationName);
-  button.innerText = i;
+  button.setAttribute('id', 'showEffect'+animationId);
+  button.animationId = animationId;
+  button.innerText = animationId;
+  button.onclick = function() {
+    outputScript.innerText = this.chromaSource;
+    ChromaAnimation.playAnimation('canvasShowEffect'+this.animationId, true);
+  }
   td.appendChild(button);
   var td = document.createElement('td');
   var canvas = document.createElement('canvas');
-  canvas.setAttribute('id', 'canvasShow'+animationName);
+  canvas.setAttribute('id', 'canvasShowEffect'+animationId);
   canvas.setAttribute('width', '640');
   canvas.setAttribute('height', '214');
   var ctx = canvas.getContext("2d");
@@ -260,30 +280,158 @@ for (var i in animations) {
   tr.appendChild(td);
   tbl.appendChild(tr);
 
-  rootAnimations.appendChild(tbl);
+  rootAnimations.insertBefore(tbl, rootAnimations.children[0]);
 }
-</script>
+getAnimation = function() {
+  var i = Math.floor(Math.random() * animations.length) % animations.length;
+  var name = animations[i];
+  if (name == '---') {
+    return getAnimation();
+  }
+  return '../ChromaCommon/animations/' + animations[i];
+}
+generateHTML5.onclick = function() {
+  var numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
+  var text = "";
+  var newline = "\r\n";
+  var baseLayer = "";
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      baseLayer = getAnimation();
+      text += "var baseLayer = '"+baseLayer+"';" + newline;
+    } else {
+      text += "var layer" + (layerId+1) + " = '"+getAnimation()+"';" + newline;
+    }
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      text += "ChromaAnimation.closeAnimation(baseLayer);" + newline;
+    } else {
+      text += "ChromaAnimation.closeAnimation(layer"+(layerId+1)+");" + newline;
+    }
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    var indent = "";
+    for (var i = 0; i < layerId; ++i){
+      indent += "  ";
+    }
+    if (layerId == 0) {
+      text += "ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {" + newline;
+    } else {
+      text += indent + "ChromaAnimation.openAnimation(layer"+(layerId+1)+", function(layer"+(layerId+1)+"Animation) {" + newline;
+    }
+  }
+  var indent = "";
+  for (var i = 0; i < numberOfLayers; ++i){
+    indent += "  ";
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      text += indent + "var frameCount = ChromaAnimation.getFrameCount(baseLayer);" + newline;
+      text += indent + "if (frameCount == 1) ChromaAnimation.duplicateFirstFrame(baseLayer, 100);" + newline;
+    } else {
+      text += indent + "var frameCount = ChromaAnimation.getFrameCount(layer"+(layerId+1)+");" + newline;
+      text += indent + "if (frameCount == 1) ChromaAnimation.duplicateFirstFrame(layer"+(layerId+1)+", 100);" + newline;
+    }
+  }
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    var r = Math.floor(Math.random() * 3);
+    switch (r) {
+      case 0:
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+        text += indent + "ChromaAnimation.multiplyIntensityAllFramesRGB(layer"+(layerId+1)+", "+red+", "+green+", "+blue+");" + newline;
+        break;
+      case 1:
+        var threshold = Math.floor(Math.random() * 255);
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+        text += indent + "ChromaAnimation.fillThresholdColorsAllFramesRGB(layer"+(layerId+1)+", "+threshold+", "+red+", "+green+", "+blue+");" + newline;
+        break;
+      case 2:
+        var minThreshold = Math.floor(Math.random() * 127);
+        var minRed = Math.floor(Math.random() * 255);
+        var minGreen = Math.floor(Math.random() * 255);
+        var minBlue = Math.floor(Math.random() * 255);
+        var maxThreshold = Math.floor(Math.random() * 127);
+        var maxRed = Math.floor(Math.random() * 255);
+        var maxGreen = Math.floor(Math.random() * 255);
+        var maxBlue = Math.floor(Math.random() * 255);
+        text += indent + "ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(layer"+(layerId+1)+", "+minThreshold+", "+minRed+", "+minGreen+", "+minBlue+", "+maxThreshold+", "+maxRed+", "+maxGreen+", "+maxBlue+");" + newline;
+        break;
+    }
+  }
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    var r = Math.floor(Math.random() * 6);
+    switch (r) {
+      case 0:
+        text += indent + "ChromaAnimation.copyNonZeroAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+      case 1:
+        text += indent + "ChromaAnimation.addNonZeroAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+      case 2:
+        text += indent + "ChromaAnimation.subtractNonZeroAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+      case 3:
+        text += indent + "ChromaAnimation.copyNonZeroTargetAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+      case 4:
+        text += indent + "ChromaAnimation.addNonZeroTargetAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+      case 5:
+        text += indent + "ChromaAnimation.subtractNonZeroTargetAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+        break;
+    }
+  }
 
-<!--
-<table border="1" class="tableInline">
-<tr>
-  <td>Arc1</td><td class="tdEmpty"></td>
-</tr>
-<tr>
-  <td align="center"><button id="showArc1">1</button></td>
-  <td><canvas id="canvasShowArc1" width="640" height="214"></canvas></td>
-</tr>
-</table>
--->
+  text += indent + "ChromaAnimation.setChromaCustomFlag(baseLayer, true);" + newline;
+  text += indent + "ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);" + newline;
+  text += indent + "ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);" + newline;
+  text += indent + "ChromaAnimation.playAnimation(baseLayer, true);" + newline;
+
+  CreateKeyboardCanvas(baseLayer);
+  text += indent + "displayCanvas(baseLayer, 'canvasShowEffect"+animationId+"');" + newline;
+
+  for (var layerId = numberOfLayers - 1; layerId >= 0; --layerId) {
+    var indent = "";
+    for (var i = 0; i < layerId; ++i){
+      indent += "  ";
+    }
+    text += indent + "});" + newline;
+  }
+  outputScript.innerText = text;
+
+  var button = document.getElementById("showEffect"+animationId);
+  if (button != undefined) {
+    button.chromaSource = text;
+  }
+  eval(text);
+
+  ++animationId;
+}
+var intervalAuto = undefined;
+inputAuto.onclick = function() {
+  if (intervalAuto != undefined) {
+    clearInterval(intervalAuto);
+    intervalAuto = undefined;
+  }
+  if (inputAuto.checked) {
+  intervalAuto = setInterval(function() {
+      generateHTML5.onclick();
+    }, 250);
+  }
+}
+inputAuto.onclick();
+</script>
 
 <br/><br/>
 
-<script>
-  function resizeIframe(obj) {
-    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
-  }
-</script>
-<a name="Videos"><iframe src="../ChromaCommon/footer.html" width="100%" frameborder="0" scrolling="no" onload="resizeIframe(this)"></iframe></a>
+<div id="rootAnimations"/>
+
+<br/><br/>
 
 </body>
 <script>
@@ -611,7 +759,7 @@ function drawKeyboard(canvasName, animationName) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  canvasTimers[canvasName] = setTimeout(function() {
     animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
     drawKeyboard(canvasName, animationName);
   }, duration * 1000);
@@ -624,87 +772,6 @@ displayCanvas = function(baseLayer, canvasName) {
   }
   drawInProgress = false;
 }
-/*
-showArc1.onclick = function () {
-  exampleReset();
 
-  var baseLayer = 'animations/Arc1_Keyboard.chroma';
-  ChromaAnimation.closeAnimation(baseLayer);
-  ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
-
-    ChromaAnimation.setChromaCustomFlag(baseLayer, true);
-    ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
-
-    displayCanvas(baseLayer, "canvasShowArc1");
-
-    if (initialized) {
-      ChromaAnimation.playAnimation(baseLayer, true);
-    }
-  });
-};
-*/
-
-var setupComplete = false;
-var onSetupComplete = { };
-onSetupComplete.click = function() {
-  setupComplete = true;
-}
-
-var setupItems = [
-];
-
- for (var i in animations) {
-  var animationName = animations[i];
-  if (animationName == '---') {
-    continue;
-  }
-  animationName = animationName.substring(0, animationName.length-'_Keyboard.chroma'.length);
-  var setupCanvas = { };
-  setupCanvas.animationName = animationName;
-  setupCanvas.click = function() {
-
-    //console.log(this.animationName);
-
-    var baseLayer = 'animations/' + this.animationName + '_Keyboard.chroma';
-    var refAnimationName = this.animationName;
-    var refFrameCountLabel = this.frameCountLabel;
-    ChromaAnimation.closeAnimation(baseLayer);
-    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
-
-      refFrameCountLabel.innerText = baseAnimation.getFrameCount();
-
-      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
-      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
-
-      displayCanvas(baseLayer, 'canvasShow' + refAnimationName);
-
-      if (setupComplete) {
-        ChromaAnimation.playAnimation(baseLayer, true);
-      }
-    });
-  };
-  var button = document.getElementById('show'+animationName);
-  button.animationName = animationName;
-  button.onclick = setupCanvas.click;
-  var frameCountLabel = document.getElementById('frameCount'+animationName);
-  setupCanvas.frameCountLabel = frameCountLabel;
-  button.frameCountLabel = frameCountLabel;
-  setupItems.push(setupCanvas);
-}
-
-setupItems.push(onSetupComplete);
-
-var setupIndex = 0;
-var timerSetup = setInterval(function() {
-  if (!drawInProgress) {
-    if (setupIndex < setupItems.length) {
-      drawInProgress = true;
-      setupItems[setupIndex].click();
-      setupIndex++;
-    } else {
-      clearInterval(timerSetup);
-    }
-  }
-}, 100);
 </script>
 </html>
