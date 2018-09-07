@@ -54,10 +54,105 @@ td {
 
 <br/><br/>
 
-<div id="rootAnimations"/>
+<table border="0">
+  <tr valign="top">
+    <td>
+Number of Layers: <input id="inputNumberOfLayers" type="text" value="5"></input><br/><br/>
+Min Frame Count: <input id="inputMinFrameCount" type="text" value="25"></input><br/><br/>
+Max Frame Count: <input id="inputMaxFrameCount" type="text" value="100"></input><br/><br/>
+    </td>
+    <td>
+      <button id="generateHTML5">Generate HTML5</button>
+      <button id="generateCPlusPlus">Generate C++</button>
+      <button id="generateUE4">Generate UE4</button>
+      <br/><br/>
+      <textarea id="outputScript" rows="20" cols="150"></textarea>
+    </td>
+  </tr>
+</table>
 
 <script>
 var animations = [];
+getAnimation = function() {
+  var i = Math.floor(Math.random() * animations.length) % animations.length;
+  var name = animations[i];
+  if (name == '---') {
+    return getAnimation();
+  }
+  return '../ChromaCommon/animations/' + animations[i];
+}
+generateHTML5.onclick = function() {
+  var numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
+  var text = "";
+  var newline = "\r\n";
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      text += "var baseLayer = '"+getAnimation()+"';" + newline;
+    } else {
+      text += "var layer" + (layerId+1) + " = '"+getAnimation()+"';" + newline;
+    }
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      text += "ChromaAnimation.closeAnimation(baseLayer);" + newline;
+    } else {
+      text += "ChromaAnimation.closeAnimation(layer"+(layerId+1)+");" + newline;
+    }
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    var indent = "";
+    for (var i = 0; i < layerId; ++i){
+      indent += "  ";
+    }
+    if (layerId == 0) {
+      text += "ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {" + newline;
+    } else {
+      text += indent + "ChromaAnimation.openAnimation(layer"+(layerId+1)+", function(baseAnimation) {" + newline;
+    }
+  }
+  var indent = "";
+  for (var i = 0; i < numberOfLayers; ++i){
+    indent += "  ";
+  }
+  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+    if (layerId == 0) {
+      text += indent + "var frameCount = ChromaAnimation.getFrameCount(baseLayer);" + newline;
+    } else {
+      text += indent + "var frameCount = ChromaAnimation.getFrameCount(layer"+(layerId+1)+");" + newline;
+    }
+  }
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    var red = Math.floor(Math.random() * 255);
+    var green = Math.floor(Math.random() * 255);
+    var blue = Math.floor(Math.random() * 255);
+    text += indent + "ChromaAnimation.multiplyIntensityAllFramesRGB(layer"+(layerId+1)+", "+red+", "+green+", "+blue+");" + newline;
+  }
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    text += indent + "ChromaAnimation.copyNonZeroAllKeysAllFrames(layer"+(layerId+1)+", baseLayer);" + newline;
+  }
+
+  text += indent + "ChromaAnimation.setChromaCustomFlag(baseLayer, true);" + newline;
+  text += indent + "ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);" + newline;
+  text += indent + "ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);" + newline;
+  text += indent + "ChromaAnimation.playAnimation(baseLayer, true);" + newline;
+
+  for (var layerId = numberOfLayers - 1; layerId >= 0; --layerId) {
+    var indent = "";
+    for (var i = 0; i < layerId; ++i){
+      indent += "  ";
+    }
+    text += indent + "});" + newline;
+  }
+  outputScript.innerText = text;
+  eval(text);
+}
+</script>
+
+<br/><br/>
+
+<div id="rootAnimations"/>
+
+<script>
 animations.push('Blank_Keyboard.chroma');
 animations.push('Blank2_Keyboard.chroma');
 animations.push('---');

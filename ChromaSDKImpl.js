@@ -901,6 +901,14 @@ var ChromaAnimation = {
       return animation;
     }
   },
+  getFrameCount: function(animationName) {
+    var animation = this.getAnimation(animationName);
+    if (animation == undefined) {
+      return 0;
+    } else {
+      return animation.getFrameCount();
+    }
+  },
   stopByAnimationType: function(device) {
     if (chromaSDK == undefined) {
       setTimeout(function() { ChromaAnimation.stopByAnimationType(device); }, 100);
