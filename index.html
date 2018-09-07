@@ -72,6 +72,7 @@ Max Frame Count: <input id="inputMaxFrameCount" type="text" value="100"></input>
 </table>
 
 <script>
+var canvasTimers = [];
 var animations = [];
 getAnimation = function() {
   var i = Math.floor(Math.random() * animations.length) % animations.length;
@@ -136,6 +137,8 @@ generateHTML5.onclick = function() {
   text += indent + "ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);" + newline;
   text += indent + "ChromaAnimation.playAnimation(baseLayer, true);" + newline;
 
+  text += indent + "displayCanvas(baseLayer, 'canvasShowGenerated1');" + newline;
+
   for (var layerId = numberOfLayers - 1; layerId >= 0; --layerId) {
     var indent = "";
     for (var i = 0; i < layerId; ++i){
@@ -144,9 +147,29 @@ generateHTML5.onclick = function() {
     text += indent + "});" + newline;
   }
   outputScript.innerText = text;
+
+  var canvasName = 'canvasShowGenerated1';
+  var timer = canvasTimers[canvasName];
+  canvasTimers[canvasName] = undefined;
+  if (timer != undefined) {
+    clearTimeout(timer);
+  }
+  ChromaAnimation.closeAnimation(canvasName)
   eval(text);
 }
 </script>
+
+<br/><br/>
+
+<table border="1" class="tableInline">
+<tr>
+  <td>Generated</td><td class="tdEmpty"></td>
+</tr>
+<tr>
+  <td align="center"><button id="showGenerated1">1</button></td>
+  <td><canvas id="canvasShowGenerated1" width="640" height="214"></canvas></td>
+</tr>
+</table>
 
 <br/><br/>
 
@@ -358,18 +381,6 @@ for (var i in animations) {
   rootAnimations.appendChild(tbl);
 }
 </script>
-
-<!--
-<table border="1" class="tableInline">
-<tr>
-  <td>Arc1</td><td class="tdEmpty"></td>
-</tr>
-<tr>
-  <td align="center"><button id="showArc1">1</button></td>
-  <td><canvas id="canvasShowArc1" width="640" height="214"></canvas></td>
-</tr>
-</table>
--->
 
 <br/><br/>
 
@@ -706,7 +717,7 @@ function drawKeyboard(canvasName, animationName) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  canvasTimers[canvasName] = setTimeout(function() {
     animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
     drawKeyboard(canvasName, animationName);
   }, duration * 1000);
