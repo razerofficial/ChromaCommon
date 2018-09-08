@@ -83,6 +83,7 @@ Random Operations: <input id="inputRandomOperations" type="checkbox" checked sty
 
 Colors: <select id="selectColors">
   <option selected>Random</option>
+  <option>Rainbow</option>
   <option>Fire</option>
   <option>Water</option>
 </select>
@@ -369,6 +370,16 @@ randomizeColors = function() {
   }
 }
 randomizeColors(); //set initial colors
+setRainbowColors = function() {
+  colors = [];
+  colors.push(ChromaAnimation.getRGB(255, 0, 0));
+  colors.push(ChromaAnimation.getRGB(255, 127, 0));
+  colors.push(ChromaAnimation.getRGB(255, 255, 0));
+  colors.push(ChromaAnimation.getRGB(0, 255, 0));
+  colors.push(ChromaAnimation.getRGB(0, 0, 255));
+  colors.push(ChromaAnimation.getRGB(75, 0, 130));
+  colors.push(ChromaAnimation.getRGB(148, 0, 211));
+}
 setFireColors = function() {
   colors = [];
   colors.push(ChromaAnimation.getRGB(255, 0, 0));
@@ -504,6 +515,8 @@ generateScript = function() {
 generateColors = function() {
   if (selectColors.value == "Random") {
     randomizeColors();
+  } else if (selectColors.value == "Rainbow") {
+    setRainbowColors();
   } else if (selectColors.value == "Fire") {
     setFireColors();
   } else if (selectColors.value == "Water") {
