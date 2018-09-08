@@ -501,17 +501,18 @@ generateScript = function() {
   ChromaAnimation.closeAnimation(canvasName);
   eval(text);
 }
-buttonRandomColors.onclick = function() {
+generateColors = function() {
   if (selectColors.value == "Random") {
     randomizeColors();
-    generateScript();
   } else if (selectColors.value == "Fire") {
     setFireColors();
-    generateScript();
   } else if (selectColors.value == "Water") {
     setWaterColors();
-    generateScript();
   }
+}
+buttonRandomColors.onclick = function() {
+  generateColors();
+  generateScript();
 }
 buttonGenerateScript.onclick = function() {
   numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
@@ -523,7 +524,7 @@ buttonGenerateScript.onclick = function() {
     inputRandomOperations.checked) {
     randomizeOperations();
   }
-  randomizeColors();
+  generateColors();
   generateScript();
 }
 var intervalAuto = undefined;
