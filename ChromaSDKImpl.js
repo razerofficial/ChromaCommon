@@ -2853,7 +2853,7 @@ var ChromaAnimation = {
     }
     this.stopAnimation(animationName);
     if (animation.Frames.length == 0) {
-      console.error('trimEndFrames', 'Frame length is zero!', animationName)
+      console.error('trimStartFrames', 'Frame length is zero!', animationName)
       return;
     }
     //console.log(animation.Frames);
@@ -3254,6 +3254,18 @@ var ChromaAnimation = {
   },
   getRGB(red, green, blue) {
     return (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
+  },
+  getRed(color) {
+    var red = (color & 0xFF);
+    return red;
+  },
+  getGreen(color) {
+    var green = (color & 0xFF00) >> 8;
+    return green;
+  },
+  getBlue(color) {
+    var blue = (color & 0xFF0000) >> 16;
+    return blue;
   },
   debugColor(color) {
     var red = (color & 0xFF);

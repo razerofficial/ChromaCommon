@@ -64,7 +64,8 @@ Random Layers: <input id="inputRandomLayers" type="checkbox" checked style="widt
 Random Operations: <input id="inputRandomOperations" type="checkbox" checked style="width: 50px; height: 50px"></input>
 <button id="buttonRandomOperations">Randomize</button><br/><br/>
 
-Colors: <button id="buttonRandomColors">Randomize</button><br/></br>
+Colors: <button id="buttonRandomColors">Randomize</button>
+<button id="buttonFireColors">Fire</button><br/></br>
 
     </td>
     <td>
@@ -80,6 +81,7 @@ Colors: <button id="buttonRandomColors">Randomize</button><br/></br>
 <script>
 var canvasTimers = [];
 var animations = [];
+var animationsWithLines = [];
 animations.push('Search1_Keyboard.chroma');
 animations.push('Search2_Keyboard.chroma');
 animations.push('Search3_Keyboard.chroma');
@@ -90,27 +92,27 @@ animations.push('BarrelFlash3_Keyboard.chroma');
 animations.push('Clouds1_Keyboard.chroma');
 animations.push('Clouds2_Keyboard.chroma');
 animations.push('Clouds3_Keyboard.chroma');
-animations.push('Arc1_Keyboard.chroma');
-animations.push('Arc2_Keyboard.chroma');
-animations.push('Arc3_Keyboard.chroma');
-animations.push('Arc4_Keyboard.chroma');
-animations.push('Block1_Keyboard.chroma');
+animationsWithLines.push('Arc1_Keyboard.chroma');
+animationsWithLines.push('Arc2_Keyboard.chroma');
+animationsWithLines.push('Arc3_Keyboard.chroma');
+animationsWithLines.push('Arc4_Keyboard.chroma');
+animationsWithLines.push('Block1_Keyboard.chroma');
 animations.push('Block2_Keyboard.chroma');
-animations.push('Bolt1_Keyboard.chroma');
-animations.push('Bolt2_Keyboard.chroma');
-animations.push('Bolt3_Keyboard.chroma');
-animations.push('Bolt4_Keyboard.chroma');
+animationsWithLines.push('Bolt1_Keyboard.chroma');
+animationsWithLines.push('Bolt2_Keyboard.chroma');
+animationsWithLines.push('Bolt3_Keyboard.chroma');
+animationsWithLines.push('Bolt4_Keyboard.chroma');
 animations.push('Dragon1_Keyboard.chroma');
 animations.push('Dragon2_Keyboard.chroma');
 animations.push('Dragon3_Keyboard.chroma');
 animations.push('Claws1_Keyboard.chroma');
 animations.push('Energy1_Keyboard.chroma');
-animations.push('Fireball1_Keyboard.chroma');
-animations.push('Fork1_Keyboard.chroma');
-animations.push('Fork2_Keyboard.chroma');
-animations.push('Fork3_Keyboard.chroma');
-animations.push('Fork4_Keyboard.chroma');
-animations.push('Fork5_Keyboard.chroma');
+animationsWithLines.push('Fireball1_Keyboard.chroma');
+animationsWithLines.push('Fork1_Keyboard.chroma');
+animationsWithLines.push('Fork2_Keyboard.chroma');
+animationsWithLines.push('Fork3_Keyboard.chroma');
+animationsWithLines.push('Fork4_Keyboard.chroma');
+animationsWithLines.push('Fork5_Keyboard.chroma');
 animations.push('FreeFall1_Keyboard.chroma');
 animations.push('FreeFall2_Keyboard.chroma');
 animations.push('Glider1_Keyboard.chroma');
@@ -122,9 +124,9 @@ animations.push('Lightning2_Keyboard.chroma');
 animations.push('Lightning3_Keyboard.chroma');
 animations.push('CircleExpanding_Keyboard.chroma');
 animations.push('Hatchet_Keyboard.chroma');
-animations.push('Missile1_Keyboard.chroma');
-animations.push('Missile2_Keyboard.chroma');
-animations.push('Missile3_Keyboard.chroma');
+animationsWithLines.push('Missile1_Keyboard.chroma');
+animationsWithLines.push('Missile2_Keyboard.chroma');
+animationsWithLines.push('Missile3_Keyboard.chroma');
 animations.push('MovementUpLeft_Keyboard.chroma');
 animations.push('MovementUpRight_Keyboard.chroma');
 animations.push('Particle1_Keyboard.chroma');
@@ -150,9 +152,9 @@ animations.push('Spray2_Keyboard.chroma');
 animations.push('Spray3_Keyboard.chroma');
 animations.push('Star_Keyboard.chroma');
 animations.push('Stripes1_Keyboard.chroma');
-animations.push('ThrowUpLeft_Keyboard.chroma');
-animations.push('ThrowUpRight_Keyboard.chroma');
-animations.push('ThrowUp_Keyboard.chroma');
+animationsWithLines.push('ThrowUpLeft_Keyboard.chroma');
+animationsWithLines.push('ThrowUpRight_Keyboard.chroma');
+animationsWithLines.push('ThrowUp_Keyboard.chroma');
 animations.push('Tongue1_Keyboard.chroma');
 animations.push('Tornado1_Keyboard.chroma');
 animations.push('Trail1_Keyboard.chroma');
@@ -284,12 +286,13 @@ function CreateKeyboardCanvas(animationName) {
   rootAnimations.insertBefore(tbl, rootAnimations.children[0]);
 }
 getAnimation = function() {
-  var i = Math.floor(Math.random() * animations.length) % animations.length;
-  var name = animations[i];
+  var animationGroup = animationsWithLines;
+  var i = Math.floor(Math.random() * animationGroup.length) % animationGroup.length;
+  var name = animationGroup[i];
   if (name == '---') {
     return getAnimation();
   }
-  return '../ChromaCommon/animations/' + animations[i];
+  return '../ChromaCommon/animations/' + animationGroup[i];
 }
 function getLayer(layerId) {
   if (layerId == 0) {
@@ -301,6 +304,7 @@ function getLayer(layerId) {
 var numberOfLayers = 5;
 var layers = [];
 var operations = [];
+var colors = [];
 randomizeLayers = function() {
   layers = [];
   for (var i = 0; i < numberOfLayers; ++i) {
@@ -323,6 +327,27 @@ randomizeOperations = function() {
 buttonRandomOperations.onclick = function() {
   randomizeOperations();
   generateScript();
+}
+randomizeColors = function() {
+  colors = [];
+  for (var i = 0; i < 10; ++i) {
+    var red = Math.floor(Math.random() * 255);
+    var green = Math.floor(Math.random() * 255);
+    var blue = Math.floor(Math.random() * 255);
+    var color = red | (green << 8) | (blue << 16);
+    colors.push(color);
+  }
+}
+randomizeColors(); //set initial colors
+setFireColors = function() {
+  colors = [];
+  colors.push(ChromaAnimation.getRGB(255, 0, 0));
+  colors.push(ChromaAnimation.getRGB(255, 32, 0));
+  colors.push(ChromaAnimation.getRGB(255, 64, 0));
+  colors.push(ChromaAnimation.getRGB(255, 100, 0));
+  colors.push(ChromaAnimation.getRGB(255, 127, 0));
+  colors.push(ChromaAnimation.getRGB(255, 200, 0));
+  colors.push(ChromaAnimation.getRGB(255, 255, 0));
 }
 generateScript = function() {
   var text = "";
@@ -359,27 +384,31 @@ generateScript = function() {
   for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
     switch (operations[layerId][0]) {
       case 0:
-        var red = Math.floor(Math.random() * 255);
-        var green = Math.floor(Math.random() * 255);
-        var blue = Math.floor(Math.random() * 255);
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var red = ChromaAnimation.getRed(color);
+        var green = ChromaAnimation.getGreen(color);
+        var blue = ChromaAnimation.getBlue(color);
         text += indent + "ChromaAnimation.multiplyIntensityAllFramesRGB("+ getLayer(layerId) +", "+red+", "+green+", "+blue+");" + newline;
         break;
       case 1:
         var threshold = Math.floor(Math.random() * 255);
-        var red = Math.floor(Math.random() * 255);
-        var green = Math.floor(Math.random() * 255);
-        var blue = Math.floor(Math.random() * 255);
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var red = ChromaAnimation.getRed(color);
+        var green = ChromaAnimation.getGreen(color);
+        var blue = ChromaAnimation.getBlue(color);
         text += indent + "ChromaAnimation.fillThresholdColorsAllFramesRGB("+ getLayer(layerId) +", "+threshold+", "+red+", "+green+", "+blue+");" + newline;
         break;
       case 2:
         var minThreshold = Math.floor(Math.random() * 127);
-        var minRed = Math.floor(Math.random() * 255);
-        var minGreen = Math.floor(Math.random() * 255);
-        var minBlue = Math.floor(Math.random() * 255);
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var minRed = ChromaAnimation.getRed(color);
+        var minGreen = ChromaAnimation.getGreen(color);
+        var minBlue = ChromaAnimation.getBlue(color);
         var maxThreshold = Math.floor(Math.random() * 127);
-        var maxRed = Math.floor(Math.random() * 255);
-        var maxGreen = Math.floor(Math.random() * 255);
-        var maxBlue = Math.floor(Math.random() * 255);
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        var maxRed = ChromaAnimation.getRed(color);
+        var maxGreen = ChromaAnimation.getGreen(color);
+        var maxBlue = ChromaAnimation.getBlue(color);
         text += indent + "ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB("+ getLayer(layerId) +", "+minThreshold+", "+minRed+", "+minGreen+", "+minBlue+", "+maxThreshold+", "+maxRed+", "+maxGreen+", "+maxBlue+");" + newline;
         break;
     }
@@ -433,6 +462,11 @@ generateScript = function() {
   eval(text);
 }
 buttonRandomColors.onclick = function() {
+  randomizeColors();
+  generateScript();
+}
+buttonFireColors.onclick = function() {
+  setFireColors();
   generateScript();
 }
 generateHTML5.onclick = function() {
@@ -445,6 +479,7 @@ generateHTML5.onclick = function() {
     inputRandomOperations.checked) {
     randomizeOperations();
   }
+  randomizeColors();
   generateScript();
 }
 var intervalAuto = undefined;
@@ -516,7 +551,6 @@ handleTabVisibility = function() {
 
 };
 // end of browser function
-
 
 
 var chromaSDK = undefined;
