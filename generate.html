@@ -70,7 +70,8 @@ Source: <select>
 </select><br/><br/>
 
 Style: <select id="selectStyle">
-  <option selected>Clouds</option>
+  <option selected>Misc</option>
+  <option>Clouds</option>
   <option>Particle Systems</option>
   <option>Lines</option>
   <option>Shapes</option>
@@ -89,6 +90,8 @@ Colors: <select id="selectColors">
   <option>Fire</option>
   <option>Water</option>
 </select>
+
+Background: <input id="inputBackground" type="checkbox" checked style="width: 50px; height: 50px"></input>
 
 <button id="buttonRandomColors">Apply</button><br/><br/>
 
@@ -315,8 +318,10 @@ function CreateKeyboardCanvas(animationName) {
   rootAnimations.insertBefore(tbl, rootAnimations.children[0]);
 }
 getAnimation = function() {
-  var animationGroup = animationsWithLines;
-  if (selectStyle.value == "Clouds") {
+  var animationGroup = animations;
+  if (selectStyle.value == "Misc") {
+    animationGroup = animations;
+  } else if (selectStyle.value == "Clouds") {
     animationGroup = animationsWithClouds;
   } else if (selectStyle.value == "Particle Systems") {
     animationGroup = animationsWithParticles;
@@ -346,6 +351,10 @@ var colors = [];
 randomizeLayers = function() {
   layers = [];
   for (var i = 0; i < numberOfLayers; ++i) {
+    if (i == 0) {
+      layers.push("../ChromaCommon/animations/Blank_Keyboard.chroma");
+      continue;
+    }
     var animationName = "";
     for (var tries = 0; tries < 3; ++tries) {
       animationName = getAnimation();
@@ -452,11 +461,25 @@ generateScript = function() {
   for (var i = 0; i < numberOfLayers; ++i){
     indent += "  ";
   }
-  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
-    text += indent + "var frameCount = ChromaAnimation.getFrameCount("+ getLayer(layerId) +");" + newline;
-    text += indent + "if (frameCount == 1) ChromaAnimation.duplicateFirstFrame("+ getLayer(layerId) +", 100);" + newline;
+  text += indent + "var frameCount = ChromaAnimation.getFrameCount(baseLayer);" + newline;
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    text += indent + "var frames = ChromaAnimation.getFrameCount("+ getLayer(layerId) +");" + newline;
+    text += indent + "frameCount = Math.max(frameCount, frames);" + newline;
   }
-  for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
+    text += indent + "var frames = ChromaAnimation.getFrameCount("+ getLayer(layerId) +");" + newline;
+    text += indent + "if (frames == 1) ChromaAnimation.duplicateFirstFrame("+ getLayer(layerId) +", frameCount);" + newline;
+  }
+  var color = colors[Math.floor(Math.random() * colors.length)];
+  var red = ChromaAnimation.getRed(color);
+  var green = ChromaAnimation.getGreen(color);
+  var blue = ChromaAnimation.getBlue(color);
+  if (inputBackground.checked) {
+    text += indent + "ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, "+red+", "+green+", "+blue+");" + newline;
+  } else {
+    text += indent + "ChromaAnimation.makeBlankFrames(baseLayer, frameCount, 0.1, 0);" + newline;
+  }
+  for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
     switch (operations[layerId][0]) {
       case 0:
         var color = colors[Math.floor(Math.random() * colors.length)];
