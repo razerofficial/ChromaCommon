@@ -54,7 +54,7 @@ td {
 <img name="imgEmulatorKeypad" style="display: none" src="emulator/EmulatorKeypad.png"/>
 <img name="imgEmulatorMouse" style="display: none" src="emulator/EmulatorMouse.png"/>
 <img name="imgEmulatorMousepad" style="display: none" src="emulator/EmulatorMousepad.png"/>
-<h1>Genrate Chroma Animations</h1>
+<h1>Generate Chroma Animations</h1>
 
 <br/><br/>
 
@@ -70,7 +70,8 @@ Source: <select>
 </select><br/><br/>
 
 Style: <select id="selectStyle">
-  <option selected>Particle Systems</option>
+  <option selected>Clouds</option>
+  <option>Particle Systems</option>
   <option>Lines</option>
   <option>Shapes</option>
 </select><br/><br/>
@@ -94,6 +95,8 @@ Colors: <select id="selectColors">
     <td>
       Auto: <input id="inputAuto" type="checkbox" checked style="width: 50px; height: 50px"></input>
       <button id="buttonGenerateScript">Generate Script</button>
+      <button id="buttonSave">Save</button>
+      <button id="buttonClear">Clear</button>
       <br/><br/>
       <textarea id="outputScript" rows="20" cols="150"></textarea>
     </td>
@@ -104,18 +107,19 @@ Colors: <select id="selectColors">
 var canvasTimers = [];
 var animations = [];
 var animationsWithLines = [];
+var animationsWithClouds = [];
 var animationsWithParticles = [];
 var animationsWithShapes = [];
 animations.push('Search1_Keyboard.chroma');
 animations.push('Search2_Keyboard.chroma');
 animations.push('Search3_Keyboard.chroma');
 animations.push('Search4_Keyboard.chroma');
-animationsWithParticles.push('BarrelFlash1_Keyboard.chroma');
-animationsWithParticles.push('BarrelFlash2_Keyboard.chroma');
-animationsWithParticles.push('BarrelFlash3_Keyboard.chroma');
-animationsWithParticles.push('Clouds1_Keyboard.chroma');
-animationsWithParticles.push('Clouds2_Keyboard.chroma');
-animationsWithParticles.push('Clouds3_Keyboard.chroma');
+animationsWithClouds.push('BarrelFlash1_Keyboard.chroma');
+animationsWithClouds.push('BarrelFlash2_Keyboard.chroma');
+animationsWithClouds.push('BarrelFlash3_Keyboard.chroma');
+animationsWithClouds.push('Clouds1_Keyboard.chroma');
+animationsWithClouds.push('Clouds2_Keyboard.chroma');
+animationsWithClouds.push('Clouds3_Keyboard.chroma');
 animationsWithLines.push('Arc1_Keyboard.chroma');
 animationsWithLines.push('Arc2_Keyboard.chroma');
 animationsWithLines.push('Arc3_Keyboard.chroma');
@@ -165,7 +169,7 @@ animations.push('Rain1_Keyboard.chroma');
 animations.push('Melee1_Keyboard.chroma');
 animations.push('Ray1_Keyboard.chroma');
 animations.push('Ray2_Keyboard.chroma');
-animations.push('ReactiveSpace_Keyboard.chroma');
+animationsWithLines.push('ReactiveSpace_Keyboard.chroma');
 animations.push('Reticle1_Keyboard.chroma');
 animations.push('Reticle2_Keyboard.chroma');
 animations.push('Reticle3_Keyboard.chroma');
@@ -311,7 +315,9 @@ function CreateKeyboardCanvas(animationName) {
 }
 getAnimation = function() {
   var animationGroup = animationsWithLines;
-  if (selectStyle.value == "Particle Systems") {
+  if (selectStyle.value == "Clouds") {
+    animationGroup = animationsWithClouds;
+  } else if (selectStyle.value == "Particle Systems") {
     animationGroup = animationsWithParticles;
   } else if (selectStyle.value == "Lines") {
     animationGroup = animationsWithLines;
@@ -339,7 +345,18 @@ var colors = [];
 randomizeLayers = function() {
   layers = [];
   for (var i = 0; i < numberOfLayers; ++i) {
-    layers.push(getAnimation());
+    var animationName = "";
+    for (var tries = 0; tries < 3; ++tries) {
+      animationName = getAnimation();
+      if (!layers.includes(animationName)) {
+        layers.push(animationName);
+        animationName = "";
+        break;
+      }
+    }
+    if (animationName != "") {
+      layers.push(animationName);
+    }
   }
 }
 buttonRandomLayers.onclick = function() {
@@ -538,6 +555,26 @@ buttonGenerateScript.onclick = function() {
     randomizeOperations();
   }
   generateColors();
+  generateScript();
+}
+buttonSave.onclick = function() {
+  ++animationId;
+  CreateKeyboardCanvas("canvasShowEffect"+animationId);
+  generateScript();
+}
+buttonClear.onclick = function() {
+  for (var canvasName in canvasTimers) {
+    if (canvasTimers[canvasName] != undefined) {
+      clearTimeout(canvasTimers[canvasName]);
+      canvasTimers[canvasName] = undefined;
+    }
+    canvasTimers = [];
+  }
+  while (rootAnimations.firstChild) {
+    rootAnimations.removeChild(rootAnimations.firstChild);
+  }
+  animationId = 1;
+  CreateKeyboardCanvas("canvasShowEffect"+animationId);
   generateScript();
 }
 var intervalAuto = undefined;
