@@ -2652,6 +2652,39 @@ var ChromaAnimation = {
       this.insertFrame(animationName, frameId, frameId);
     }
   },
+  appendAllFrames: function(sourceAnimationName, targetAnimationName) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    this.stopAnimation(targetAnimationName);
+    if (sourceAnimation.Frames.length == 0) {
+      console.error('appendAllFrames', 'Source Frame length is zero!', animationName)
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    var targetFrames = targetAnimation.Frames;
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var frameCount = sourceFrames.length;
+    for (var frameId = 0; frameId < frameCount; ++frameId) {
+      var sourceFrame = sourceFrames[frameId];
+      var frame = new ChromaAnimationFrame2D();
+      frame.Colors = new Array(maxRow);
+      for (var i = 0; i < maxRow; ++i) {
+        frame.Colors[i] = new Array(maxColumn);
+        for (var j = 0; j < maxColumn; ++j) {
+          frame.Colors[i][j] = sourceFrame.Colors[i][j];
+        }
+      }
+      frame.Duration = sourceFrame.Duration;
+      targetFrames.push(frame);
+    }
+  },
   duplicateFirstFrame: function(animationName, frameCount) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -3457,6 +3490,37 @@ var ChromaAnimation = {
           blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
           color = red | (green << 8) | (blue << 16);
           row[j] = color;
+        }
+      }
+    }
+  },
+  multiplyTargetColorLerpAllFrames: function(animationName, color1, color2) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+      return;
+    }
+    var frames = animation.Frames;
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    //console.log(animation.Frames);
+    for (var frameId = 0; frameId < frames.length; ++frameId) {
+      var frame = frames[frameId];
+      //console.log(frame);
+      var colors = frame.Colors;
+      for (var i = 0; i < maxRow; ++i) {
+        var row = colors[i];
+        for (var j = 0; j < maxColumn; ++j) {
+          var color = row[j];
+          //console.log('color', color);
+          var red = (color & 0xFF) / 255.0;
+          var green = ((color & 0xFF00) >> 8) / 255.0;
+          var blue = ((color & 0xFF0000) >> 16) / 255.0;
+          var t = (red+green+blue) / 3.0;
+          row[j] = ChromaAnimation.lerpColor(color1, color2, t);
         }
       }
     }
