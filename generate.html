@@ -74,6 +74,7 @@ Style: <select id="selectStyle">
   <option>Clouds</option>
   <option>Particle Systems</option>
   <option>Lines</option>
+  <option>Explosion</option>
   <option>Shapes</option>
 </select><br/><br/>
 
@@ -112,6 +113,7 @@ Background: <input id="inputBackground" type="checkbox" checked style="width: 50
 var canvasTimers = [];
 var animations = [];
 var animationsWithLines = [];
+var animationsWithExplosion = [];
 var animationsWithClouds = [];
 var animationsWithParticles = [];
 var animationsWithShapes = [];
@@ -141,11 +143,11 @@ animations.push('Dragon3_Keyboard.chroma');
 animations.push('Claws1_Keyboard.chroma');
 animationsWithParticles.push('Energy1_Keyboard.chroma');
 animationsWithLines.push('Fireball1_Keyboard.chroma');
-animationsWithLines.push('Fork1_Keyboard.chroma');
-animationsWithLines.push('Fork2_Keyboard.chroma');
-animationsWithLines.push('Fork3_Keyboard.chroma');
-animationsWithLines.push('Fork4_Keyboard.chroma');
-animationsWithLines.push('Fork5_Keyboard.chroma');
+animationsWithExplosion.push('Fork1_Keyboard.chroma');
+animationsWithExplosion.push('Fork2_Keyboard.chroma');
+animationsWithExplosion.push('Fork3_Keyboard.chroma');
+animationsWithExplosion.push('Fork4_Keyboard.chroma');
+animationsWithExplosion.push('Fork5_Keyboard.chroma');
 animations.push('FreeFall1_Keyboard.chroma');
 animations.push('FreeFall2_Keyboard.chroma');
 animations.push('Glider1_Keyboard.chroma');
@@ -157,9 +159,9 @@ animations.push('Lightning2_Keyboard.chroma');
 animations.push('Lightning3_Keyboard.chroma');
 animations.push('CircleExpanding_Keyboard.chroma');
 animations.push('Hatchet_Keyboard.chroma');
-animationsWithLines.push('Missile1_Keyboard.chroma');
-animationsWithLines.push('Missile2_Keyboard.chroma');
-animationsWithLines.push('Missile3_Keyboard.chroma');
+animationsWithExplosion.push('Missile1_Keyboard.chroma');
+animationsWithExplosion.push('Missile2_Keyboard.chroma');
+animationsWithExplosion.push('Missile3_Keyboard.chroma');
 animations.push('MovementUpLeft_Keyboard.chroma');
 animations.push('MovementUpRight_Keyboard.chroma');
 animationsWithParticles.push('Particle1_Keyboard.chroma');
@@ -328,6 +330,8 @@ getAnimation = function() {
     animationGroup = animationsWithParticles;
   } else if (selectStyle.value == "Lines") {
     animationGroup = animationsWithLines;
+  } else if (selectStyle.value == "Explosion") {
+    animationGroup = animationsWithExplosion;
   } else if (selectStyle.value == "Shapes") {
     animationGroup = animationsWithShapes;
   }

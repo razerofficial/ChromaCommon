@@ -1240,6 +1240,51 @@ var ChromaAnimation = {
       }
     }
   },
+  copyKeyColorAllFramesOffset: function(sourceAnimationName, targetAnimationName, key, offset) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+      sourceAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+      return;
+    }
+    if (targetAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+      targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    //console.log(animation.Frames);
+    for (var frameId = sourceFrames.length-1; frameId >= 0; --frameId) {
+      var sourceFrame = sourceFrames[frameId];
+      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var sourceColors = sourceFrame.Colors;
+      var targetColors = targetFrame.Colors;
+      for (var i = 0; i < maxRow; ++i) {
+        var sourceRow = sourceColors[i];
+        var targetRow = targetColors[i];
+        for (var j = 0; j < maxColumn; ++j) {
+          if (getHighByte(key) == i &&
+            getLowByte(key) == j) {
+            targetRow[j] = sourceRow[j];
+          }
+        }
+      }
+    }
+  },
   copyKeysColorAllFrames: function(sourceAnimationName, targetAnimationName, keys) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
