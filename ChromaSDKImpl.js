@@ -1268,7 +1268,7 @@ var ChromaAnimation = {
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = sourceFrames.length-1; frameId >= 0; --frameId) {
+    for (var frameId = 0; frameId < sourceFrames.length && (frameId+offset) < targetFrames.length; ++frameId) {
       var sourceFrame = sourceFrames[frameId];
       var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
