@@ -2781,21 +2781,36 @@ var ChromaAnimation = {
     }
     var sourceFrames = sourceAnimation.Frames;
     var targetFrames = targetAnimation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     var frameCount = sourceFrames.length;
-    for (var frameId = 0; frameId < frameCount; ++frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var frame = new ChromaAnimationFrame2D();
-      frame.Colors = new Array(maxRow);
-      for (var i = 0; i < maxRow; ++i) {
-        frame.Colors[i] = new Array(maxColumn);
-        for (var j = 0; j < maxColumn; ++j) {
-          frame.Colors[i][j] = sourceFrame.Colors[i][j];
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var sourceFrame = sourceFrames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < maxLeds; ++i) {
+          frame.Colors[i] = sourceFrame.Colors[i];
         }
+        frame.Duration = sourceFrame.Duration;
+        targetFrames.push(frame);
       }
-      frame.Duration = sourceFrame.Duration;
-      targetFrames.push(frame);
+      sourceAnimation.Frames = frames;
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var sourceFrame = sourceFrames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < maxRow; ++i) {
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < maxColumn; ++j) {
+            frame.Colors[i][j] = sourceFrame.Colors[i][j];
+          }
+        }
+        frame.Duration = sourceFrame.Duration;
+        targetFrames.push(frame);
+      }
     }
   },
   duplicateFirstFrame: function(animationName, frameCount) {
@@ -2888,37 +2903,64 @@ var ChromaAnimation = {
       return;
     }
     var frames = [];
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    var frameCount = animation.Frames.length;
-    for (var frameId = 0; frameId < frameCount; ++frameId) {
-      var copyFrame = animation.Frames[frameId];
-      var frame = new ChromaAnimationFrame2D();
-      frame.Colors = new Array(maxRow);
-      for (var i = 0; i < maxRow; ++i) {
-        frame.Colors[i] = new Array(maxColumn);
-        for (var j = 0; j < maxColumn; ++j) {
-          frame.Colors[i][j] = copyFrame.Colors[i][j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      //console.log(animation.Frames);
+      var frameCount = animation.Frames.length;
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < maxLeds; ++i) {
+          frame.Colors[i] = copyFrame.Colors[i];
         }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
       }
-      frame.Duration = copyFrame.Duration;
-      frames.push(frame);
-    }
-    for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
-      var copyFrame = animation.Frames[frameId];
-      var frame = new ChromaAnimationFrame2D();
-      frame.Colors = new Array(maxRow);
-      for (var i = 0; i < maxRow; ++i) {
-        frame.Colors[i] = new Array(maxColumn);
-        for (var j = 0; j < maxColumn; ++j) {
-          frame.Colors[i][j] = copyFrame.Colors[i][j];
+      for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < maxLeds; ++i) {
+          frame.Colors[i] = copyFrame.Colors[i];
         }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
       }
-      frame.Duration = copyFrame.Duration;
-      frames.push(frame);
+      animation.Frames = frames;
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      var frameCount = animation.Frames.length;
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < maxRow; ++i) {
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < maxColumn; ++j) {
+            frame.Colors[i][j] = copyFrame.Colors[i][j];
+          }
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
+      }
+      for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < maxRow; ++i) {
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < maxColumn; ++j) {
+            frame.Colors[i][j] = copyFrame.Colors[i][j];
+          }
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
+      }
+      animation.Frames = frames;
     }
-    animation.Frames = frames;
   },
   copyAnimation: function(animationName, newAnimationName) {
     var animation = this.LoadedAnimations[animationName];
