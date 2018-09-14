@@ -92,7 +92,7 @@ ChromaSDK.prototype = {
 
         initialized = false;
 
-        if (uri == undefined) {
+        if (this.uri == undefined) {
           return;
         }
 
@@ -779,6 +779,10 @@ var ChromaAnimation = {
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
+        if (xhr.status != 200) {
+          console.error('Animation is missing!', animationName);
+          return;
+        }
         //console.log('Animation Name:', animationName);
 
         var arrayBuffer = xhr.response;
