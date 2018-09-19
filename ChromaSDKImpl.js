@@ -3811,6 +3811,19 @@ var ChromaAnimation = {
       }
     }
   },
+  multiplyColorLerpAllFrames: function(animationName, color1, color2) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var frames = animation.Frames;
+    var frameCount = frames.length;
+    for (var frameId = 0; frameId < frameCount; ++frameId) {
+      var t = (frameId+1) / frameCount;
+      var color = this.lerpColor(color1, color2, t);
+      this.multiplyIntensityColor(animationName, frameId, color);
+    }
+  },
   multiplyTargetColorLerpAllFrames: function(animationName, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
