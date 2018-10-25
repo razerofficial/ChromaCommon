@@ -54,6 +54,15 @@ td {
 
 <br/><br/>
 
+<button id="buttonUninit">Uninit</button><br/></br>
+<script>
+if (chromaSDK != undefined) {
+  ChromaAnimation.clearAll();
+  chromaSDK.uninit();
+  initialized = false;
+}
+</script>
+
 <div id="rootAnimations"/>
 
 <script>
