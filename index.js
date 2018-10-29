@@ -153,13 +153,18 @@ loadCanvases = function() {
 }
 onPageLoad = function () {
   //handle header linking to footer
-  window.frames[0].document.getElementById('linkVideos').onclick = function() {
-    if (!window.location.href.endsWith('#Videos')) {
-      window.location.href = window.location.href + '#Videos';
-    } else {
-      window.location.reload();
+  if (window.frames.length > 0) {
+    var linkVideos = window.frames[0].document.getElementById('linkVideos');
+    if (linkVideos != undefined) {
+      linkVideos.onclick = function() {
+        if (!window.location.href.endsWith('#Videos')) {
+          window.location.href = window.location.href + '#Videos';
+        } else {
+          window.location.reload();
+        }
+      };
     }
-  };
+  }
   loadCanvases();
   handleTabVisibility();
   chromaSDK = new ChromaSDK();
