@@ -41,7 +41,7 @@ Vue.component('inline-chroma-set', {
     <tr>
       <td>{{ header }}</td><td>{{ priority }}</td><td>{{ devices }}</td><td>{{ description }}</td><td class="tdEmpty">{{ bonus }}</td>
     </tr>
-    <tr><td class="tdEmpty"></td><td colspan="4"><img :src="image"/></td></tr>
+    <tr v-show="image != undefined && image != ''"><td class="tdEmpty"></td><td colspan="4"><img :src="image"/></td></tr>
     <tr><td align="center"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
     </table>
     `});
