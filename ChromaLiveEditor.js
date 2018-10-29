@@ -4,6 +4,28 @@ var vue = undefined;
 var editCanvas = undefined;
 var editButton = undefined;
 
+Vue.component('inline-chroma-set', {
+  props: [ 'index', 'header', 'video' ],
+  template: `
+  <table class="tableInline">
+  <tr>
+    <td>{{ header }}</td><td colspan="3" class="tdEmpty"></td>
+  </tr>
+  <tr><td class="tdEmpty"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
+  <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
+  <tr><td align="empty"><button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button></td><td colspan="4"><canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas></td></tr>
+  <tr><td align="empty">
+    <button class="buttonHeadset" :id="'showEffect'+index+'Headset'">1</button>
+     <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
+     <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
+   </td><td colspan="4">
+     <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
+     <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
+     <canvas class="canvasMouse" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
+   </td></tr>
+  </table>
+  `});
+
 function getRGBValuesFromString(color) {
   var newColor = "";
   for (var i = 0; i < color.length; ++i) {

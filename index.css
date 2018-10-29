@@ -1,0 +1,79 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+button {
+  font-size: 1.5em;
+  padding: 0.5em;
+  background-color: 888888;
+  color: 00DD00;
+}
+a {
+  color: white;
+}
+div {
+  font-size: 1.2em;
+}
+.divSection {
+  border: 5px solid white;
+  font-size: 1.5em;
+  background-color: #222222;
+  color: white;
+}
+pre {
+  font-size: 1.5em;
+}
+td {
+  font-size: 1.5em;
+}
+.tableBlock {
+}
+.tableBlock td {
+  border: 2px solid white;
+  min-width: 50px;
+  max-width: 700px;
+}
+.tableInline {
+  display: inline-table;
+}
+.tableInline td {
+  border: 1px solid white;
+  min-width: 50px;
+}
+.tdEmpty {
+  background-color: 222222;
+}
+.imgThumbnail {
+  width: 600px;
+  display: inline-table;
+}
+.canvasKeyboard {
+}
+.buttonChroma {
+  background-color: #AAAAAA;
+  color: black;
+}
+.buttonChroma2 {
+  background-color: #444444;
+  color: 00DD00;
+}
+.buttonChromaLink {
+  display: none;
+}
+.buttonHeadset {
+  display: none;
+}
+.buttonMouse {
+  display: none;
+}
+.buttonMousepad {
+  display: none;
+}
+.editPanel {
+  font-size: 1em;
+  position: absolute;
+  word-wrap: break-word;
+  color: white;
+  background-color: #444444;
+}
