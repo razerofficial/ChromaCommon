@@ -26,6 +26,25 @@ Vue.component('inline-chroma-set', {
   </table>
   `});
 
+  Vue.component('block-chroma-keyboard', {
+    props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus' ],
+    template: `
+    <table class="tableBlock">
+    <tr bgcolor="#444444">
+    <td><b>Effect</b></td>
+    <td><b>Priority</b></td>
+    <td><b>Devices</b></td>
+    <td><b>Description</b></td>
+    <td><b>Bonus (P2+)</b></td>
+    </tr>
+
+    <tr>
+      <td>{{ header }}</td><td>{{ priority }}</td><td>{{ devices }}</td><td>{{ description }}</td><td class="tdEmpty">{{ bonus }}</td>
+    </tr>
+    <tr><td align="center"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    </table>
+    `});
+
 function getRGBValuesFromString(color) {
   var newColor = "";
   for (var i = 0; i < color.length; ++i) {
