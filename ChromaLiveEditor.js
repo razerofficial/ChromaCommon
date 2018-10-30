@@ -26,6 +26,12 @@ Vue.component('inline-chroma-set', {
   </table>
   `});
 
+  Vue.component('tr-chroma-keyboard', {
+    props: [ 'index' ],
+    template: `
+    <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    `});
+
   Vue.component('block-chroma-keyboard', {
     props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus', 'image', 'video' ],
     template: `
@@ -656,7 +662,7 @@ setupLiveEditOnClick = function(canvas) {
         vue._data.editText != editText) {
         panel.style.display = "";
         var top = document.documentElement.scrollTop || document.body.scrollTop;
-        var left = document.documentElement.scrollLeft || document.body.scrollLeft + editButton.getBoundingClientRect().x;
+        var left = (document.documentElement.scrollLeft || document.body.scrollLeft) + editButton.getBoundingClientRect().x;
         panel.style.left = left + 715;
         panel.style.top = top + editButton.getBoundingClientRect().y;
         panel.style.width = 1500;
