@@ -344,7 +344,9 @@ vue = new Vue({
       for (var i = 0; i < lines.length; ++i) {
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.getRGB(', 0);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.makeBlankFramesRGB(', 3);
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.multiplyIntensityRGB(', 2);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.multiplyIntensityAllFramesRGB(', 1);
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsRGB(', 3);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
@@ -634,7 +636,9 @@ displayEditComponents = function() {
 
     parseEditColor(line, 'ChromaAnimation.getRGB(', 0);
     parseEditColor(line, 'ChromaAnimation.makeBlankFramesRGB(', 3);
+    parseEditColor(line, 'ChromaAnimation.multiplyIntensityRGB(', 2);
     parseEditColor(line, 'ChromaAnimation.multiplyIntensityAllFramesRGB(', 1);
+    parseEditColor(line, 'ChromaAnimation.fillThresholdColorsRGB(', 3);
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
