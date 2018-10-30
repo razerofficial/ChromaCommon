@@ -647,33 +647,36 @@ displayEditComponents = function() {
     parseEditThresholdF(line, 'ChromaAnimation.multiplyIntensityAllFrames(', 1);
   }
 }
+openLiveEditor = function(canvas, buttonName) {
+  editButton = document.getElementById(buttonName);
+  if (editButton == undefined) {
+    console.error(buttonName, 'could not be found!');
+  }
+  editCanvas = canvas;
+  var panel = document.getElementById('editPanel');
+  var editText = editButton.onclick.toString();
+  if (panel.style.display == "none" ||
+    vue._data.editText != editText) {
+    panel.style.display = "";
+    var top = document.documentElement.scrollTop || document.body.scrollTop;
+    var left = (document.documentElement.scrollLeft || document.body.scrollLeft) + editButton.getBoundingClientRect().x;
+    left += 715;
+    top += editButton.getBoundingClientRect().y - 100;
+    var style = "top: "+Math.floor(top)+"px; left: "+Math.floor(left)+"px; width: 1500px; height: 910px";
+    panel.style = style;
+    vue._data.editText = editText;
+
+    displayEditComponents();
+
+  } else {
+    panel.style.display = "none";
+  }
+}
 setupLiveEditOnClick = function(canvas) {
   canvas.addEventListener('mouseover', function() {
     var buttonName = 's'+this.id.substring('canvasKeyboardS'.length);
     this.onclick = function() {
-      editButton = document.getElementById(buttonName);
-      if (editButton == undefined) {
-        console.error(buttonName, 'could not be found!');
-      }
-      editCanvas = this;
-      var panel = document.getElementById('editPanel');
-      var editText = editButton.onclick.toString();
-      if (panel.style.display == "none" ||
-        vue._data.editText != editText) {
-        panel.style.display = "";
-        var top = document.documentElement.scrollTop || document.body.scrollTop;
-        var left = (document.documentElement.scrollLeft || document.body.scrollLeft) + editButton.getBoundingClientRect().x;
-        panel.style.left = left + 715;
-        panel.style.top = top + editButton.getBoundingClientRect().y;
-        panel.style.width = 1500;
-        panel.style.height = 910;
-        vue._data.editText = editText;
-
-        displayEditComponents();
-
-      } else {
-        panel.style.display = "none";
-      }
+      openLiveEditor(this, buttonName);
     }
   }, false);
 }

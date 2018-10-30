@@ -75,38 +75,7 @@ loadCanvases = function() {
       ctx.font = "30px Arial";
       ctx.fillStyle ='rgb(127, 127, 127)';
       ctx.fillText("Loading...",225,100);
-      canvas.addEventListener('mouseover', function() {
-        var buttonName = 's'+this.id.substring('canvasKeyboardS'.length);
-        this.onclick = function() {
-          editButton = document.getElementById(buttonName);
-          if (editButton == undefined) {
-            console.error(buttonName, 'could not be found!');
-          }
-          editCanvas = this;
-          var panel = document.getElementById('editPanel');
-          var editText = editButton.onclick.toString();
-          if (panel.style.display == "none" ||
-            vue._data.editText != editText) {
-            panel.style.display = "";
-            var top = document.documentElement.scrollTop || document.body.scrollTop;
-            var left = document.documentElement.scrollLeft || document.body.scrollLeft + editButton.getBoundingClientRect().x;
-            //if (left < (document.body.offsetWidth - 1600)) {
-              panel.style.left = left + 715;
-            //} else {
-              //panel.style.left = left - 1520;
-            //}
-            panel.style.top = top + editButton.getBoundingClientRect().y - 443;
-            panel.style.width = 1500;
-            panel.style.height = 910;
-            vue._data.editText = editText;
-
-            displayEditComponents();
-
-          } else {
-            panel.style.display = "none";
-          }
-        }
-      }, false);
+      setupLiveEditOnClick(canvas);
     }
   }
 
