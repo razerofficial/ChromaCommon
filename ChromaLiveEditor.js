@@ -9,7 +9,7 @@ Vue.component('inline-chroma-set', {
   template: `
   <table class="tableInline">
   <tr>
-    <td>{{ header }}</td><td colspan="3" class="tdEmpty"></td>
+    <td colspan="4">{{ header }}</td>
   </tr>
   <tr v-show="video != undefined && video != ''"><td class="tdEmpty"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
   <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
@@ -27,7 +27,7 @@ Vue.component('inline-chroma-set', {
   `});
 
   Vue.component('block-chroma-keyboard', {
-    props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus', 'image' ],
+    props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus', 'image', 'video' ],
     template: `
     <table class="tableBlock">
     <tr bgcolor="#444444">
@@ -41,8 +41,9 @@ Vue.component('inline-chroma-set', {
     <tr>
       <td>{{ header }}</td><td>{{ priority }}</td><td>{{ devices }}</td><td>{{ description }}</td><td class="tdEmpty">{{ bonus }}</td>
     </tr>
+    <tr v-show="video != undefined && video != ''"><td class="tdEmpty"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
     <tr v-show="image != undefined && image != ''"><td class="tdEmpty"></td><td colspan="4"><img :src="image"/></td></tr>
-    <tr><td align="center"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    <tr v-show="index != undefined && index != ''"><td align="center"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
     </table>
     `});
 
