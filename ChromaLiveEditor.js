@@ -14,7 +14,7 @@ Vue.component('div-chroma-set', {
       </section>
       <section :show="image != undefined && image != ''">
         <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
-        <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
       </section>
       <section :show="video != undefined && video != ''">
         <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chroma Design</title>
+    <link rel="stylesheet" href="../ChromaCommon/index.css">
     <script src="../ChromaCommon/ChromaSDKImpl.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <!-- import CSS -->
@@ -13,40 +14,6 @@
     <script src="https://unpkg.com/element-ui/lib/umd/locale/en.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <style>
-  body {
-    background-color: black;
-    color: white;
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  }
-  .buttonChroma {
-    background-color: #AAAAAA;
-    color: black;
-  }
-  .buttonChroma2 {
-    background-color: #444444;
-    color: #00DD00;
-  }
-  .buttonChromaLink {
-    display: none;
-  }
-  .buttonHeadset {
-    display: none;
-  }
-  .buttonMouse {
-    display: none;
-  }
-  .buttonMousepad {
-    display: none;
-  }
-  .editPanel {
-    font-size: 1em;
-    position: absolute;
-    word-wrap: break-word;
-    color: white;
-    background-color: #444444;
-  }
-    </style>
   </head>
   <body onload="onPageLoad()" onunload="onPageUnload()">
     <img name="imgEmulatorChromaLink" style="display: none" src="../ChromaCommon/emulator/EmulatorChromaLink5.png"/>
@@ -70,60 +37,16 @@
         </div>
       </div>
 
-      <div-chroma-set index="1" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-      <div-chroma-set index="2" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-      <div-chroma-set index="3" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-      <div-chroma-set index="4" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-      <div-chroma-set index="5" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-      <div-chroma-set index="6" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
-    </div>
-    <script>
-    Vue.component('div-chroma-set', {
-      props: [ 'index', 'header', 'image', 'video' ],
-      template: `
-      <div class="box" style="width: 800px; background: hsl(0, 0%, 15%); display: inline-table">
-        <section :show="header != undefined && header != ''">
-          <div style="width: 725px; background: hsl(0, 0%, 25%); color: white; display: inline-table">{{ header }}</div>
-        </section>
-        <section :show="image != undefined && image != ''">
-          <div style="width: 75px; background: hsl(0, 0%, 15%); display: inline-table">&nbsp;</div>
-          <div style="width: 645px; background: hsl(0, 0%, 20%); color: white; display: inline-table"><img :src="image"/></div>
-        </section>
-        <section :show="video != undefined && video != ''">
-          <div style="width: 75px; background: hsl(0, 0%, 15%); display: inline-table">&nbsp;</div>
-          <div style="width: 645px; background: hsl(0, 0%, 20%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
-        </section>
-        <section :show="index != undefined && index != ''">
-          <div style="width: 75px; background: hsl(0, 0%, 20%); display: inline-table">
-            <center>
-              <button class="buttonChroma" style="font-size: 1.5em; padding: 5px; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
-            </center>
-          </div>
-          <div style="width: 645px; background: hsl(0, 0%, 0%); color: white; display: inline-table">
-            <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
-          </div>
-        </section>
-        <section :show="index != undefined && index != ''">
-          <div style="width: 75px; background: hsl(0, 0%, 20%); display: inline-table">
-          </div>
-          <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
-          <canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
-        </section>
-        <section :show="index != undefined && index != ''">
-          <div style="width: 75px; background: hsl(0, 0%, 20%); display: inline-table">
-            <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
-            <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
-            <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
-          </div>
-          <div style="width: 645px; background: hsl(0, 0%, 0%); color: white; display: inline-table">
-            <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
-            <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
-            <canvas class="canvasMouse" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
-          </div>
-        </section>
+      <div style="padding: 10px; background: hsl(0, 0%, 25%)">Section 1 - Other Effect Ideas<br/><br/>
+        <div-chroma-set index="1" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="2" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="3" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="4" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="5" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="6" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed tincidunt ex. Vivamus dignissim tristique neque a pharetra. Sed ipsum felis, placerat vel quam in, sodales sodales eros. Duis vel lectus aliquam, rutrum augue ac, sodales orci. Vivamus posuere vel ex sit amet lobortis. Proin volutpat augue sed augue fermentum lacinia. Sed interdum laoreet metus, eu porttitor nibh. Aenean ut sem id est ullamcorper finibus in in eros. Donec a purus odio. Praesent scelerisque, turpis sed ornare vulputate, odio elit posuere dui, sodales ullamcorper nibh urna sollicitudin leo." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
       </div>
-      `});
-    </script>
+      
+    </div>
   </body>
   <script src="../ChromaCommon/ChromaLiveEditor.js"></script>
   <script src="../ChromaCommon/index.js"></script>
