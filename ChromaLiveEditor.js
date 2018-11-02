@@ -10,7 +10,7 @@ Vue.component('div-chroma-set', {
   <div style="padding-bottom: 50px; display: inline-table">
     <div class="box" style="width: 800px; background: hsl(0, 0%, 10%); display: inline-table">
       <section :show="header != undefined && header != ''">
-        <div style="width: 100%; min-height: 100px; background: hsl(0, 0%, 20%); color: white; display: inline-table">{{ header }}</div>
+        <div style="width: 100%; min-height: 125px; background: hsl(0, 0%, 20%); color: white; display: inline-table">{{ header }}</div>
       </section>
       <section :show="image != undefined && image != ''">
         <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
