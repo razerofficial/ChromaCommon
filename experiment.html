@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chroma Design</title>
+    <link rel="stylesheet" href="../ChromaCommon/index.css">
+    <script src="../ChromaCommon/ChromaSDKImpl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/umd/locale/en.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body onload="onPageLoad()" onunload="onPageUnload()">
+    <img name="imgEmulatorChromaLink" style="display: none" src="../ChromaCommon/emulator/EmulatorChromaLink5.png"/>
+    <img name="imgEmulatorHeadset" style="display: none" src="../ChromaCommon/emulator/EmulatorHeadset.png"/>
+    <img name="imgEmulatorKeyboard" style="display: none" src="../ChromaCommon/emulator/EmulatorKeyboard.png"/>
+    <img name="imgEmulatorKeypad" style="display: none" src="../ChromaCommon/emulator/EmulatorKeypad.png"/>
+    <img name="imgEmulatorMouse" style="display: none" src="../ChromaCommon/emulator/EmulatorMouse.png"/>
+    <img name="imgEmulatorMousepad" style="display: none" src="../ChromaCommon/emulator/EmulatorMousepad.png"/>
+    <div id="root" style="background: black">
+
+      <div id="editPanel" class="editPanel" style="display: none">
+        <div id="editComponents">
+          <el-select v-for="layer in layers" @change="onLayerChange" v-model="layer.value" placeholder="Select">
+            <el-option v-for="layerOption in layerOptions" :key="layerOption.value" :label="layerOption.label" :value="layerOption.value"></el-option>
+          </el-select><br/>
+          <el-slider v-for="threshold in thresholds" @change="onThresholdChange" v-model="threshold.threshold" :min="0" :max="threshold.max" :step="threshold.step" style="width: 100px; display: inline-table; padding: 10px"></el-slider><br/>
+          <el-color-picker v-for="color in colors" @active-change="onColorChange" v-model="color.color" :predefine="predefineColors"></el-color-picker>
+        </div>
+        <div>
+          <el-input type="textarea" @change="onTextChange" v-model="editText" :rows="100"></el-input>
+        </div>
+      </div>
+
+      <div style="padding: 10px; background: hsl(0, 0%, 25%)">Section 1 - Other Effect Ideas<br/><br/>
+        <div-chroma-set index="1" header="Lorem ipsum dolor sit amet" image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="2" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="3" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="4" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="5" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+        <div-chroma-set index="6" header="Lorem ipsum dolor sit amet, consectetur adipiscing elit." image="images/image_1.png" video="video/video_1.mp4"></div-chroma-set>
+      </div>
+
+    </div>
+  </body>
+  <script src="../ChromaCommon/ChromaLiveEditor.js"></script>
+  <script src="../ChromaCommon/index.js"></script>
+  <script>
+  showEffect1.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect1);
+
+    var baseLayer = '../ChromaCommon/animations/Clouds1_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+      var color1 = ChromaAnimation.getRGB(216,146,22);
+      var color2 = ChromaAnimation.getRGB(199,18,90);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect1");
+      showEffect1ChromaLink.onclick();
+    });
+  };
+  showEffect1ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(216,146,22);
+      var color2 = ChromaAnimation.getRGB(199,18,90);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect1");
+      showEffect1Headset.onclick();
+    });
+  }
+  showEffect1Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(216,146,22);
+      var color2 = ChromaAnimation.getRGB(199,18,90);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect1");
+      showEffect1Mousepad.onclick();
+    });
+  }
+  showEffect1Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(216,146,22);
+      var color2 = ChromaAnimation.getRGB(199,18,90);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect1");
+      showEffect1Mouse.onclick();
+    });
+  }
+  showEffect1Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(0,146,22);
+      var color2 = ChromaAnimation.getRGB(199,18,90);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect1");
+    });
+  }
+  showEffect2.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect2);
+
+    var baseLayer = '../ChromaCommon/animations/Clouds2_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var color1 = ChromaAnimation.getRGB(255,255,0);
+      var color2 = ChromaAnimation.getRGB(255,0,0);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect2");
+      showEffect2ChromaLink.onclick();
+    });
+  };
+  showEffect2ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(255,255,0);
+      var color2 = ChromaAnimation.getRGB(255,0,0);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect2");
+      showEffect2Headset.onclick();
+    });
+  }
+  showEffect2Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(255,255,0);
+      var color2 = ChromaAnimation.getRGB(255,0,0);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect2");
+      showEffect2Mousepad.onclick();
+    });
+  }
+  showEffect2Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(255,255,0);
+      var color2 = ChromaAnimation.getRGB(255,0,0);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect2");
+      showEffect2Mouse.onclick();
+    });
+  }
+  showEffect2Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(255,255,0);
+      var color2 = ChromaAnimation.getRGB(255,0,0);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect2");
+    });
+  }
+  showEffect3.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect3);
+
+    var baseLayer = '../ChromaCommon/animations/Tongue1_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var color1 = ChromaAnimation.getRGB(221, 18, 19);
+      var color2 = ChromaAnimation.getRGB(250, 173, 53);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      //ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect3");
+      showEffect3ChromaLink.onclick();
+    });
+  };
+  showEffect3ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(221, 18, 19);
+      var color2 = ChromaAnimation.getRGB(250, 173, 53);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect3");
+      showEffect3Headset.onclick();
+    });
+  }
+  showEffect3Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(221, 18, 19);
+      var color2 = ChromaAnimation.getRGB(250, 173, 53);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect3");
+      showEffect3Mousepad.onclick();
+    });
+  }
+  showEffect3Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(221, 18, 19);
+      var color2 = ChromaAnimation.getRGB(250, 173, 53);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect3");
+      showEffect3Mouse.onclick();
+    });
+  }
+  showEffect3Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(221, 18, 19);
+      var color2 = ChromaAnimation.getRGB(250, 173, 53);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect3");
+    });
+  }
+  showEffect4.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect4);
+
+    var baseLayer = '../ChromaCommon/animations/Spiral_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var color1 = ChromaAnimation.getRGB(0, 255, 255);
+      var color2 = ChromaAnimation.getRGB(0, 0, 255);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect4");
+      showEffect4ChromaLink.onclick();
+    });
+  };
+  showEffect4ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(0, 255, 255);
+      var color2 = ChromaAnimation.getRGB(0, 0, 255);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect4");
+      showEffect4Headset.onclick();
+    });
+  }
+  showEffect4Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(0, 255, 255);
+      var color2 = ChromaAnimation.getRGB(0, 0, 255);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect4");
+      showEffect4Mousepad.onclick();
+    });
+  }
+  showEffect4Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(0, 255, 255);
+      var color2 = ChromaAnimation.getRGB(0, 0, 255);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect4");
+      showEffect4Mouse.onclick();
+    });
+  }
+  showEffect4Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(0, 255, 255);
+      var color2 = ChromaAnimation.getRGB(0, 0, 255);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect4");
+    });
+  }
+  showEffect5.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect5);
+
+    var baseLayer = '../ChromaCommon/animations/ReactiveSpace_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var color1 = ChromaAnimation.getRGB(32, 64, 32);
+      var color2 = ChromaAnimation.getRGB(255, 99, 75);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      //ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect5");
+      showEffect5ChromaLink.onclick();
+    });
+  };
+  showEffect5ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(32, 64, 32);
+      var color2 = ChromaAnimation.getRGB(255, 99, 75);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect5");
+      showEffect5Headset.onclick();
+    });
+  }
+  showEffect5Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(32, 64, 32);
+      var color2 = ChromaAnimation.getRGB(255, 99, 75);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect5");
+      showEffect5Mousepad.onclick();
+    });
+  }
+  showEffect5Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(32, 64, 32);
+      var color2 = ChromaAnimation.getRGB(255, 99, 75);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect5");
+      showEffect5Mouse.onclick();
+    });
+  }
+  showEffect5Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(32, 64, 32);
+      var color2 = ChromaAnimation.getRGB(255, 99, 75);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect5");
+    });
+  }
+  showEffect6.onclick = function() {
+    exampleReset();
+    handleButtonClick(showEffect6);
+
+    var baseLayer = '../ChromaCommon/animations/BarrelFlash1_Keyboard.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+      var color1 = ChromaAnimation.getRGB(88, 58, 107);
+      var color2 = ChromaAnimation.getRGB(255, 230, 191);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.setChromaCustomFlag(baseLayer, true);
+      ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);
+      //ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+      displayAndPlayAnimationKeyboard(baseLayer, "ShowEffect6");
+      showEffect6ChromaLink.onclick();
+    });
+  };
+  showEffect6ChromaLink.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_ChromaLink.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(88, 58, 107);
+      var color2 = ChromaAnimation.getRGB(255, 230, 191);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationChromaLink(baseLayer, "ShowEffect6");
+      showEffect6Headset.onclick();
+    });
+  }
+  showEffect6Headset.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Headset.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(88, 58, 107);
+      var color2 = ChromaAnimation.getRGB(255, 230, 191);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationHeadset(baseLayer, "ShowEffect6");
+      showEffect6Mousepad.onclick();
+    });
+  }
+  showEffect6Mousepad.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mousepad.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(88, 58, 107);
+      var color2 = ChromaAnimation.getRGB(255, 230, 191);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMousepad(baseLayer, "ShowEffect6");
+      showEffect6Mouse.onclick();
+    });
+  }
+  showEffect6Mouse.onclick = function() {
+    exampleReset();
+    var baseLayer = '../ChromaCommon/animations/Blank_Mouse.chroma';
+    ChromaAnimation.closeAnimation(baseLayer);
+    ChromaAnimation.openAnimation(baseLayer, function(baseAnimation) {
+
+      var frameCount = 50;
+      ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, 255, 255, 255);
+
+      ChromaAnimation.fadeStartFrames(baseLayer, frameCount/2);
+      ChromaAnimation.fadeEndFrames(baseLayer, frameCount/2);
+
+      var color1 = ChromaAnimation.getRGB(88, 58, 107);
+      var color2 = ChromaAnimation.getRGB(255, 230, 191);
+      ChromaAnimation.multiplyTargetColorLerpAllFrames(baseLayer, color1, color2);
+
+      ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);
+
+      displayAndPlayAnimationMouse(baseLayer, "ShowEffect6");
+    });
+  }
+  </script>
+</html>

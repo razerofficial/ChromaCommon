@@ -4,12 +4,63 @@ var vue = undefined;
 var editCanvas = undefined;
 var editButton = undefined;
 
+Vue.component('div-chroma-set', {
+  props: [ 'index', 'header', 'image', 'video' ],
+  template: `
+  <div style="padding-bottom: 50px; display: inline-table">
+    <div class="box" style="width: 800px; background: hsl(0, 0%, 10%); display: inline-table">
+      <section :show="header != undefined && header != ''">
+        <div style="width: 100%; min-height: 125px; background: hsl(0, 0%, 20%); color: white; display: inline-table">{{ header }}</div>
+      </section>
+      <section :show="image != undefined && image != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
+      </section>
+      <section :show="video != undefined && video != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+          <center>
+            <button class="buttonChroma" style="font-size: 1.5em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
+          </center>
+        </div>
+        <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+          <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
+        </div>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+        </div>
+        <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
+        <canvas class="canvasChromaLink" style="padding-left: 25px" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+          <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
+          <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
+          <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
+        </div>
+        <div style="width: 670px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+          <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
+          <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
+          <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+  `});
 Vue.component('inline-chroma-set', {
   props: [ 'index', 'alt-index', 'header', 'video', 'priority', 'devices', 'description' ],
   template: `
   <table class="tableInline">
   <tr>
+<<<<<<< HEAD
     <td>{{ header }}</td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
+=======
+    <td colspan="4">{{ header }}</td>
+>>>>>>> 37b72b1f131118e239587fbed09263fc1604f347
   </tr>
   <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
   <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
@@ -26,11 +77,17 @@ Vue.component('inline-chroma-set', {
   </table>
   `});
 
-  Vue.component('block-chroma-keyboard', {
-    props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus', 'image' ],
+  Vue.component('tr-chroma-keyboard', {
+    props: [ 'index' ],
     template: `
-    <table class="tableBlock">
-    <tr bgcolor="#444444">
+    <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    `});
+
+  Vue.component('block-chroma-keyboard', {
+    props: [ 'index', 'header', 'priority', 'devices', 'description', 'bonus', 'image', 'video' ],
+    template: `
+    <table class="tableBlock" width="100%">
+    <tr bgcolor="#444444" v-show="header != undefined">
     <td><b>Effect</b></td>
     <td><b>Priority</b></td>
     <td><b>Devices</b></td>
@@ -38,11 +95,12 @@ Vue.component('inline-chroma-set', {
     <td><b>Bonus (P2+)</b></td>
     </tr>
 
-    <tr>
-      <td>{{ header }}</td><td>{{ priority }}</td><td>{{ devices }}</td><td>{{ description }}</td><td class="tdEmpty">{{ bonus }}</td>
+    <tr v-show="header != undefined">
+      <td width="250px">{{ header }}</td><td width="125px">{{ priority }}</td><td width="125px">{{ devices }}</td><td>{{ description }}</td><td class="tdEmpty">{{ bonus }}</td>
     </tr>
-    <tr v-show="image != undefined && image != ''"><td class="tdEmpty"></td><td colspan="4"><img :src="image"/></td></tr>
-    <tr><td align="center"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    <tr v-show="video != undefined && video != ''"><td class="tdEmpty" width="250px"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
+    <tr v-show="image != undefined && image != ''"><td class="tdEmpty" width="250px"></td><td colspan="4"><img :src="image"/></td></tr>
+    <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
     </table>
     `});
 
@@ -337,7 +395,9 @@ vue = new Vue({
       for (var i = 0; i < lines.length; ++i) {
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.getRGB(', 0);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.makeBlankFramesRGB(', 3);
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.multiplyIntensityRGB(', 2);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.multiplyIntensityAllFramesRGB(', 1);
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsRGB(', 3);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
@@ -627,7 +687,9 @@ displayEditComponents = function() {
 
     parseEditColor(line, 'ChromaAnimation.getRGB(', 0);
     parseEditColor(line, 'ChromaAnimation.makeBlankFramesRGB(', 3);
+    parseEditColor(line, 'ChromaAnimation.multiplyIntensityRGB(', 2);
     parseEditColor(line, 'ChromaAnimation.multiplyIntensityAllFramesRGB(', 1);
+    parseEditColor(line, 'ChromaAnimation.fillThresholdColorsRGB(', 3);
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
@@ -640,33 +702,36 @@ displayEditComponents = function() {
     parseEditThresholdF(line, 'ChromaAnimation.multiplyIntensityAllFrames(', 1);
   }
 }
+openLiveEditor = function(canvas, buttonName) {
+  editButton = document.getElementById(buttonName);
+  if (editButton == undefined) {
+    console.error(buttonName, 'could not be found!');
+  }
+  editCanvas = canvas;
+  var panel = document.getElementById('editPanel');
+  var editText = editButton.onclick.toString();
+  if (panel.style.display == "none" ||
+    vue._data.editText != editText) {
+    panel.style.display = "";
+    var top = document.documentElement.scrollTop || document.body.scrollTop;
+    var left = (document.documentElement.scrollLeft || document.body.scrollLeft) + editButton.getBoundingClientRect().x;
+    left += 715;
+    top += editButton.getBoundingClientRect().y - 100;
+    var style = "top: "+Math.floor(top)+"px; left: "+Math.floor(left)+"px; width: 1500px; height: 910px";
+    panel.style = style;
+    vue._data.editText = editText;
+
+    displayEditComponents();
+
+  } else {
+    panel.style.display = "none";
+  }
+}
 setupLiveEditOnClick = function(canvas) {
   canvas.addEventListener('mouseover', function() {
     var buttonName = 's'+this.id.substring('canvasKeyboardS'.length);
     this.onclick = function() {
-      editButton = document.getElementById(buttonName);
-      if (editButton == undefined) {
-        console.error(buttonName, 'could not be found!');
-      }
-      editCanvas = this;
-      var panel = document.getElementById('editPanel');
-      var editText = editButton.onclick.toString();
-      if (panel.style.display == "none" ||
-        vue._data.editText != editText) {
-        panel.style.display = "";
-        var top = document.documentElement.scrollTop || document.body.scrollTop;
-        var left = document.documentElement.scrollLeft || document.body.scrollLeft + editButton.getBoundingClientRect().x;
-        panel.style.left = left + 715;
-        panel.style.top = top + editButton.getBoundingClientRect().y;
-        panel.style.width = 1500;
-        panel.style.height = 910;
-        vue._data.editText = editText;
-
-        displayEditComponents();
-
-      } else {
-        panel.style.display = "none";
-      }
+      openLiveEditor(this, buttonName);
     }
   }, false);
 }

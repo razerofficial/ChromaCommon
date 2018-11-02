@@ -7,7 +7,7 @@ button {
   font-size: 1.5em;
   padding: 0.5em;
   background-color: 888888;
-  color: 00DD00;
+  color: #00DD00;
 }
 a {
   color: white;
@@ -56,7 +56,7 @@ td {
 }
 .buttonChroma2 {
   background-color: #444444;
-  color: 00DD00;
+  color: #00DD00;
 }
 .buttonChromaLink {
   display: none;
