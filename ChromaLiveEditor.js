@@ -51,31 +51,27 @@ Vue.component('div-chroma-set', {
     </div>
   </div>
   `});
-Vue.component('inline-chroma-set', {
-  props: [ 'index', 'alt-index', 'header', 'video', 'priority', 'devices', 'description' ],
-  template: `
-  <table class="tableInline">
-  <tr>
-<<<<<<< HEAD
-    <td>{{ header }}</td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
-=======
-    <td colspan="4">{{ header }}</td>
->>>>>>> 37b72b1f131118e239587fbed09263fc1604f347
-  </tr>
-  <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
-  <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
-  <tr><td align="empty"><button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button></td><td colspan="4"><canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas></td></tr>
-  <tr><td align="empty">
-    <button class="buttonHeadset" :id="'showEffect'+index+'Headset'">1</button>
-     <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
-     <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
-   </td><td colspan="4">
-     <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
-     <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
-     <canvas class="canvasMouse" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
-   </td></tr>
-  </table>
-  `});
+  Vue.component('inline-chroma-set', {
+    props: [ 'index', 'alt-index', 'header', 'video', 'priority', 'devices', 'description' ],
+    template: `
+    <table class="tableInline">
+    <tr>
+      <td>{{ header }}</td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
+    </tr>
+    <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
+    <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
+    <tr><td align="empty"><button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button></td><td colspan="4"><canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas></td></tr>
+    <tr><td align="empty">
+      <button class="buttonHeadset" :id="'showEffect'+index+'Headset'">1</button>
+       <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
+       <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
+     </td><td colspan="4">
+       <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
+       <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
+       <canvas class="canvasMouse" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
+     </td></tr>
+    </table>
+    `});
 
   Vue.component('tr-chroma-keyboard', {
     props: [ 'index' ],
