@@ -5,13 +5,13 @@ var editCanvas = undefined;
 var editButton = undefined;
 
 Vue.component('inline-chroma-set', {
-  props: [ 'index', 'header', 'video' ],
+  props: [ 'index', 'alt-index', 'header', 'video', 'priority', 'devices', 'description' ],
   template: `
   <table class="tableInline">
   <tr>
-    <td>{{ header }}</td><td colspan="3" class="tdEmpty"></td>
+    <td>{{ header }}</td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
   </tr>
-  <tr v-show="video != undefined && video != ''"><td class="tdEmpty"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
+  <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
   <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
   <tr><td align="empty"><button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button></td><td colspan="4"><canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas></td></tr>
   <tr><td align="empty">
