@@ -4,6 +4,53 @@ var vue = undefined;
 var editCanvas = undefined;
 var editButton = undefined;
 
+Vue.component('div-chroma-set', {
+  props: [ 'index', 'header', 'image', 'video' ],
+  template: `
+  <div style="padding-bottom: 50px; display: inline-table">
+    <div class="box" style="width: 800px; background: hsl(0, 0%, 10%); display: inline-table">
+      <section :show="header != undefined && header != ''">
+        <div style="width: 100%; min-height: 100px; background: hsl(0, 0%, 20%); color: white; display: inline-table">{{ header }}</div>
+      </section>
+      <section :show="image != undefined && image != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
+        <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
+      </section>
+      <section :show="video != undefined && video != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+          <center>
+            <button class="buttonChroma" style="font-size: 1.5em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
+          </center>
+        </div>
+        <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+          <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
+        </div>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+        </div>
+        <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
+        <canvas class="canvasChromaLink" style="padding-left: 25px" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
+      </section>
+      <section :show="index != undefined && index != ''">
+        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
+          <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
+          <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
+          <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
+        </div>
+        <div style="width: 670px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+          <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
+          <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
+          <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+  `});
 Vue.component('inline-chroma-set', {
   props: [ 'index', 'header', 'video' ],
   template: `
