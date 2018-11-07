@@ -60,11 +60,11 @@ Vue.component('div-chroma-set', {
     </tr>
     <tr>
     <td colspan="4" style="font-size: 0.75em">Download:
-      <a name="link" :onclick="'downloadChromaLinkAnimation('+ index +')'" href="javascript:true;">ChromaLink</a>
-      <a name="link" :onclick="'downloadHeadsetAnimation('+ index +')'" href="javascript:true;">Headset</a>
-      <a name="link" :onclick="'downloadKeyboardAnimation('+ index +')'" href="javascript:true;">Keyboard</a>
-      <a name="link" :onclick="'downloadMouseAnimation('+ index +')'" href="javascript:true;">Mouse</a>
-      <a name="link" :onclick="'downloadMousepadAnimation('+ index +')'" href="javascript:true;">Mousepad</a>
+      <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
+      <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
+      <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
+      <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
+      <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
       </small></td>
     </tr>
     <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
@@ -739,4 +739,32 @@ setupLiveEditOnClick = function(canvas) {
       openLiveEditor(this, buttonName);
     }
   }, false);
+}
+function downloadAnimation(index, deviceType) {
+  var canvasName = 'canvas'+deviceType+'ShowEffect'+index;
+  var animation = ChromaAnimation.getAnimation(canvasName)
+  if (animation != undefined) {
+    //console.log(canvasName, animation);
+    var data = animation.saveAnimation();
+    var uriContent = URL.createObjectURL(data);
+    var lnkDownload = document.getElementById('lnkDownload');
+    lnkDownload.download = 'ShowEffect'+index+'_'+deviceType+'.chroma';
+    lnkDownload.href = uriContent;
+    lnkDownload.click();
+  }
+}
+function downloadKeyboardAnimation(index) {
+  downloadAnimation(index, 'Keyboard');
+}
+function downloadChromaLinkAnimation(index) {
+  downloadAnimation(index, 'ChromaLink');
+}
+function downloadHeadsetAnimation(index) {
+  downloadAnimation(index, 'Headset');
+}
+function downloadMouseAnimation(index) {
+  downloadAnimation(index, 'Mouse');
+}
+function downloadMousepadAnimation(index) {
+  downloadAnimation(index, 'Mousepad');
 }
