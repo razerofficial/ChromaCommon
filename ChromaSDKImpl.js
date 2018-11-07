@@ -4384,6 +4384,67 @@ ChromaAnimation1D.prototype = {
 
     this.Frames = frames;
   },
+  saveAnimation: function() {
+
+    var device = this.Device;
+    var maxLeds = ChromaAnimation.getMaxLeds(device);
+    var frames = this.Frames;
+    var frameCount = frames.length;
+
+    var writeArrays = [];
+
+
+    var writeArray = new Uint32Array(1);
+    var version = 1;
+    writeArray[0] = version;
+    writeArrays.push(writeArray.buffer);
+    //console.log('version:', version);
+
+
+    var writeArray = new Uint8Array(1);
+    var deviceType = this.DeviceType;
+    writeArray[0] = deviceType;
+    writeArrays.push(writeArray.buffer);
+    //console.log('deviceType:', deviceType);
+
+
+    var writeArray = new Uint8Array(1);
+    writeArray[0] = device;
+    writeArrays.push(writeArray.buffer);
+    //console.log('device:', device);
+
+
+    var writeArray = new Uint32Array(1);
+    writeArray[0] = frameCount;
+    writeArrays.push(writeArray.buffer);
+    //console.log('frameCount:', frameCount);
+
+    for (var index = 0; index < frameCount; ++index) {
+
+      var frame = frames[index];
+
+      var writeArray = new Float32Array(1);
+      var duration = frame.Duration;
+      if (duration < 0.033) {
+        duration = 0.033;
+      }
+      writeArray[0] = duration;
+      writeArrays.push(writeArray.buffer);
+
+      //console.log('Frame', index, 'duration', duration);
+
+      var writeArray = new Uint32Array(maxLeds);
+      for (var i = 0; i < maxLeds; ++i) {
+        var color = frame.Colors[i];
+        writeArray[i] = color;
+      }
+      writeArrays.push(writeArray.buffer);
+    }
+
+    var blob = new Blob(writeArrays, {type: 'application/octet-stream'});
+
+    return blob;
+  },
   getFrameCount: function() {
     return this.Frames.length;
   },

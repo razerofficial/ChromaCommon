@@ -56,7 +56,16 @@ Vue.component('div-chroma-set', {
     template: `
     <table class="tableInline">
     <tr>
-      <td :onclick="'downloadKeyboardAnimation('+ index +')'"><u>{{ header }}</u></td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
+      <td><u>{{ header }}</u></td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
+    </tr>
+    <tr>
+    <td colspan="4" style="font-size: 0.75em">Download:
+      <div style="display: inline-table" :onclick="'downloadChromaLinkAnimation('+ index +')'"><u>ChromaLink</u></div>
+      <div style="display: inline-table" :onclick="'downloadHeadsetAnimation('+ index +')'"><u>Headset</u></div>
+      <div style="display: inline-table" :onclick="'downloadKeyboardAnimation('+ index +')'"><u>Keyboard</u></div>
+      <div style="display: inline-table" :onclick="'downloadMouseAnimation('+ index +')'"><u>Mouse</u></div>
+      <div style="display: inline-table" :onclick="'downloadMousepadAnimation('+ index +')'"><u>Mousepad</u></div>
+      </small></td>
     </tr>
     <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
     <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
