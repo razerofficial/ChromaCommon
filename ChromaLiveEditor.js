@@ -56,7 +56,7 @@ Vue.component('div-chroma-set', {
     template: `
     <table class="tableInline">
     <tr>
-      <td>{{ header }}</td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
+      <td :onclick="'downloadKeyboardAnimation('+ index +')'"><u>{{ header }}</u></td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
     </tr>
     <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
     <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
