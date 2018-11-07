@@ -4562,7 +4562,7 @@ ChromaAnimation2D.prototype = {
 
     writeSize = 1;
     var writeArray = new Uint8Array(writeSize);
-    var deviceType = EChromaSDKDeviceTypeEnum.DE_2D;
+    var deviceType = this.DeviceType;
     writeArray[0] = deviceType;
     writeIndex += writeSize;
     writeArrays.push(writeArray.buffer);
