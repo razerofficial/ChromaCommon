@@ -4360,8 +4360,8 @@ ChromaAnimation1D.prototype = {
       var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
       readIndex += readSize;
 
-      if (duration < 0.1) {
-        duration = 0.1;
+      if (duration < 0.033) {
+        duration = 0.033;
       }
 
       frame.Duration = duration;
@@ -4500,8 +4500,8 @@ ChromaAnimation2D.prototype = {
       var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
       readIndex += readSize;
 
-      if (duration < 0.1) {
-        duration = 0.1;
+      if (duration < 0.033) {
+        duration = 0.033;
       }
 
       frame.Duration = duration;
@@ -4569,8 +4569,8 @@ ChromaAnimation2D.prototype = {
 
       var writeArray = new Float32Array(1);
       var duration = frame.Duration;
-      if (duration < 0.1) {
-        duration = 0.1;
+      if (duration < 0.033) {
+        duration = 0.033;
       }
       writeArray[0] = duration;
       writeArrays.push(writeArray.buffer);
