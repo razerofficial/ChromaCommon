@@ -4535,52 +4535,31 @@ ChromaAnimation2D.prototype = {
     var frames = this.Frames;
     var frameCount = frames.length;
 
-    //calculate file size
-    var fileSize = 0;
-    fileSize += 4; //version
-    fileSize += 1; //deviceType
-    fileSize += 1; //device
-    fileSize += 4; //frameCount
-    for (var index = 0; index < frameCount; ++index) {
-      fileSize += Float32Array.BYTES_PER_ELEMENT; //duration
-      fileSize += 4 * maxRow * maxColumn; //colors
-    }
-
-
     var writeArrays = [];
 
 
-    var writeIndex = 0;
-    var writeSize = 4;
-    var writeArray = new Uint32Array(writeSize);
+    var writeArray = new Uint32Array(1);
     var version = 1;
     writeArray[0] = version;
-    writeIndex += writeSize;
     writeArrays.push(writeArray.buffer);
     //console.log('version:', version);
 
 
-    writeSize = 1;
-    var writeArray = new Uint8Array(writeSize);
+    var writeArray = new Uint8Array(1);
     var deviceType = this.DeviceType;
     writeArray[0] = deviceType;
-    writeIndex += writeSize;
     writeArrays.push(writeArray.buffer);
     //console.log('deviceType:', deviceType);
 
 
-    writeSize = 1;
-    var writeArray = new Uint8Array(writeSize);
+    var writeArray = new Uint8Array(1);
     writeArray[0] = device;
-    writeIndex += writeSize;
     writeArrays.push(writeArray.buffer);
     //console.log('device:', device);
 
 
-    writeSize = 4;
-    var writeArray = new Uint32Array(writeSize);
+    var writeArray = new Uint32Array(1);
     writeArray[0] = frameCount;
-    writeIndex += writeSize;
     writeArrays.push(writeArray.buffer);
     //console.log('frameCount:', frameCount);
 
@@ -4588,27 +4567,23 @@ ChromaAnimation2D.prototype = {
 
       var frame = frames[index];
 
-      writeSize = Float32Array.BYTES_PER_ELEMENT;
-      var writeArray = new Float32Array(writeSize);
+      var writeArray = new Float32Array(1);
       var duration = frame.Duration;
       if (duration < 0.1) {
         duration = 0.1;
       }
       writeArray[0] = duration;
-      writeIndex += writeSize;
       writeArrays.push(writeArray.buffer);
 
       //console.log('Frame', index, 'duration', duration);
 
-      writeSize = 4 * maxRow * maxColumn;
-      var writeArray = new Uint32Array(writeSize);
+      var writeArray = new Uint32Array(maxRow * maxColumn);
       for (var i = 0; i < maxRow; ++i) {
         for (var j = 0; j < maxColumn; ++j) {
           var color = frame.Colors[i][j];
           writeArray[i * maxColumn + j] = color;
         }
       }
-      writeIndex += writeSize;
       writeArrays.push(writeArray.buffer);
     }
 
