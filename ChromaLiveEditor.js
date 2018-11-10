@@ -8,40 +8,38 @@ Vue.component('div-chroma-set', {
   props: [ 'index', 'header', 'image', 'video' ],
   template: `
   <div style="padding-bottom: 50px; display: inline-table">
-    <div class="box" style="width: 800px; background: hsl(0, 0%, 10%); display: inline-table">
-      <section :show="header != undefined && header != ''">
-        <div style="width: 100%; min-height: 125px; background: hsl(0, 0%, 20%); color: white; display: inline-table">{{ header }}</div>
+    <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table">
+      <div style="background: hsl(0, 0%, 20%); width: 100%">
+        <button class="buttonChroma" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
+        <div style="width: 550px; display: inline-table">{{ header }}</div>
+      </div>
+      <section :show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
+        Download:
+        <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
+        <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
+        <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
+        <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
+        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
       </section>
       <section :show="image != undefined && image != ''">
-        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
       </section>
       <section :show="video != undefined && video != ''">
-        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">&nbsp;</div>
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
       </section>
       <section :show="index != undefined && index != ''">
-        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
-          <center>
-            <button class="buttonChroma" style="font-size: 1.5em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
-          </center>
-        </div>
         <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
           <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
         </div>
       </section>
       <section :show="index != undefined && index != ''">
-        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
-        </div>
         <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
         <canvas class="canvasChromaLink" style="padding-left: 25px" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
       </section>
       <section :show="index != undefined && index != ''">
-        <div style="width: 75px; background: hsl(0, 0%, 10%); display: inline-table">
-          <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
-          <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
-          <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
-        </div>
+        <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
+        <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
+        <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
         <div style="width: 670px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
           <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
           <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
@@ -58,14 +56,14 @@ Vue.component('div-chroma-set', {
     <tr>
       <td><u>{{ header }}</u></td><td colspan="3" style="min-width: 640px; width: 640px; max-width: 640px">{{ description }}</td>
     </tr>
-    <tr>
-    <td colspan="4" style="font-size: 0.75em">Download:
-      <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
-      <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
-      <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
-      <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
-      <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
-      </small></td>
+    <tr :show="index != undefined && index != ''">
+      <td colspan="4" style="font-size: 0.75em">Download:
+        <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
+        <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
+        <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
+        <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
+        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+      </td>
     </tr>
     <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
     <tr><td align="center"><button class="buttonChroma" :id="'showEffect'+index">{{ index }}</button></td><td colspan="4"><canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas></td></tr>
@@ -105,6 +103,13 @@ Vue.component('div-chroma-set', {
     </tr>
     <tr v-show="video != undefined && video != ''"><td class="tdEmpty" width="250px"></td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td></tr>
     <tr v-show="image != undefined && image != ''"><td class="tdEmpty" width="250px"></td><td colspan="4"><img :src="image"/></td></tr>
+    <tr v-show="index != undefined && index != ''">
+      <td class="tdEmpty"></td>
+      <td colspan="4">
+        Download:
+        <a name="link" :onclick="'downloadKeyboardTableAnimation('+index+')'" href="javascript:true;">Keyboard</a>
+      </td>
+    </tr>
     <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
     </table>
     `});
@@ -753,6 +758,19 @@ function downloadAnimation(index, deviceType) {
     lnkDownload.click();
   }
 }
+function downloadTableAnimation(index, deviceType) {
+  var canvasName = 'canvas'+deviceType+'ShowTableEffect'+index;
+  var animation = ChromaAnimation.getAnimation(canvasName)
+  if (animation != undefined) {
+    //console.log(canvasName, animation);
+    var data = animation.saveAnimation();
+    var uriContent = URL.createObjectURL(data);
+    var lnkDownload = document.getElementById('lnkDownload');
+    lnkDownload.download = 'ShowTableEffect'+index+'_'+deviceType+'.chroma';
+    lnkDownload.href = uriContent;
+    lnkDownload.click();
+  }
+}
 function downloadKeyboardAnimation(index) {
   downloadAnimation(index, 'Keyboard');
 }
@@ -767,4 +785,7 @@ function downloadMouseAnimation(index) {
 }
 function downloadMousepadAnimation(index) {
   downloadAnimation(index, 'Mousepad');
+}
+function downloadKeyboardTableAnimation(index) {
+  downloadTableAnimation(index, 'Keyboard');
 }
