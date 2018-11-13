@@ -134,6 +134,12 @@ onPageLoad = function () {
       };
     }
   }
+  try {
+    if (setupAllChromaEffects != undefined) {
+      setupAllChromaEffects();
+    }
+  } catch (err) {  
+  }
   loadCanvases();
   handleTabVisibility();
   chromaSDK = new ChromaSDK();
