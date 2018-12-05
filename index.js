@@ -138,7 +138,7 @@ onPageLoad = function () {
     if (setupAllChromaEffects != undefined) {
       setupAllChromaEffects();
     }
-  } catch (err) {  
+  } catch (err) {
   }
   loadCanvases();
   handleTabVisibility();
@@ -261,9 +261,9 @@ function drawKeyboard(canvasName, animationName) {
   map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
   map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
   map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 26, 51];
-  map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 26, 52];
+  map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 27, 26];
+  map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 27, 51];
+  map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 27, 60];
   map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
   map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
   map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
