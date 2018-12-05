@@ -83,7 +83,7 @@ Vue.component('div-chroma-set', {
   Vue.component('tr-chroma-keyboard', {
     props: [ 'index' ],
     template: `
-    <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><a :name="index"></a><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
     `});
 
   Vue.component('block-chroma-keyboard', {
