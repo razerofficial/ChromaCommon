@@ -3051,6 +3051,50 @@ var ChromaAnimation = {
       this.LoadedAnimations[newAnimationName] = newAnimation;
     }
   },
+  createAnimation: function(animationName, deviceType, device) {
+    this.closeAnimation(animationName);
+    var frames = [];
+    var frameCount = 1;
+    if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var frame = new ChromaAnimationFrame1D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < maxLeds; ++i) {
+          frame.Colors[i] = 0;
+        }
+        frame.Duration = 0.1;
+        frames.push(frame);
+      }
+      var newAnimation = new ChromaAnimation1D();
+      newAnimation.Device = device;
+      newAnimation.DeviceType = deviceType;
+      newAnimation.Frames = frames;
+      this.LoadedAnimations[animationName] = newAnimation;
+    } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(device);
+      var maxColumn = ChromaAnimation.getMaxColumn(device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < maxRow; ++i) {
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < maxColumn; ++j) {
+            frame.Colors[i][j] = 0;
+          }
+        }
+        frame.Duration = 0.1;
+        frames.push(frame);
+      }
+      var newAnimation = new ChromaAnimation2D();
+      newAnimation.Device = device;
+      newAnimation.DeviceType = deviceType;
+      newAnimation.Frames = frames;
+      this.LoadedAnimations[animationName] = newAnimation;
+    }
+  },
   reduceFrames: function(animationName, n) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
