@@ -13,7 +13,7 @@ Vue.component('div-chroma-set', {
         <button class="buttonChroma" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
         <div style="width: 550px; display: inline-table">{{ header }}</div>
       </div>
-      <section :show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
+      <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
         Download:
         <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
         <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
@@ -21,22 +21,22 @@ Vue.component('div-chroma-set', {
         <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
         <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
       </section>
-      <section :show="image != undefined && image != ''">
+      <section v-show="image != undefined && image != ''">
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
       </section>
-      <section :show="video != undefined && video != ''">
+      <section v-show="video != undefined && video != ''">
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
       </section>
-      <section :show="index != undefined && index != ''">
+      <section v-show="index != undefined && index != ''">
         <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
           <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
         </div>
       </section>
-      <section :show="index != undefined && index != ''">
+      <section v-show="index != undefined && index != ''">
         <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
         <canvas class="canvasChromaLink" style="padding-left: 25px" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
       </section>
-      <section :show="index != undefined && index != ''">
+      <section v-show="index != undefined && index != ''">
         <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
         <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
         <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
