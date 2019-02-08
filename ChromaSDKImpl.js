@@ -745,14 +745,25 @@ var ChromaAnimation = {
     if (this.IntervalUpdateFrame == undefined) {
       this.IntervalUpdateFrame = setInterval(this.updateFrame, 33);
     }
-    //console.log('updateFrame');
+
+    var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
+    var useIdleAnimation = true;
+
     for (var animationName in ChromaAnimation.PlayingAnimations) {
       var animation = ChromaAnimation.PlayingAnimations[animationName];
       if (animation != undefined) {
-        if (animation.FrameTime < Date.now()) {
-          animation.playFrame();
+        animation.playFrame();
+        if (idleAnimation != animation) {
+          useIdleAnimation = false;
         }
       }
+    }
+
+    // play idle animation if no other animations are playing
+    if (useIdleAnimation &&
+      ChromaAnimation.UseIdleAnimation &&
+      idleAnimation != undefined) {
+      idleAnimation.playFrame();
     }
   },
   getMaxLeds : function(device) {
@@ -4604,6 +4615,9 @@ ChromaAnimation1D.prototype = {
     }
   },
   playFrame: function() {
+    if (animation.FrameTime < Date.now()) {
+      return;
+    }
     if (this.CurrentIndex < this.Frames.length) {
       var duration = this.getDuration();
       //console.log('Play Frame: '+this.CurrentIndex+' of: '+this.Frames.length+' Duration: '+duration);
@@ -4825,6 +4839,9 @@ ChromaAnimation2D.prototype = {
     }
   },
   playFrame: function() {
+    if (animation.FrameTime < Date.now()) {
+      return;
+    }
     if (this.CurrentIndex < this.Frames.length) {
       var duration = this.getDuration();
       //console.log('Play Frame: '+this.CurrentIndex+' of: '+this.Frames.length+' Duration: '+duration);
@@ -4865,6 +4882,7 @@ ChromaAnimation2D.prototype = {
   	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
   	  ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
   	}
+    ChromaAnimation.PlayingAnimations[this.Name] = undefined;
   },
   isPlaying: function() {
     return this.IsPlaying;
@@ -4874,6 +4892,7 @@ ChromaAnimation2D.prototype = {
     this.IsPlaying = true;
     ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
     ChromaAnimation.LoadedAnimations2D[this.Device] = this;
+    ChromaAnimation.PlayingAnimations[this.Name] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
     //console.log('play:', this.Name);
