@@ -737,8 +737,24 @@ var ChromaAnimation = {
   LoadedAnimations: {},
   LoadedAnimations1D: {},
   LoadedAnimations2D: {},
+  PlayingAnimations: {},
   UseIdleAnimation: false,
   IdleAnimationName: '',
+  IntervalUpdateFrame: undefined,
+  updateFrame: function() {
+    if (this.IntervalUpdateFrame == undefined) {
+      this.IntervalUpdateFrame = setInterval(this.updateFrame, 33);
+    }
+    //console.log('updateFrame');
+    for (var animationName in ChromaAnimation.PlayingAnimations) {
+      var animation = ChromaAnimation.PlayingAnimations[animationName];
+      if (animation != undefined) {
+        if (animation.FrameTime < Date.now()) {
+          animation.playFrame();
+        }
+      }
+    }
+  },
   getMaxLeds : function(device) {
     if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
       return 5;
@@ -972,12 +988,14 @@ var ChromaAnimation = {
           refThis.LoadedAnimations[animationName] = animation;
           //console.log('playAnimation:', animationName);
           animation.FrameCallback = frameCallback;
+          ChromaAnimation.PlayingAnimations[animationName] = animation;
           animation.play(loop);
         });
     } else {
       var animation = this.LoadedAnimations[animationName];
       //console.log('playAnimation:', animationName);
       animation.FrameCallback = frameCallback;
+      ChromaAnimation.PlayingAnimations[animationName] = animation;
       animation.play(loop);
     }
   },
@@ -985,6 +1003,7 @@ var ChromaAnimation = {
     if (this.LoadedAnimations[animationName] != undefined) {
       this.LoadedAnimations[animationName].stop();
     }
+    ChromaAnimation.PlayingAnimations[animationName] = undefined;
   },
   closeAnimation: function(animationName) {
     if (this.LoadedAnimations[animationName] != undefined) {
@@ -4429,19 +4448,21 @@ var ChromaAnimation = {
   },
   clearAll: function () {
     this.clear(EChromaSDKDeviceEnum.DE_ChromaLink);
-	this.clear(EChromaSDKDeviceEnum.DE_Headset);
-	this.clear(EChromaSDKDeviceEnum.DE_Keyboard);
-	this.clear(EChromaSDKDeviceEnum.DE_Keypad);
-	this.clear(EChromaSDKDeviceEnum.DE_Mouse);
-	this.clear(EChromaSDKDeviceEnum.DE_Mousepad);
+    this.clear(EChromaSDKDeviceEnum.DE_Headset);
+    this.clear(EChromaSDKDeviceEnum.DE_Keyboard);
+    this.clear(EChromaSDKDeviceEnum.DE_Keypad);
+    this.clear(EChromaSDKDeviceEnum.DE_Mouse);
+    this.clear(EChromaSDKDeviceEnum.DE_Mousepad);
   }
 };
+ChromaAnimation.updateFrame();
 
 function ChromaAnimation1D() {
+  var Name;
   var Device;
   var Frames = [];
   var Loop = true;
-  var PlayTimeout = undefined;
+  var FrameTime = 0;
   var FrameCallback = undefined;
 }
 
@@ -4595,13 +4616,13 @@ ChromaAnimation1D.prototype = {
         chromaSDK.createMousematEffect("CHROMA_CUSTOM", this.getFrame().Colors);
       }
 
-	  if (this.FrameCallback != undefined) {
+      if (this.FrameCallback != undefined) {
         this.FrameCallback(this, this.getFrame().Colors);
       }
 
       // schedule next frame
       var refThis = this;
-      this.PlayTimeout = setTimeout(function() { refThis.playFrame(); }, duration * 1000);
+      this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
       //console.log('Animation complete.');
@@ -4614,16 +4635,12 @@ ChromaAnimation1D.prototype = {
   },
   stop: function () {
     this.IsPlaying = false;
-    if (this.PlayTimeout != undefined) {
-      clearTimeout(this.PlayTimeout);
-      this.PlayTimeout = undefined;
-      //console.log('stop:', this.Name);
-    }
     this.CurrentIndex = 0;
     this.Loop = false;
   	if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
   	  ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
   	}
+    ChromaAnimation.PlayingAnimations[this.Name] = undefined;
   },
   isPlaying: function() {
     return this.IsPlaying;
@@ -4633,6 +4650,7 @@ ChromaAnimation1D.prototype = {
     this.IsPlaying = true;
     ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
     ChromaAnimation.LoadedAnimations1D[this.Device] = this;
+    ChromaAnimation.PlayingAnimations[this.Name] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
     //console.log('play:', this.Name);
@@ -4641,10 +4659,11 @@ ChromaAnimation1D.prototype = {
 };
 
 function ChromaAnimation2D() {
+  var Name;
   var Device;
   var Frames = [];
   var Loop = false;
-  var PlayTimeout = undefined;
+  var FrameTime = 0;
   var FrameCallback = undefined;
 }
 
@@ -4822,13 +4841,13 @@ ChromaAnimation2D.prototype = {
         chromaSDK.createMouseEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
       }
 
-	  if (this.FrameCallback != undefined) {
+      if (this.FrameCallback != undefined) {
         this.FrameCallback(this, this.getFrame().Colors);
       }
 
       // schedule next frame
       var refThis = this;
-      this.PlayTimeout = setTimeout(function() { refThis.playFrame(); }, duration * 1000);
+      this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
       //console.log('Animation complete.');
@@ -4841,11 +4860,6 @@ ChromaAnimation2D.prototype = {
   },
   stop: function () {
     this.IsPlaying = false;
-    if (this.PlayTimeout != undefined) {
-      clearTimeout(this.PlayTimeout);
-      this.PlayTimeout = undefined;
-	  //console.log('stop:', this.Name);
-    }
     this.CurrentIndex = 0;
     this.Loop = false;
   	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
