@@ -176,19 +176,36 @@ var canvasTimers = {
   mouse: [],
   mousepad: []
 };
-function drawKeyboard(canvasName, animationName) {
+var stateDisplay = [];
+function drawKeyboard(canvasName, animationName, loop) {
+
+  var state = stateDisplay[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
     return;
   }
 
-  if (!ChromaAnimation.isPlaying(animationName)) {
-    if (ChromaAnimation.UseIdleAnimation) {
-      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
-      if (idleAnimation != undefined) {
-        animation = idleAnimation;
-      }
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
     }
   }
 
@@ -209,141 +226,143 @@ function drawKeyboard(canvasName, animationName) {
   ctx.stroke();
 
   var map = {};
-  map['RZKEY.RZKEY_ESC'] = [46, 5, 27, 28];
-  map['RZKEY.RZKEY_F1'] = [113, 5, 25, 28];
-  map['RZKEY.RZKEY_F2'] = [139, 5, 25, 28];
-  map['RZKEY.RZKEY_F3'] = [165, 5, 25, 28];
-  map['RZKEY.RZKEY_F4'] = [190, 5, 26, 28];
-  map['RZKEY.RZKEY_F5'] = [222, 5, 24, 28];
-  map['RZKEY.RZKEY_F6'] = [248, 5, 24, 28];
-  map['RZKEY.RZKEY_F7'] = [274, 5, 24, 28];
-  map['RZKEY.RZKEY_F8'] = [299, 5, 25, 28];
-  map['RZKEY.RZKEY_F9'] = [330, 5, 25, 28];
-  map['RZKEY.RZKEY_F10'] = [356, 5, 25, 28];
-  map['RZKEY.RZKEY_F11'] = [382, 5, 25, 28];
-  map['RZKEY.RZKEY_F12'] = [407, 5, 25, 28];
-  map['RZKEY.RZKEY_1'] = [72, 37, 26, 25];
-  map['RZKEY.RZKEY_2'] = [98, 37, 25, 25];
-  map['RZKEY.RZKEY_3'] = [124, 37, 25, 25];
-  map['RZKEY.RZKEY_4'] = [150, 37, 25, 25];
-  map['RZKEY.RZKEY_5'] = [176, 37, 24, 25];
-  map['RZKEY.RZKEY_6'] = [202, 37, 24, 25];
-  map['RZKEY.RZKEY_7'] = [228, 37, 24, 25];
-  map['RZKEY.RZKEY_8'] = [253, 37, 25, 25];
-  map['RZKEY.RZKEY_9'] = [279, 37, 25, 25];
-  map['RZKEY.RZKEY_0'] = [305, 37, 25, 25];
-  map['RZKEY.RZKEY_A'] = [92, 89, 25, 25];
-  map['RZKEY.RZKEY_B'] = [208, 114, 25, 26];
-  map['RZKEY.RZKEY_C'] = [156, 114, 26, 26];
-  map['RZKEY.RZKEY_D'] = [144, 89, 24, 25];
-  map['RZKEY.RZKEY_E'] = [137, 63, 25, 25];
-  map['RZKEY.RZKEY_F'] = [169, 89, 25, 25];
-  map['RZKEY.RZKEY_G'] = [195, 89, 25, 25];
-  map['RZKEY.RZKEY_H'] = [221, 89, 25, 25];
-  map['RZKEY.RZKEY_I'] = [266, 63, 25, 25];
-  map['RZKEY.RZKEY_J'] = [247, 89, 25, 25];
-  map['RZKEY.RZKEY_K'] = [272, 89, 25, 25];
-  map['RZKEY.RZKEY_L'] = [298, 89, 25, 25];
-  map['RZKEY.RZKEY_M'] = [259, 114, 25, 26];
-  map['RZKEY.RZKEY_N'] = [233, 114, 26, 26];
-  map['RZKEY.RZKEY_O'] = [292, 63, 25, 25];
-  map['RZKEY.RZKEY_P'] = [318, 63, 25, 25];
-  map['RZKEY.RZKEY_Q'] = [86, 63, 24, 25];
-  map['RZKEY.RZKEY_R'] = [163, 63, 25, 25];
-  map['RZKEY.RZKEY_S'] = [118, 89, 25, 25];
-  map['RZKEY.RZKEY_T'] = [188, 63, 26, 25];
-  map['RZKEY.RZKEY_U'] = [240, 63, 25, 25];
-  map['RZKEY.RZKEY_V'] = [182, 114, 25, 26];
-  map['RZKEY.RZKEY_W'] = [112, 63, 24, 25];
-  map['RZKEY.RZKEY_X'] = [131, 114, 25, 26];
-  map['RZKEY.RZKEY_Y'] = [214, 63, 25, 25];
-  map['RZKEY.RZKEY_Z'] = [105, 114, 25, 26];
-  map['RZKEY.RZKEY_NUMLOCK'] = [521, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD0'] = [521, 140, 52, 26];
-  map['RZKEY.RZKEY_NUMPAD1'] = [521, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD2'] = [547, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD3'] = [573, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD4'] = [521, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD5'] = [547, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD6'] = [573, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD7'] = [521, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD8'] = [547, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 27, 26];
-  map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 27, 51];
-  map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 27, 60];
-  map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
-  map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
-  map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
-  map['RZKEY.RZKEY_PAUSE'] = [490, 5, 26, 28];
-  map['RZKEY.RZKEY_INSERT'] = [438, 37, 26, 27];
-  map['RZKEY.RZKEY_HOME'] = [464, 37, 26, 27];
-  map['RZKEY.RZKEY_PAGEUP'] = [490, 37, 26, 27];
-  map['RZKEY.RZKEY_DELETE'] = [438, 63, 26, 27];
-  map['RZKEY.RZKEY_END'] = [464, 63, 26, 27];
-  map['RZKEY.RZKEY_PAGEDOWN'] = [490, 63, 26, 27];
-  map['RZKEY.RZKEY_UP'] = [464, 114, 26, 26];
-  map['RZKEY.RZKEY_LEFT'] = [438, 140, 26, 26];
-  map['RZKEY.RZKEY_DOWN'] = [464, 140, 26, 26];
-  map['RZKEY.RZKEY_RIGHT'] = [490, 140, 25, 26];
-  map['RZKEY.RZKEY_TAB'] = [46, 63, 39, 25];
-  map['RZKEY.RZKEY_CAPSLOCK'] = [46, 89, 45, 25];
-  map['RZKEY.RZKEY_BACKSPACE'] = [382, 37, 50, 25];
-  map['RZKEY.RZKEY_ENTER'] = [375, 89, 57, 25];
-  map['RZKEY.RZKEY_LCTRL'] = [46, 140, 39, 26];
-  map['RZKEY.RZKEY_LWIN'] = [86, 140, 25, 26];
-  map['RZKEY.RZKEY_LALT'] = [111, 140, 38, 26];
-  map['RZKEY.RZKEY_SPACE'] = [149, 140, 156, 26];
-  map['RZKEY.RZKEY_RALT'] = [305, 140, 37, 26];
-  map['RZKEY.RZKEY_FN'] = [342, 140, 26, 26];
-  map['RZKEY.RZKEY_RMENU'] = [368, 140, 26, 26];
-  map['RZKEY.RZKEY_RCTRL'] = [395, 140, 37, 26];
-  map['RZKEY.RZKEY_LSHIFT'] = [46, 114, 58, 26];
-  map['RZKEY.RZKEY_RSHIFT'] = [362, 114, 70, 26];
-  map['RZKEY.RZKEY_MACRO1'] = [15, 37, 27, 25];
-  map['RZKEY.RZKEY_MACRO2'] = [15, 62, 27, 26];
-  map['RZKEY.RZKEY_MACRO3'] = [15, 88, 27, 26];
-  map['RZKEY.RZKEY_MACRO4'] = [15, 114, 27, 26];
-  map['RZKEY.RZKEY_MACRO5'] = [15, 140, 27, 26];
-  map['RZKEY.RZKEY_OEM_1'] = [46, 37, 26, 25];
-  map['RZKEY.RZKEY_OEM_2'] = [330, 37, 25, 25];
-  map['RZKEY.RZKEY_OEM_3'] = [356, 37, 25, 25];
-  map['RZKEY.RZKEY_OEM_4'] = [343, 63, 25, 25];
-  map['RZKEY.RZKEY_OEM_5'] = [369, 63, 25, 25];
-  map['RZKEY.RZKEY_OEM_6'] = [394, 63, 38, 25];
-  map['RZKEY.RZKEY_OEM_7'] = [324, 89, 25, 25];
-  map['RZKEY.RZKEY_OEM_8'] = [350, 89, 24, 25];
-  map['RZKEY.RZKEY_OEM_9'] = [285, 114, 25, 26];
-  map['RZKEY.RZKEY_OEM_10'] = [311, 114, 25, 26];
-  map['RZKEY.RZKEY_OEM_11'] = [337, 114, 25, 26];
-  map['RZKEY.RZKEY_EUR_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_EUR_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_3'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_4'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_5'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_3'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_4'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_5'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_6'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_7'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_INVALID'] = [0, 0, 0, 0];
-  map['RZLED.RZLED_LOGO'] = [309, 185, 24, 25];
+  var setupMapping = function() {
+    map['RZKEY.RZKEY_ESC'] = [46, 5, 27, 28];
+    map['RZKEY.RZKEY_F1'] = [113, 5, 25, 28];
+    map['RZKEY.RZKEY_F2'] = [139, 5, 25, 28];
+    map['RZKEY.RZKEY_F3'] = [165, 5, 25, 28];
+    map['RZKEY.RZKEY_F4'] = [190, 5, 26, 28];
+    map['RZKEY.RZKEY_F5'] = [222, 5, 24, 28];
+    map['RZKEY.RZKEY_F6'] = [248, 5, 24, 28];
+    map['RZKEY.RZKEY_F7'] = [274, 5, 24, 28];
+    map['RZKEY.RZKEY_F8'] = [299, 5, 25, 28];
+    map['RZKEY.RZKEY_F9'] = [330, 5, 25, 28];
+    map['RZKEY.RZKEY_F10'] = [356, 5, 25, 28];
+    map['RZKEY.RZKEY_F11'] = [382, 5, 25, 28];
+    map['RZKEY.RZKEY_F12'] = [407, 5, 25, 28];
+    map['RZKEY.RZKEY_1'] = [72, 37, 26, 25];
+    map['RZKEY.RZKEY_2'] = [98, 37, 25, 25];
+    map['RZKEY.RZKEY_3'] = [124, 37, 25, 25];
+    map['RZKEY.RZKEY_4'] = [150, 37, 25, 25];
+    map['RZKEY.RZKEY_5'] = [176, 37, 24, 25];
+    map['RZKEY.RZKEY_6'] = [202, 37, 24, 25];
+    map['RZKEY.RZKEY_7'] = [228, 37, 24, 25];
+    map['RZKEY.RZKEY_8'] = [253, 37, 25, 25];
+    map['RZKEY.RZKEY_9'] = [279, 37, 25, 25];
+    map['RZKEY.RZKEY_0'] = [305, 37, 25, 25];
+    map['RZKEY.RZKEY_A'] = [92, 89, 25, 25];
+    map['RZKEY.RZKEY_B'] = [208, 114, 25, 26];
+    map['RZKEY.RZKEY_C'] = [156, 114, 26, 26];
+    map['RZKEY.RZKEY_D'] = [144, 89, 24, 25];
+    map['RZKEY.RZKEY_E'] = [137, 63, 25, 25];
+    map['RZKEY.RZKEY_F'] = [169, 89, 25, 25];
+    map['RZKEY.RZKEY_G'] = [195, 89, 25, 25];
+    map['RZKEY.RZKEY_H'] = [221, 89, 25, 25];
+    map['RZKEY.RZKEY_I'] = [266, 63, 25, 25];
+    map['RZKEY.RZKEY_J'] = [247, 89, 25, 25];
+    map['RZKEY.RZKEY_K'] = [272, 89, 25, 25];
+    map['RZKEY.RZKEY_L'] = [298, 89, 25, 25];
+    map['RZKEY.RZKEY_M'] = [259, 114, 25, 26];
+    map['RZKEY.RZKEY_N'] = [233, 114, 26, 26];
+    map['RZKEY.RZKEY_O'] = [292, 63, 25, 25];
+    map['RZKEY.RZKEY_P'] = [318, 63, 25, 25];
+    map['RZKEY.RZKEY_Q'] = [86, 63, 24, 25];
+    map['RZKEY.RZKEY_R'] = [163, 63, 25, 25];
+    map['RZKEY.RZKEY_S'] = [118, 89, 25, 25];
+    map['RZKEY.RZKEY_T'] = [188, 63, 26, 25];
+    map['RZKEY.RZKEY_U'] = [240, 63, 25, 25];
+    map['RZKEY.RZKEY_V'] = [182, 114, 25, 26];
+    map['RZKEY.RZKEY_W'] = [112, 63, 24, 25];
+    map['RZKEY.RZKEY_X'] = [131, 114, 25, 26];
+    map['RZKEY.RZKEY_Y'] = [214, 63, 25, 25];
+    map['RZKEY.RZKEY_Z'] = [105, 114, 25, 26];
+    map['RZKEY.RZKEY_NUMLOCK'] = [521, 37, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD0'] = [521, 140, 52, 26];
+    map['RZKEY.RZKEY_NUMPAD1'] = [521, 114, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD2'] = [547, 114, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD3'] = [573, 114, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD4'] = [521, 88, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD5'] = [547, 88, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD6'] = [573, 88, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD7'] = [521, 63, 26, 25];
+    map['RZKEY.RZKEY_NUMPAD8'] = [547, 63, 26, 25];
+    map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
+    map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
+    map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 27, 26];
+    map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 27, 51];
+    map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 27, 60];
+    map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
+    map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
+    map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
+    map['RZKEY.RZKEY_PAUSE'] = [490, 5, 26, 28];
+    map['RZKEY.RZKEY_INSERT'] = [438, 37, 26, 27];
+    map['RZKEY.RZKEY_HOME'] = [464, 37, 26, 27];
+    map['RZKEY.RZKEY_PAGEUP'] = [490, 37, 26, 27];
+    map['RZKEY.RZKEY_DELETE'] = [438, 63, 26, 27];
+    map['RZKEY.RZKEY_END'] = [464, 63, 26, 27];
+    map['RZKEY.RZKEY_PAGEDOWN'] = [490, 63, 26, 27];
+    map['RZKEY.RZKEY_UP'] = [464, 114, 26, 26];
+    map['RZKEY.RZKEY_LEFT'] = [438, 140, 26, 26];
+    map['RZKEY.RZKEY_DOWN'] = [464, 140, 26, 26];
+    map['RZKEY.RZKEY_RIGHT'] = [490, 140, 25, 26];
+    map['RZKEY.RZKEY_TAB'] = [46, 63, 39, 25];
+    map['RZKEY.RZKEY_CAPSLOCK'] = [46, 89, 45, 25];
+    map['RZKEY.RZKEY_BACKSPACE'] = [382, 37, 50, 25];
+    map['RZKEY.RZKEY_ENTER'] = [375, 89, 57, 25];
+    map['RZKEY.RZKEY_LCTRL'] = [46, 140, 39, 26];
+    map['RZKEY.RZKEY_LWIN'] = [86, 140, 25, 26];
+    map['RZKEY.RZKEY_LALT'] = [111, 140, 38, 26];
+    map['RZKEY.RZKEY_SPACE'] = [149, 140, 156, 26];
+    map['RZKEY.RZKEY_RALT'] = [305, 140, 37, 26];
+    map['RZKEY.RZKEY_FN'] = [342, 140, 26, 26];
+    map['RZKEY.RZKEY_RMENU'] = [368, 140, 26, 26];
+    map['RZKEY.RZKEY_RCTRL'] = [395, 140, 37, 26];
+    map['RZKEY.RZKEY_LSHIFT'] = [46, 114, 58, 26];
+    map['RZKEY.RZKEY_RSHIFT'] = [362, 114, 70, 26];
+    map['RZKEY.RZKEY_MACRO1'] = [15, 37, 27, 25];
+    map['RZKEY.RZKEY_MACRO2'] = [15, 62, 27, 26];
+    map['RZKEY.RZKEY_MACRO3'] = [15, 88, 27, 26];
+    map['RZKEY.RZKEY_MACRO4'] = [15, 114, 27, 26];
+    map['RZKEY.RZKEY_MACRO5'] = [15, 140, 27, 26];
+    map['RZKEY.RZKEY_OEM_1'] = [46, 37, 26, 25];
+    map['RZKEY.RZKEY_OEM_2'] = [330, 37, 25, 25];
+    map['RZKEY.RZKEY_OEM_3'] = [356, 37, 25, 25];
+    map['RZKEY.RZKEY_OEM_4'] = [343, 63, 25, 25];
+    map['RZKEY.RZKEY_OEM_5'] = [369, 63, 25, 25];
+    map['RZKEY.RZKEY_OEM_6'] = [394, 63, 38, 25];
+    map['RZKEY.RZKEY_OEM_7'] = [324, 89, 25, 25];
+    map['RZKEY.RZKEY_OEM_8'] = [350, 89, 24, 25];
+    map['RZKEY.RZKEY_OEM_9'] = [285, 114, 25, 26];
+    map['RZKEY.RZKEY_OEM_10'] = [311, 114, 25, 26];
+    map['RZKEY.RZKEY_OEM_11'] = [337, 114, 25, 26];
+    map['RZKEY.RZKEY_EUR_1'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_EUR_2'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_JPN_1'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_JPN_2'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_JPN_3'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_JPN_4'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_JPN_5'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_1'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_2'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_3'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_4'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_5'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_6'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_KOR_7'] = [0, 0, 0, 0];
+    map['RZKEY.RZKEY_INVALID'] = [0, 0, 0, 0];
+    map['RZLED.RZLED_LOGO'] = [309, 185, 24, 25];
+  };
+  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
   var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
   var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-  var frameId = animation.CurrentIndex;
   //console.log('frameId', frameId);
-  if (frameId >= 0 && frameId < frameCount) {
+  if (state.FrameId >= 0 && state.FrameId < frameCount) {
     //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
+    var frame = animation.Frames[state.FrameId];
     var colors = frame.Colors;
 
     for (var key in RZKEY) {
@@ -402,7 +421,18 @@ function drawKeyboard(canvasName, animationName) {
     canvasTimers.keyboard[canvasName] = undefined;
   }
   var timer = setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
     drawKeyboard(canvasName, animationName);
   }, duration * 1000);
   canvasTimers.keyboard[canvasName] = timer;
@@ -799,12 +829,12 @@ function drawMousepad(canvasName, animationName)  {
     drawMousepad(canvasName, animationName);
   }, duration * 1000);
 }
-displayKeyboardCanvas = function(baseLayer, effectName) {
+displayKeyboardCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasKeyboard' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawKeyboard(canvasName, canvasName);
+    drawKeyboard(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
@@ -874,7 +904,7 @@ displayAndPlayAnimationHeadset = function (baseLayer, canvasName) {
   }
 }
 displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
-  displayKeyboardCanvas(baseLayer, canvasName);
+  displayKeyboardCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
