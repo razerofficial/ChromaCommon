@@ -182,6 +182,15 @@ function drawKeyboard(canvasName, animationName) {
     return;
   }
 
+  if (!ChromaAnimation.isPlaying(animationName)) {
+    if (ChromaAnimation.UseIdleAnimation) {
+      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
+      if (idleAnimation != undefined) {
+        animation = idleAnimation;
+      }
+    }
+  }
+
   if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
     animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
     return;

@@ -818,9 +818,13 @@ var ChromaAnimation = {
           animation.openAnimation(arrayBuffer, readIndex);
           animation.Name = animationName;
           refThis.LoadedAnimations[animationName] = animation;
-          callback(animation);
+          if (callback != undefined) {
+            callback(animation);
+          }
         } else {
-          callback(undefined);
+          if (callback != undefined) {
+            callback(undefined);
+          }
         }
       }
     }
@@ -946,6 +950,15 @@ var ChromaAnimation = {
 	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mouse);
 	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mousepad);
   },
+  isPlaying: function(animationName) {
+    if (chromaSDK == undefined) {
+      return false;
+    }
+    if (this.LoadedAnimations[animationName] != undefined) {
+      return this.LoadedAnimations[animationName].isPlaying();
+    }
+    return false;
+  },
   playAnimation: function(animationName, loop, frameCallback) {
     if (chromaSDK == undefined) {
       setTimeout(function() { ChromaAnimation.playAnimation(animationName, loop, frameCallback); }, 100);
@@ -984,6 +997,12 @@ var ChromaAnimation = {
   },
   setIdleAnimation: function(animationName) {
     this.IdleAnimationName = animationName;
+    if (this.LoadedAnimations[animationName] == undefined) {
+      this.openAnimation(animationName);
+    }
+  },
+  getIdleAnimation: function() {
+    return this.IdleAnimationName;
   },
   reverseAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
@@ -4598,7 +4617,7 @@ ChromaAnimation1D.prototype = {
     if (this.PlayTimeout != undefined) {
       clearTimeout(this.PlayTimeout);
       this.PlayTimeout = undefined;
-	  //console.log('stop:', this.Name);
+      //console.log('stop:', this.Name);
     }
     this.CurrentIndex = 0;
     this.Loop = false;
@@ -4607,7 +4626,7 @@ ChromaAnimation1D.prototype = {
   	}
   },
   isPlaying: function() {
-    return this.isPlaying;
+    return this.IsPlaying;
   },
   play: function (loop) {
     this.stop();
@@ -4834,7 +4853,7 @@ ChromaAnimation2D.prototype = {
   	}
   },
   isPlaying: function() {
-    return this.isPlaying;
+    return this.IsPlaying;
   },
   play: function (loop) {
     this.stop();
