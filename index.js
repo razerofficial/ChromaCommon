@@ -155,6 +155,7 @@ onPageUnload = function () {
   }
 };
 exampleReset = function () {
+  ChromaAnimation.useIdleAnimation(false);
   if (exampleInterval != undefined) {
     clearInterval(exampleInterval);
     exampleInterval = undefined;
