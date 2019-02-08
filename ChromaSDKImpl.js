@@ -4432,6 +4432,8 @@ ChromaAnimation1D.prototype = {
 
   CurrentIndex: 0,
 
+  IsPlaying: false,
+
   openAnimation: function(arrayBuffer, readIndex) {
 
     readSize = 1;
@@ -4592,6 +4594,7 @@ ChromaAnimation1D.prototype = {
     }
   },
   stop: function () {
+    this.IsPlaying = false;
     if (this.PlayTimeout != undefined) {
       clearTimeout(this.PlayTimeout);
       this.PlayTimeout = undefined;
@@ -4599,17 +4602,21 @@ ChromaAnimation1D.prototype = {
     }
     this.CurrentIndex = 0;
     this.Loop = false;
-	if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
-	  ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
-	}
+  	if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
+  	  ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
+  	}
+  },
+  isPlaying: function() {
+    return this.isPlaying;
   },
   play: function (loop) {
     this.stop();
-	ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
-	ChromaAnimation.LoadedAnimations1D[this.Device] = this;
+    this.IsPlaying = true;
+    ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
+    ChromaAnimation.LoadedAnimations1D[this.Device] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
-	//console.log('play:', this.Name);
+    //console.log('play:', this.Name);
     this.playFrame();
   }
 };
@@ -4629,6 +4636,8 @@ ChromaAnimation2D.prototype = {
   CurrentIndex: 0,
 
   UseChromaCustom: false,
+
+  IsPlaying: false,
 
   openAnimation: function(arrayBuffer, readIndex) {
 
@@ -4812,6 +4821,7 @@ ChromaAnimation2D.prototype = {
     }
   },
   stop: function () {
+    this.IsPlaying = false;
     if (this.PlayTimeout != undefined) {
       clearTimeout(this.PlayTimeout);
       this.PlayTimeout = undefined;
@@ -4819,17 +4829,21 @@ ChromaAnimation2D.prototype = {
     }
     this.CurrentIndex = 0;
     this.Loop = false;
-	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
-	  ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
-	}
+  	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
+  	  ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
+  	}
+  },
+  isPlaying: function() {
+    return this.isPlaying;
   },
   play: function (loop) {
     this.stop();
-	ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
-	ChromaAnimation.LoadedAnimations2D[this.Device] = this;
+    this.IsPlaying = true;
+    ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
+    ChromaAnimation.LoadedAnimations2D[this.Device] = this;
     this.CurrentIndex = 0;
-	this.Loop = loop;
-	//console.log('play:', this.Name);
+    this.Loop = loop;
+    //console.log('play:', this.Name);
     this.playFrame();
   }
 };
