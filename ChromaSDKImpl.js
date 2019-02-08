@@ -737,6 +737,8 @@ var ChromaAnimation = {
   LoadedAnimations: {},
   LoadedAnimations1D: {},
   LoadedAnimations2D: {},
+  UseIdleAnimation: false,
+  IdleAnimationName: '',
   getMaxLeds : function(device) {
     if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
       return 5;
@@ -976,6 +978,12 @@ var ChromaAnimation = {
       this.LoadedAnimations[animationName].stop();
       this.LoadedAnimations[animationName] = undefined;
     }
+  },
+  useIdleAnimation: function(flag) {
+    this.UseIdleAnimation = flag;
+  },
+  setIdleAnimation: function(animationName) {
+    this.IdleAnimationName = animationName;
   },
   reverseAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];

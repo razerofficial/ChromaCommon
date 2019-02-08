@@ -863,10 +863,10 @@ displayAndPlayAnimationHeadset = function (baseLayer, canvasName) {
     ChromaAnimation.playAnimation(baseLayer, true);
   }
 }
-displayAndPlayAnimationKeyboard = function (baseLayer, canvasName) {
+displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
   displayKeyboardCanvas(baseLayer, canvasName);
   if (initialized && setupComplete) {
-    ChromaAnimation.playAnimation(baseLayer, true);
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
 displayAndPlayAnimationMouse = function (baseLayer, canvasName) {
