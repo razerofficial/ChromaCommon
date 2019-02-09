@@ -705,13 +705,15 @@ var EChromaSDKDeviceTypeEnum = {
 var EChromaSDKDevice1DEnum = {
   'DE_ChromaLink': 0,
   'DE_Headset': 1,
-  'DE_Mousepad': 2
+  'DE_Mousepad': 2,
+  'DE_MAX': 3
 };
 
 var EChromaSDKDevice2DEnum = {
   'DE_Keyboard': 0,
   'DE_Keypad': 1,
-  'DE_Mouse': 2
+  'DE_Mouse': 2,
+  'DE_MAX': 3
 };
 
 var EChromaSDKDeviceEnum = {
@@ -737,34 +739,76 @@ var ChromaAnimation = {
   LoadedAnimations: {},
   LoadedAnimations1D: {},
   LoadedAnimations2D: {},
-  PlayingAnimations: {},
+  PlayingAnimations1D: {},
+  PlayingAnimations2D: {},
   UseIdleAnimation: false,
-  IdleAnimationName: '',
+  IdleAnimation1D: {},
+  IdleAnimation2D: {},
   IntervalUpdateFrame: undefined,
   updateFrame: function() {
-    if (this.IntervalUpdateFrame == undefined) {
-      this.IntervalUpdateFrame = setInterval(this.updateFrame, 33);
+    if (ChromaAnimation.IntervalUpdateFrame == undefined) {
+      ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = {};
+      ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = {};
+      ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = {};
+      ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] = {};
+      ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = {};
+      ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = {};
+
+      ChromaAnimation.PlayingAnimations1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = {};
+      ChromaAnimation.PlayingAnimations1D[EChromaSDKDevice1DEnum.DE_Headset] = {};
+      ChromaAnimation.PlayingAnimations1D[EChromaSDKDevice1DEnum.DE_Mousepad] = {};
+      ChromaAnimation.PlayingAnimations2D[EChromaSDKDevice2DEnum.DE_Keyboard] = {};
+      ChromaAnimation.PlayingAnimations2D[EChromaSDKDevice2DEnum.DE_Keypad] = {};
+      ChromaAnimation.PlayingAnimations2D[EChromaSDKDevice2DEnum.DE_Mouse] = {};
+      ChromaAnimation.IntervalUpdateFrame = setInterval(this.updateFrame, 33);
     }
 
-    var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
-    var useIdleAnimation = true;
+    // 1D Devices
+    for (var device = 0; device < EChromaSDKDevice1DEnum.DE_MAX; ++device) {
+      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[device]);
+      var useIdleAnimation = true;
 
-    for (var animationName in ChromaAnimation.PlayingAnimations) {
-      var animation = ChromaAnimation.PlayingAnimations[animationName];
-      if (animation != undefined) {
-        animation.playFrame();
-        if (idleAnimation != animation) {
-          useIdleAnimation = false;
+      for (var animationName in ChromaAnimation.PlayingAnimations1D[device]) {
+        var animation = ChromaAnimation.PlayingAnimations1D[device][animationName];
+        if (animation != undefined) {
+          animation.playFrame();
+          if (idleAnimation != animation) {
+            useIdleAnimation = false;
+          }
         }
+      }
+
+      // play idle animation if no other animations are playing
+      if (useIdleAnimation &&
+        ChromaAnimation.UseIdleAnimation &&
+        idleAnimation != undefined) {
+        idleAnimation.playFrame();
       }
     }
 
-    // play idle animation if no other animations are playing
-    if (useIdleAnimation &&
-      ChromaAnimation.UseIdleAnimation &&
-      idleAnimation != undefined) {
-      idleAnimation.playFrame();
+    // 2D Devices
+    for (var device = 0; device < EChromaSDKDevice2DEnum.DE_MAX; ++device) {
+      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[device]);
+      var useIdleAnimation = true;
+
+      for (var animationName in ChromaAnimation.PlayingAnimations2D[device]) {
+        var animation = ChromaAnimation.PlayingAnimations2D[device][animationName];
+        if (animation != undefined) {
+          animation.playFrame();
+          if (idleAnimation != animation) {
+            useIdleAnimation = false;
+          }
+        }
+      }
+
+      // play idle animation if no other animations are playing
+      if (useIdleAnimation &&
+        ChromaAnimation.UseIdleAnimation &&
+        idleAnimation != undefined) {
+        idleAnimation.playFrame();
+      }
     }
+
   },
   getMaxLeds : function(device) {
     if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
@@ -999,22 +1043,44 @@ var ChromaAnimation = {
           refThis.LoadedAnimations[animationName] = animation;
           //console.log('playAnimation:', animationName);
           animation.FrameCallback = frameCallback;
-          ChromaAnimation.PlayingAnimations[animationName] = animation;
+          switch (animation.DeviceType) {
+            case EChromaSDKDeviceTypeEnum.DE_1D:
+              ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = animation;
+              break;
+            case EChromaSDKDeviceTypeEnum.DE_2D:
+              ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = animation;
+              break;
+          }
           animation.play(loop);
         });
     } else {
       var animation = this.LoadedAnimations[animationName];
       //console.log('playAnimation:', animationName);
       animation.FrameCallback = frameCallback;
-      ChromaAnimation.PlayingAnimations[animationName] = animation;
+      switch (animation.DeviceType) {
+        case EChromaSDKDeviceTypeEnum.DE_1D:
+          ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = animation;
+          break;
+        case EChromaSDKDeviceTypeEnum.DE_2D:
+          ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = animation;
+          break;
+      }
       animation.play(loop);
     }
   },
   stopAnimation: function(animationName) {
-    if (this.LoadedAnimations[animationName] != undefined) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation != undefined) {
       this.LoadedAnimations[animationName].stop();
+      switch (animation.DeviceType) {
+        case EChromaSDKDeviceTypeEnum.DE_1D:
+          ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = undefined;
+          break;
+        case EChromaSDKDeviceTypeEnum.DE_2D:
+          ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = undefined;
+          break;
+      }
     }
-    ChromaAnimation.PlayingAnimations[animationName] = undefined;
   },
   closeAnimation: function(animationName) {
     if (this.LoadedAnimations[animationName] != undefined) {
@@ -1026,9 +1092,17 @@ var ChromaAnimation = {
     this.UseIdleAnimation = flag;
   },
   setIdleAnimation: function(animationName) {
-    this.IdleAnimationName = animationName;
     if (this.LoadedAnimations[animationName] == undefined) {
-      this.openAnimation(animationName);
+      this.openAnimation(animationName, function (animation) {
+        switch (animation.DeviceType) {
+          case EChromaSDKDeviceTypeEnum.DE_1D:
+            ChromaAnimation.IdleAnimation1D[animation.Device] = animationName;
+            break;
+          case EChromaSDKDeviceTypeEnum.DE_2D:
+            ChromaAnimation.IdleAnimation2D[animation.Device] = animationName;
+            break;
+        }
+      });
     }
   },
   getIdleAnimation: function() {
@@ -4654,7 +4728,7 @@ ChromaAnimation1D.prototype = {
   	if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
   	  ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
   	}
-    ChromaAnimation.PlayingAnimations[this.Name] = undefined;
+    ChromaAnimation.PlayingAnimations1D[this.Device][this.Name] = undefined;
   },
   isPlaying: function() {
     return this.IsPlaying;
@@ -4664,7 +4738,7 @@ ChromaAnimation1D.prototype = {
     this.IsPlaying = true;
     ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
     ChromaAnimation.LoadedAnimations1D[this.Device] = this;
-    ChromaAnimation.PlayingAnimations[this.Name] = this;
+    ChromaAnimation.PlayingAnimations1D[this.Device][this.Name] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
     //console.log('play:', this.Name);
@@ -4882,7 +4956,7 @@ ChromaAnimation2D.prototype = {
   	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
   	  ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
   	}
-    ChromaAnimation.PlayingAnimations[this.Name] = undefined;
+    ChromaAnimation.PlayingAnimations2D[this.Device][this.Name] = undefined;
   },
   isPlaying: function() {
     return this.IsPlaying;
@@ -4892,7 +4966,7 @@ ChromaAnimation2D.prototype = {
     this.IsPlaying = true;
     ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
     ChromaAnimation.LoadedAnimations2D[this.Device] = this;
-    ChromaAnimation.PlayingAnimations[this.Name] = this;
+    ChromaAnimation.PlayingAnimations2D[this.Device][this.Name] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
     //console.log('play:', this.Name);
