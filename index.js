@@ -194,7 +194,7 @@ function drawKeyboard(canvasName, animationName, loop) {
   }
 
   // play idle animation for non-looping animations
-  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimationName);
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard]);
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
