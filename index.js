@@ -154,8 +154,15 @@ onPageUnload = function () {
     chromaSDK.uninit()
   }
 };
-exampleReset = function () {
-  ChromaAnimation.useIdleAnimation(false);
+exampleReset = function (ignoreUseIdleAnimation) {
+  if (ignoreUseIdleAnimation != true) {
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_ChromaLink, false);
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Headset, false);
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Keyboard, false);
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Keypad, false);
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Mouse, false);
+    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Mousepad, false);
+  }
   if (exampleInterval != undefined) {
     clearInterval(exampleInterval);
     exampleInterval = undefined;
@@ -210,7 +217,7 @@ function drawKeyboard(canvasName, animationName, loop) {
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation &&
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;
@@ -469,7 +476,7 @@ function drawChromaLink(canvasName, animationName, loop) {
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation &&
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;
@@ -644,7 +651,7 @@ function drawHeadset(canvasName, animationName, loop) {
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation &&
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;
@@ -747,7 +754,7 @@ function drawMouse(canvasName, animationName, loop) {
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation &&
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;
@@ -887,7 +894,7 @@ function drawMousepad(canvasName, animationName, loop)  {
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation &&
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;

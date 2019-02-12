@@ -741,12 +741,21 @@ var ChromaAnimation = {
   LoadedAnimations2D: {},
   PlayingAnimations1D: {},
   PlayingAnimations2D: {},
-  UseIdleAnimation: false,
+  UseIdleAnimation1D: {},
+  UseIdleAnimation2D: {},
   IdleAnimation1D: {},
   IdleAnimation2D: {},
   IntervalUpdateFrame: undefined,
   updateFrame: function() {
     if (ChromaAnimation.IntervalUpdateFrame == undefined) {
+
+      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = false;
+      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = false;
+      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = false;
+      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] = false;
+      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = false;
+      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = false;
+
       ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = {};
       ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = {};
       ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = {};
@@ -780,7 +789,7 @@ var ChromaAnimation = {
 
       // play idle animation if no other animations are playing
       if (useIdleAnimation &&
-        ChromaAnimation.UseIdleAnimation &&
+        ChromaAnimation.UseIdleAnimation1D[device] &&
         idleAnimation != undefined) {
         idleAnimation.playFrame();
       }
@@ -803,7 +812,7 @@ var ChromaAnimation = {
 
       // play idle animation if no other animations are playing
       if (useIdleAnimation &&
-        ChromaAnimation.UseIdleAnimation &&
+        ChromaAnimation.UseIdleAnimation2D[device] &&
         idleAnimation != undefined) {
         idleAnimation.playFrame();
       }
@@ -1088,8 +1097,27 @@ var ChromaAnimation = {
       this.LoadedAnimations[animationName] = undefined;
     }
   },
-  useIdleAnimation: function(flag) {
-    this.UseIdleAnimation = flag;
+  useIdleAnimation: function(device, flag) {
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = flag;
+        break;
+      case EChromaSDKDeviceEnum.DE_Headset:
+        ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = flag;
+        break;
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = flag;
+        break;
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+        ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] = flag;
+        break;
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = flag;
+        break;
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = flag;
+        break;
+    }
   },
   setIdleAnimation: function(animationName) {
     var animation = ChromaAnimation.LoadedAnimations[animationName];
