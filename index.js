@@ -456,10 +456,10 @@ function drawChromaLink(canvasName, animationName, loop) {
     return;
   }
 
-  var state = stateDisplay.keyboard[canvasName];
+  var state = stateDisplay.chromaLink[canvasName];
   if (state == undefined) {
     state = {};
-    stateDisplay.keyboard[canvasName] = state;
+    stateDisplay.chromaLink[canvasName] = state;
     state.FrameId = 0;
     state.Delay = undefined;
     state.Loop = loop;
@@ -620,7 +620,7 @@ function drawChromaLink2(canvasName, animationName) {
     drawChromaLink(canvasName, animationName);
   }, duration * 1000);
 }
-function drawHeadset(canvasName, animationName) {
+function drawHeadset(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
@@ -630,6 +630,31 @@ function drawHeadset(canvasName, animationName) {
   if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_1D ||
     animation.Device != EChromaSDKDevice1DEnum.DE_Headset) {
     return;
+  }
+
+  var state = stateDisplay.headset[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.headset[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
+
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset]);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
+    }
   }
 
   var canvas = document.getElementById(canvasName);
@@ -644,19 +669,22 @@ function drawHeadset(canvasName, animationName) {
   ctx.stroke();
 
   var map = [];
-  map[0] = [105, 0, 105, 214];
-  map[1] = [0, 0, 105, 214];
-  map[2] = [0, 0, 0, 0];
-  map[3] = [0, 0, 0, 0];
-  map[4] = [0, 0, 0, 0];
+  var setupMapping = function() {
+    map[0] = [105, 0, 105, 214];
+    map[1] = [0, 0, 105, 214];
+    map[2] = [0, 0, 0, 0];
+    map[3] = [0, 0, 0, 0];
+    map[4] = [0, 0, 0, 0];
+  };
+  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
-  var frameId = animation.CurrentIndex;
+  var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
     //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
+    var frame = animation.Frames[frameId];
     var colors = frame.Colors;
 
     for (var led = 0; led < 2; ++led) {
@@ -681,8 +709,19 @@ function drawHeadset(canvasName, animationName) {
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
   setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawHeadset(canvasName, animationName);
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
+    drawHeadset(canvasName, animationName, loop);
   }, duration * 1000);
 }
 function drawMouse(canvasName, animationName) {
