@@ -3309,7 +3309,7 @@ var ChromaAnimation = {
             if (j >= maxLeds) {
               continue;
             }
-            frame.Colors[i] = copyFrame.Colors[i][j];
+            frame.Colors[j] = copyFrame.Colors[i][j];
           }
         }
         frame.Duration = copyFrame.Duration;
