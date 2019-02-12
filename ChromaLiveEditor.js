@@ -835,3 +835,54 @@ function downloadMousepadAnimation(index) {
 function downloadKeyboardTableAnimation(index) {
   downloadTableAnimation(index, 'Keyboard');
 }
+
+function convertAnimation(index, deviceType, targetDeviceType) {
+  var canvasName = 'canvas'+deviceType+'ShowEffect'+index;
+  var sourceAnimation = ChromaAnimation.getAnimation(canvasName)
+  if (sourceAnimation == undefined) {
+    return;
+  }
+  var targetName = 'canvas'+targetDeviceType+'ShowEffect'+index;
+  //console.log(canvasName, sourceAnimation);
+  var data = undefined;
+  switch (targetDeviceType) {
+    case 'ChromaLink':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_ChromaLink);
+      break;
+    case 'Headset':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_Headset);
+      break;
+    case 'Mousepad':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_Mousepad);
+      break;
+    case 'Keyboard':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Keyboard);
+      break;
+    case 'Keypad':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Keypad);
+      break;
+    case 'Mouse':
+      data = ChromaAnimation.convertAnimation(canvasName, targetName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Mouse);
+      break;
+  }
+  if (data == undefined) {
+    return;
+  }
+  var uriContent = URL.createObjectURL(data.saveAnimation());
+  var lnkDownload = document.getElementById('lnkDownload');
+  lnkDownload.download = 'ShowEffect'+index+'_'+targetDeviceType+'.chroma';
+  lnkDownload.href = uriContent;
+  lnkDownload.click();
+}
+function convertChromaLinkAnimation(index) {
+  convertAnimation(index, 'Keyboard', 'ChromaLink');
+}
+function convertHeadsetAnimation(index) {
+  convertAnimation(index, 'Keyboard', 'Headset');
+}
+function convertMouseAnimation(index) {
+  convertAnimation(index, 'Keyboard', 'Mouse');
+}
+function convertMousepadAnimation(index) {
+  convertAnimation(index, 'Keyboard', 'Mousepad');
+}

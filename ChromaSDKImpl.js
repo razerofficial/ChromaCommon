@@ -3278,6 +3278,90 @@ var ChromaAnimation = {
       this.LoadedAnimations[newAnimationName] = newAnimation;
     }
   },
+  convertAnimation: function(animationName, newAnimationName, newDeviceType, newDevice) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    if (animation.Frames.length == 0) {
+      console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
+      return;
+    }
+    ChromaAnimation.closeAnimation(newAnimationName);
+    var frames = [];
+    var frameCount = animation.Frames.length;
+
+    // this only converts keyboard frames to *.*
+    var keyboardMaxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var keyboardMaxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+
+    if (newDeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var maxLeds = ChromaAnimation.getMaxLeds(newDevice);
+        var frame = new ChromaAnimationFrame1D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < keyboardMaxRow; ++i) {
+          if (i >= 1) {
+            continue;
+          }
+          for (var j = 0; j < keyboardMaxColumn; ++j) {
+            if (j >= maxLeds) {
+              continue;
+            }
+            frame.Colors[i] = copyFrame.Colors[i][j];
+          }
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
+      }
+
+      var newAnimation = new ChromaAnimation1D();
+      newAnimation.Name = newAnimationName;
+      newAnimation.Device = newDevice;
+      newAnimation.DeviceType = newDeviceType;
+      newAnimation.Frames = frames;
+      this.LoadedAnimations[newAnimationName] = newAnimation;
+      return newAnimation;
+    } else if (newDeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        var copyFrame = animation.Frames[frameId];
+        var maxRow = ChromaAnimation.getMaxRow(newDevice);
+        var maxColumn = ChromaAnimation.getMaxColumn(newDevice);
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < keyboardMaxRow || i < maxRow; ++i) {
+          if (i >= maxRow) {
+            continue;
+          }
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < keyboardMaxColumn || j < maxColumn; ++j) {
+            if (j >= maxColumn) {
+              continue;
+            }
+            var color = undefined;
+            if (i >= keyboardMaxRow ||
+              j >= keyboardMaxColumn) {
+              color = 0;
+            } else {
+              color = copyFrame.Colors[i][j];
+            }
+            frame.Colors[i][j] = color;
+          }
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
+      }
+
+      var newAnimation = new ChromaAnimation2D();
+      newAnimation.Name = newAnimationName;
+      newAnimation.Device = newDevice;
+      newAnimation.DeviceType = newDeviceType;
+      newAnimation.Frames = frames;
+      this.LoadedAnimations[newAnimationName] = newAnimation;
+      return newAnimation;
+    }
+  },
   createAnimation: function(animationName, deviceType, device) {
     this.closeAnimation(animationName);
     var frames = [];
