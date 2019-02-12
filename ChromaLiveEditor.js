@@ -98,6 +98,13 @@ Vue.component('div-chroma-set', {
         <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
       </td>
       <td colspan="4">
+        <small>Download:
+        <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
+        <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
+        <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
+        <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
+        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+        </small><br/>
         <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas><br/>
         <canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas><br/>
         <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>

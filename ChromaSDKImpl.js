@@ -2702,18 +2702,16 @@ var ChromaAnimation = {
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-    var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var oldColor = row[j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var oldColor = colors[i];
           var red = oldColor & 0xFF;
           var green = (oldColor & 0xFF00) >> 8;
           var blue = (oldColor & 0xFF0000) >> 16;
@@ -2723,11 +2721,43 @@ var ChromaAnimation = {
             if (red <= minThreshold &&
               green <= minThreshold &&
               blue <= minThreshold) {
-              row[j] = minColor;
+              colors[i] = minColor;
             } else if (red >= maxThreshold ||
               green >= maxThreshold ||
               blue >= maxThreshold) {
-              row[j] = maxColor;
+              colors[i] = maxColor;
+            }
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var oldColor = row[j];
+            var red = oldColor & 0xFF;
+            var green = (oldColor & 0xFF00) >> 8;
+            var blue = (oldColor & 0xFF0000) >> 16;
+            if (red != 0 ||
+              green != 0 ||
+              blue != 0) {
+              if (red <= minThreshold &&
+                green <= minThreshold &&
+                blue <= minThreshold) {
+                row[j] = minColor;
+              } else if (red >= maxThreshold ||
+                green >= maxThreshold ||
+                blue >= maxThreshold) {
+                row[j] = maxColor;
+              }
             }
           }
         }
