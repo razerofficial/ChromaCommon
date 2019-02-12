@@ -70,8 +70,8 @@ Vue.component('div-chroma-set', {
     <tr><td align="empty"><button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button></td><td colspan="4"><canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas></td></tr>
     <tr><td align="empty">
       <button class="buttonHeadset" :id="'showEffect'+index+'Headset'">1</button>
-       <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
-       <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
+      <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
+      <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
      </td><td colspan="4">
        <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
        <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
@@ -84,6 +84,27 @@ Vue.component('div-chroma-set', {
     props: [ 'index' ],
     template: `
     <tr v-show="index != undefined && index != ''"><td align="center" width="250px"><a :name="index"></a><button class="buttonChroma" :id="'showTableEffect'+index">{{ '+'+index }}</button></td><td colspan="4"><canvas :id="'canvasKeyboardShowTableEffect'+index" class="canvasKeyboard" width="640" height="214"></canvas></td></tr>
+    `});
+
+  Vue.component('tr-chroma-set', {
+    props: [ 'index' ],
+    template: `
+    <tr v-show="index != undefined && index != ''">
+      <td align="center" width="250px"><a :name="index"></a>
+        <button class="buttonChroma" :id="'showEffect'+index">{{ '+'+index }}</button>
+        <button class="buttonChromaLink" :id="'showEffect'+index+'ChromaLink'">1</button>
+        <button class="buttonHeadset" :id="'showEffect'+index+'Headset'">1</button>
+        <button class="buttonMousepad" :id="'showEffect'+index+'Mousepad'">1</button>
+        <button class="buttonMouse" :id="'showEffect'+index+'Mouse'">1</button>
+      </td>
+      <td colspan="4">
+        <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas><br/>
+        <canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas><br/>
+        <canvas class="canvasHeadset" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
+        <canvas class="canvasMousepad" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
+        <canvas class="canvasMouse" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
+      </td>
+    </tr>
     `});
 
   Vue.component('block-chroma-keyboard', {
@@ -718,9 +739,19 @@ openLiveEditor = function(canvas, buttonName) {
   editButton = document.getElementById(buttonName);
   if (editButton == undefined) {
     console.error(buttonName, 'could not be found!');
+    return;
   }
   editCanvas = canvas;
   var panel = document.getElementById('editPanel');
+  if (panel == undefined ||
+    panel.style == undefined) {
+    console.error('editPanel', 'could not be found!');
+    return;
+  }
+  if (editButton.onclick == undefined) {
+    console.error(buttonName, 'does not have a click event');
+    return;
+  }
   var editText = editButton.onclick.toString();
   if (panel.style.display == "none" ||
     vue._data.editText != editText) {

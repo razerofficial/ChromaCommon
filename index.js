@@ -176,21 +176,33 @@ var canvasTimers = {
   mouse: [],
   mousepad: []
 };
-var stateDisplay = [];
+var stateDisplay = {
+  chromaLink: [],
+  headset: [],
+  keyboard: [],
+  keypad: [],
+  mouse: [],
+  mousepad: []
+};
 function drawKeyboard(canvasName, animationName, loop) {
-
-  var state = stateDisplay[canvasName];
-  if (state == undefined) {
-    state = {};
-    stateDisplay[canvasName] = state;
-    state.FrameId = 0;
-    state.Delay = undefined;
-    state.Loop = loop;
-  }
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
     return;
+  }
+
+  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+    animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    return;
+  }
+
+  var state = stateDisplay.keyboard[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.keyboard[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
   }
 
   // play idle animation for non-looping animations
@@ -207,11 +219,6 @@ function drawKeyboard(canvasName, animationName, loop) {
       animation = idleAnimation;
       usingIdle = true;
     }
-  }
-
-  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-    animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-    return;
   }
 
   var canvas = document.getElementById(canvasName);
@@ -437,7 +444,7 @@ function drawKeyboard(canvasName, animationName, loop) {
   }, duration * 1000);
   canvasTimers.keyboard[canvasName] = timer;
 }
-function drawChromaLink(canvasName, animationName) {
+function drawChromaLink(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
@@ -447,6 +454,31 @@ function drawChromaLink(canvasName, animationName) {
   if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_1D ||
     animation.Device != EChromaSDKDevice1DEnum.DE_ChromaLink) {
     return;
+  }
+
+  var state = stateDisplay.keyboard[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.keyboard[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
+
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink]);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
+    }
   }
 
   var canvas = document.getElementById(canvasName);
@@ -461,19 +493,22 @@ function drawChromaLink(canvasName, animationName) {
   ctx.stroke();
 
   var map = [];
-  map[0] = [0, 0, 128, 50];
-  map[1] = [128, 0, 128, 50];
-  map[2] = [256, 0, 128, 50];
-  map[3] = [384, 0, 128, 50];
-  map[4] = [512, 0, 128, 50];
+  var setupMapping = function() {
+    map[0] = [0, 0, 128, 50];
+    map[1] = [128, 0, 128, 50];
+    map[2] = [256, 0, 128, 50];
+    map[3] = [384, 0, 128, 50];
+    map[4] = [512, 0, 128, 50];
+  };
+  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
-  var frameId = animation.CurrentIndex;
+  var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
     //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
+    var frame = animation.Frames[state.FrameId];
     var colors = frame.Colors;
 
     for (var led = 0; led < 5; ++led) {
@@ -498,8 +533,19 @@ function drawChromaLink(canvasName, animationName) {
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
   setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawChromaLink(canvasName, animationName);
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
+    drawChromaLink(canvasName, animationName, loop);
   }, duration * 1000);
 }
 function drawChromaLink2(canvasName, animationName) {
@@ -838,39 +884,39 @@ displayKeyboardCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayChromaLinkCanvas = function(baseLayer, effectName) {
+displayChromaLinkCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasChromaLink' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawChromaLink(canvasName, canvasName);
+    drawChromaLink(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
-displayHeadsetCanvas = function(baseLayer, effectName) {
+displayHeadsetCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasHeadset' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawHeadset(canvasName, canvasName);
+    drawHeadset(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
-displayMouseCanvas = function(baseLayer, effectName) {
+displayMouseCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasMouse' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawMouse(canvasName, canvasName);
+    drawMouse(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
-displayMousepadCanvas = function(baseLayer, effectName) {
+displayMousepadCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasMousepad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawMousepad(canvasName, canvasName);
+    drawMousepad(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
@@ -891,16 +937,16 @@ handleButtonClick = function(button) {
     }
   }
 }
-displayAndPlayAnimationChromaLink = function (baseLayer, canvasName) {
-  displayChromaLinkCanvas(baseLayer, canvasName);
+displayAndPlayAnimationChromaLink = function (baseLayer, canvasName, loop) {
+  displayChromaLinkCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
-    ChromaAnimation.playAnimation(baseLayer, true);
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
-displayAndPlayAnimationHeadset = function (baseLayer, canvasName) {
-  displayHeadsetCanvas(baseLayer, canvasName);
+displayAndPlayAnimationHeadset = function (baseLayer, canvasName, loop) {
+  displayHeadsetCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
-    ChromaAnimation.playAnimation(baseLayer, true);
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
 displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
@@ -909,15 +955,15 @@ displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
-displayAndPlayAnimationMouse = function (baseLayer, canvasName) {
-  displayMouseCanvas(baseLayer, canvasName);
+displayAndPlayAnimationMouse = function (baseLayer, canvasName, loop) {
+  displayMouseCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
-    ChromaAnimation.playAnimation(baseLayer, true);
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
-displayAndPlayAnimationMousepad = function (baseLayer, canvasName) {
-  displayMousepadCanvas(baseLayer, canvasName);
+displayAndPlayAnimationMousepad = function (baseLayer, canvasName, loop) {
+  displayMousepadCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
-    ChromaAnimation.playAnimation(baseLayer, true);
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
 }
