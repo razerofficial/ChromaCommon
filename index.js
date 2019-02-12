@@ -1041,7 +1041,7 @@ displayMousepadCanvas = function(baseLayer, effectName, loop) {
 }
 //display canvases
 var setupComplete = false;
-handleButtonClick = function(button) {
+var handleButtonClick = function(button) {
   if (setupComplete) {
   // when user clicks button, invoke the callback after Chroma has initialized
     if (!initialized) {
@@ -1055,34 +1055,66 @@ handleButtonClick = function(button) {
       }, 100);
     }
   }
-}
-displayAndPlayAnimationChromaLink = function (baseLayer, canvasName, loop) {
+};
+var displayAndPlayAnimationChromaLink = function (baseLayer, canvasName, loop) {
   displayChromaLinkCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
-}
-displayAndPlayAnimationHeadset = function (baseLayer, canvasName, loop) {
+};
+var displayAndPlayAnimationHeadset = function (baseLayer, canvasName, loop) {
   displayHeadsetCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
-}
-displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
+};
+var displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
   displayKeyboardCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
-}
-displayAndPlayAnimationMouse = function (baseLayer, canvasName, loop) {
+};
+var displayAndPlayAnimationMouse = function (baseLayer, canvasName, loop) {
   displayMouseCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
-}
-displayAndPlayAnimationMousepad = function (baseLayer, canvasName, loop) {
+};
+var displayAndPlayAnimationMousepad = function (baseLayer, canvasName, loop) {
   displayMousepadCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
-}
+};
+var displayAndPlayAnimation = function (baseLayer, canvasName, loop) {
+  var animation = ChromaAnimation.getAnimation(baseLayer);
+  if (animation == undefined) {
+    return;
+  }
+
+  if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+    switch (animation.Device) {
+      case EChromaSDKDevice1DEnum.DE_ChromaLink:
+        displayAndPlayAnimationChromaLink(baseLayer, canvasName, loop);
+        break;
+      case EChromaSDKDevice1DEnum.DE_Headset:
+        displayAndPlayAnimationHeadset(baseLayer, canvasName, loop);
+        break;
+      case EChromaSDKDevice1DEnum.DE_Mousepad:
+        displayAndPlayAnimationMousepad(baseLayer, canvasName, loop);
+        break;
+    }
+  } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+        displayAndPlayAnimationKeyboard(baseLayer, canvasName, loop);
+        break;
+      case EChromaSDKDevice2DEnum.DE_Keypad:
+        displayAndPlayAnimationKeypad(baseLayer, canvasName, loop);
+        break;
+      case EChromaSDKDevice2DEnum.DE_Mouse:
+        displayAndPlayAnimationMouse(baseLayer, canvasName, loop);
+        break;
+    }
+  }
+};
