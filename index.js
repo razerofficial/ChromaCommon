@@ -368,7 +368,6 @@ function drawKeyboard(canvasName, animationName, loop) {
   var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
   //console.log('frameId', frameId);
   if (state.FrameId >= 0 && state.FrameId < frameCount) {
-    //var frame = animation.Frames[frameId];
     var frame = animation.Frames[state.FrameId];
     var colors = frame.Colors;
 
@@ -507,7 +506,6 @@ function drawChromaLink(canvasName, animationName, loop) {
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
   var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
     var frame = animation.Frames[state.FrameId];
     var colors = frame.Colors;
 
@@ -683,7 +681,6 @@ function drawHeadset(canvasName, animationName, loop) {
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
   var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
     var frame = animation.Frames[frameId];
     var colors = frame.Colors;
 
@@ -724,7 +721,7 @@ function drawHeadset(canvasName, animationName, loop) {
     drawHeadset(canvasName, animationName, loop);
   }, duration * 1000);
 }
-function drawMouse(canvasName, animationName) {
+function drawMouse(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
@@ -734,6 +731,31 @@ function drawMouse(canvasName, animationName) {
   if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
     animation.Device != EChromaSDKDevice2DEnum.DE_Mouse) {
     return;
+  }
+
+  var state = stateDisplay.mouse[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.mouse[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
+
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse]);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
+    }
   }
 
   var canvas = document.getElementById(canvasName);
@@ -753,41 +775,43 @@ function drawMouse(canvasName, animationName) {
   var y;
 
   var map = {};
-  map[Mouse.RZLED2.RZLED2_SCROLLWHEEL] = [285, 59, 97, 112];
-  map[Mouse.RZLED2.RZLED2_LOGO] = [256, 365, 111, 118];
-  map[Mouse.RZLED2.RZLED2_BACKLIGHT] = [0, 0, 0, 0];
-  x = 160;
-  y = 86;
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_LEFT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_BOTTOM1] = [0, 0, 0, 0];
-  map[Mouse.RZLED2.RZLED2_BOTTOM2] = [0, 0, 0, 0];
-  map[Mouse.RZLED2.RZLED2_BOTTOM3] = [0, 0, 0, 0];
-  map[Mouse.RZLED2.RZLED2_BOTTOM4] = [0, 0, 0, 0];
-  map[Mouse.RZLED2.RZLED2_BOTTOM5] = [0, 0, 0, 0];
-  x = 426;
-  y = 86;
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
-  map[Mouse.RZLED2.RZLED2_RIGHT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
+  var setupMapping = function() {
+    map[Mouse.RZLED2.RZLED2_SCROLLWHEEL] = [285, 59, 97, 112];
+    map[Mouse.RZLED2.RZLED2_LOGO] = [256, 365, 111, 118];
+    map[Mouse.RZLED2.RZLED2_BACKLIGHT] = [0, 0, 0, 0];
+    x = 160;
+    y = 86;
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_LEFT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_BOTTOM1] = [0, 0, 0, 0];
+    map[Mouse.RZLED2.RZLED2_BOTTOM2] = [0, 0, 0, 0];
+    map[Mouse.RZLED2.RZLED2_BOTTOM3] = [0, 0, 0, 0];
+    map[Mouse.RZLED2.RZLED2_BOTTOM4] = [0, 0, 0, 0];
+    map[Mouse.RZLED2.RZLED2_BOTTOM5] = [0, 0, 0, 0];
+    x = 426;
+    y = 86;
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
+    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
+  };
+  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
   var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
-  var frameId = animation.CurrentIndex;
+  var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
+    var frame = animation.Frames[frameId];
     var colors = frame.Colors;
 
     for (var led in Mouse.RZLED2) {
@@ -822,11 +846,22 @@ function drawMouse(canvasName, animationName) {
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
   setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawMouse(canvasName, animationName);
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
+    drawMouse(canvasName, animationName, loop);
   }, duration * 1000);
 }
-function drawMousepad(canvasName, animationName)  {
+function drawMousepad(canvasName, animationName, loop)  {
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
@@ -836,6 +871,31 @@ function drawMousepad(canvasName, animationName)  {
   if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_1D ||
     animation.Device != EChromaSDKDevice1DEnum.DE_Mousepad) {
     return;
+  }
+
+  var state = stateDisplay.mousepad[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.mousepad[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
+
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad]);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
+    }
   }
 
   var canvas = document.getElementById(canvasName);
@@ -855,33 +915,35 @@ function drawMousepad(canvasName, animationName)  {
   var y;
 
   var map = [];
-  map[0] = [515, 0, 124, 124];
-  x = 639 - regionWidth;
-  y = 124;
-  map[1] = [x, y, regionWidth, regionHeight];
-  map[2] = [x, y += regionHeight, regionWidth, regionHeight];
-  map[3] = [x, y += regionHeight, regionWidth, regionHeight];
-  map[4] = [x, y += regionHeight, regionWidth, regionHeight];
-  map[5] = [x -= regionWidth, y, regionWidth, regionHeight];
-  regionWidth = 95;
-  map[6] = [x -= regionWidth, y, regionWidth, regionHeight];
-  map[7] = [x -= regionWidth, y, regionWidth, regionHeight];
-  map[8] = [x -= regionWidth, y, regionWidth, regionHeight];
-  map[9] = [x -= regionWidth, y, regionWidth, regionHeight];
-  map[10] = [x -= regionWidth, y, regionWidth, regionHeight];
-  regionHeight = 90;
-  map[11] = [x, y -= regionHeight, regionWidth, regionHeight];
-  map[12] = [x, y -= regionHeight, regionWidth, regionHeight];
-  map[13] = [x, y -= regionHeight, regionWidth, regionHeight];
-  map[14] = [x, y -= regionHeight, regionWidth, regionHeight];
+  var setupMapping = function() {
+    map[0] = [515, 0, 124, 124];
+    x = 639 - regionWidth;
+    y = 124;
+    map[1] = [x, y, regionWidth, regionHeight];
+    map[2] = [x, y += regionHeight, regionWidth, regionHeight];
+    map[3] = [x, y += regionHeight, regionWidth, regionHeight];
+    map[4] = [x, y += regionHeight, regionWidth, regionHeight];
+    map[5] = [x -= regionWidth, y, regionWidth, regionHeight];
+    regionWidth = 95;
+    map[6] = [x -= regionWidth, y, regionWidth, regionHeight];
+    map[7] = [x -= regionWidth, y, regionWidth, regionHeight];
+    map[8] = [x -= regionWidth, y, regionWidth, regionHeight];
+    map[9] = [x -= regionWidth, y, regionWidth, regionHeight];
+    map[10] = [x -= regionWidth, y, regionWidth, regionHeight];
+    regionHeight = 90;
+    map[11] = [x, y -= regionHeight, regionWidth, regionHeight];
+    map[12] = [x, y -= regionHeight, regionWidth, regionHeight];
+    map[13] = [x, y -= regionHeight, regionWidth, regionHeight];
+    map[14] = [x, y -= regionHeight, regionWidth, regionHeight];
+  };
+  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
-  var frameId = animation.CurrentIndex;
+  var frameId = state.FrameId;
   if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
+    var frame = animation.Frames[frameId];
     var colors = frame.Colors;
 
     for (var led = 0; led < maxLeds; ++led) {
@@ -910,8 +972,19 @@ function drawMousepad(canvasName, animationName)  {
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
   setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawMousepad(canvasName, animationName);
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
+    drawMousepad(canvasName, animationName, loop);
   }, duration * 1000);
 }
 displayKeyboardCanvas = function(baseLayer, effectName, loop) {
