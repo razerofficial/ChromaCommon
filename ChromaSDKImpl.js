@@ -2591,17 +2591,15 @@ var ChromaAnimation = {
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var color = ChromaAnimation.getRGB(red, green, blue);
-    //console.log(animation.Frames);
-    if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var oldColor = row[j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      var color = ChromaAnimation.getRGB(red, green, blue);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var oldColor = colors[i];
           var red = oldColor & 0xFF;
           var green = (oldColor & 0xFF00) >> 8;
           var blue = (oldColor & 0xFF0000) >> 16;
@@ -2611,7 +2609,33 @@ var ChromaAnimation = {
             red <= threshold &&
             green <= threshold &&
             blue <= threshold) {
-            row[j] = color;
+            colors[i] = color;
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      var color = ChromaAnimation.getRGB(red, green, blue);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var oldColor = row[j];
+            var red = oldColor & 0xFF;
+            var green = (oldColor & 0xFF00) >> 8;
+            var blue = (oldColor & 0xFF0000) >> 16;
+            if ((red != 0 ||
+              green != 0 ||
+              blue != 0) &&
+              red <= threshold &&
+              green <= threshold &&
+              blue <= threshold) {
+              row[j] = color;
+            }
           }
         }
       }
