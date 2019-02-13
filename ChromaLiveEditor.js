@@ -14,12 +14,19 @@ Vue.component('div-chroma-set', {
         <div style="width: 550px; display: inline-table">{{ header }}</div>
       </div>
       <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
+        <small>
         Download:
         <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
         <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
         <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
         <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
-        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
+        Convert:
+          <a name="link" :onclick="'convertChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
+          <a name="link" :onclick="'convertHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
+          <a name="link" :onclick="'convertMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
+          <a name="link" :onclick="'convertMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
+        </small>
       </section>
       <section v-show="image != undefined && image != ''">
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
