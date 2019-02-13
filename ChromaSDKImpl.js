@@ -3545,25 +3545,43 @@ var ChromaAnimation = {
       return;
     }
     var frames = [];
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    var frameCount = animation.Frames.length;
-    for (var frameId = 0; frameId < frameCount; ++frameId) {
-      if (frameId % n == 0) {
-        continue;
-      }
-      var copyFrame = animation.Frames[frameId];
-      var frame = new ChromaAnimationFrame2D();
-      frame.Colors = new Array(maxRow);
-      for (var i = 0; i < maxRow; ++i) {
-        frame.Colors[i] = new Array(maxColumn);
-        for (var j = 0; j < maxColumn; ++j) {
-          frame.Colors[i][j] = copyFrame.Colors[i][j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      var frameCount = animation.Frames.length;
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        if (frameId % n == 0) {
+          continue;
         }
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame1D();
+        frame.Colors = new Array(maxLeds);
+        for (var i = 0; i < maxLeds; ++i) {
+          frame.Colors[i] = copyFrame.Colors[i];
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
       }
-      frame.Duration = copyFrame.Duration;
-      frames.push(frame);
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      var frameCount = animation.Frames.length;
+      for (var frameId = 0; frameId < frameCount; ++frameId) {
+        if (frameId % n == 0) {
+          continue;
+        }
+        var copyFrame = animation.Frames[frameId];
+        var frame = new ChromaAnimationFrame2D();
+        frame.Colors = new Array(maxRow);
+        for (var i = 0; i < maxRow; ++i) {
+          frame.Colors[i] = new Array(maxColumn);
+          for (var j = 0; j < maxColumn; ++j) {
+            frame.Colors[i][j] = copyFrame.Colors[i][j];
+          }
+        }
+        frame.Duration = copyFrame.Duration;
+        frames.push(frame);
+      }
     }
     animation.Frames = frames;
   },
