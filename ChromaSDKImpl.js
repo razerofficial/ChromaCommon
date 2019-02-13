@@ -1151,10 +1151,6 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return;
-    }
     animation.Frames = animation.Frames.reverse();
   },
   setKeysColor: function(animationName, frameId, keys, color) {
