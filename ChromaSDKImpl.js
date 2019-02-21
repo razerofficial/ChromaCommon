@@ -3190,7 +3190,7 @@ var ChromaAnimation = {
       var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
         var sourceFrame = sourceFrames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = sourceFrame.Colors[i];
@@ -3198,7 +3198,6 @@ var ChromaAnimation = {
         frame.Duration = sourceFrame.Duration;
         targetFrames.push(frame);
       }
-      sourceAnimation.Frames = frames;
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
       var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
       var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
@@ -3232,7 +3231,7 @@ var ChromaAnimation = {
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
       var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = firstFrame.Colors[i];
@@ -3327,7 +3326,7 @@ var ChromaAnimation = {
       var frameCount = animation.Frames.length;
       for (var frameId = 0; frameId < frameCount; ++frameId) {
         var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
@@ -3337,7 +3336,7 @@ var ChromaAnimation = {
       }
       for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
         var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
@@ -3756,7 +3755,7 @@ var ChromaAnimation = {
       var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = color;
