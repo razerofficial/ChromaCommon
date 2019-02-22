@@ -5059,7 +5059,7 @@ ChromaAnimation1D.prototype = {
     }
   },
   playFrame: function() {
-    if (animation.FrameTime < Date.now()) {
+    if (this.FrameTime < Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
@@ -5283,7 +5283,7 @@ ChromaAnimation2D.prototype = {
     }
   },
   playFrame: function() {
-    if (animation.FrameTime < Date.now()) {
+    if (this.FrameTime < Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
