@@ -156,12 +156,7 @@ onPageUnload = function () {
 };
 exampleReset = function (ignoreUseIdleAnimation) {
   if (ignoreUseIdleAnimation != true) {
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_ChromaLink, false);
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Headset, false);
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Keyboard, false);
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Keypad, false);
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Mouse, false);
-    ChromaAnimation.useIdleAnimation(EChromaSDKDeviceEnum.DE_Mousepad, false);
+    ChromaAnimation.useIdleAnimations(false);
   }
   if (exampleInterval != undefined) {
     clearInterval(exampleInterval);

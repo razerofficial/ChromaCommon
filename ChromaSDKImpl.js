@@ -749,12 +749,7 @@ var ChromaAnimation = {
   updateFrame: function() {
     if (ChromaAnimation.IntervalUpdateFrame == undefined) {
 
-      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = false;
-      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = false;
-      ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = false;
-      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] = false;
-      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = false;
-      ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = false;
+      ChromaAnimation.useIdleAnimations(false);
 
       ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = {};
       ChromaAnimation.IdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = {};
@@ -1119,6 +1114,14 @@ var ChromaAnimation = {
         break;
     }
   },
+  useIdleAnimations: function(flag) {
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = flag;
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = flag;
+    ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = flag;
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] = flag;
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = flag;
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = flag;
+  },
   setIdleAnimation: function(animationName) {
     var animation = ChromaAnimation.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -1142,9 +1145,6 @@ var ChromaAnimation = {
           break;
       }
     }
-  },
-  getIdleAnimation: function() {
-    return this.IdleAnimationName;
   },
   reverseAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
@@ -5080,6 +5080,9 @@ ChromaAnimation1D.prototype = {
 
       // schedule next frame
       var refThis = this;
+      if (duration < 0.1) {
+        duration = 0.1;
+      }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
@@ -5308,6 +5311,9 @@ ChromaAnimation2D.prototype = {
 
       // schedule next frame
       var refThis = this;
+      if (duration < 0.1) {
+        duration = 0.1;
+      }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
