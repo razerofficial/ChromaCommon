@@ -1,6 +1,12 @@
 <html>
 <head>
-<script src="ChromaSDKImpl.js"></script>
+<script>
+// START *** avoid caching
+var scriptSDK = document.createElement('script');
+scriptSDK.setAttribute('src','../ChromaCommon/ChromaSDKImpl.js?cache=' + Date.now() );
+document.head.appendChild(scriptSDK);
+// END *** avoid caching
+</script>
 <script>
 var onPageLoad = function () { }
 var onPageUnload = function () { }
@@ -449,7 +455,7 @@ setWaterColors = function() {
 }
 generateScript = function() {
   var text = "";
-  var newline = "\r\n";
+  var newline = "\n";
   var baseLayer = "";
   for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
     if (layerId == 0) {
@@ -564,6 +570,11 @@ generateScript = function() {
     text += indent + "});" + newline;
   }
   outputScript.innerText = text;
+  var prev = outputScript.innerHTML;
+  do {
+    prev = outputScript.innerHTML;
+    outputScript.innerHTML = outputScript.innerHTML.replace('&lt;br&gt;', '\r\n');
+  } while (prev != outputScript.innerHTML);
 
   var button = document.getElementById("showEffect"+animationId);
   if (button != undefined) {
