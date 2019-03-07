@@ -455,6 +455,7 @@ vue = new Vue({
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillNonZeroColorAllFramesRGB(', 1);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillZeroColorAllFramesRGB(', 1);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.setKeysColorAllFramesRGB(', 2);
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.offsetColorsAllFrames(', 1);
       }
       editText = lines.join("\n");
       vue._data.editText = editText;
@@ -748,6 +749,7 @@ displayEditComponents = function() {
     parseEditColor(line, 'ChromaAnimation.fillNonZeroColorAllFramesRGB(', 1);
     parseEditColor(line, 'ChromaAnimation.fillZeroColorAllFramesRGB(', 1);
     parseEditColor(line, 'ChromaAnimation.setKeysColorAllFramesRGB(', 2);
+    parseEditColor(line, 'ChromaAnimation.offsetColorsAllFrames(', 1);
 
     parseEditThreshold(line, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 1);
     parseEditThreshold(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 1); //second
