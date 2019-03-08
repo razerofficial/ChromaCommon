@@ -594,6 +594,14 @@ generateScript = function() {
   var canvasName = 'canvasShowEffect'+this.animationId;
   ChromaAnimation.closeAnimation(canvasName);
   eval(text);
+
+  // showTableEffect1.onclick = function () {
+  var onclick = "showEffect"+animationId+".onclick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += "handleButtonClick('showTableEffect'+"+animationId+");\r\n";
+  onclick += text;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
 }
 generateColors = function() {
   if (selectColors.value == "Random") {
