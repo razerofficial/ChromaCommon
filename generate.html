@@ -7,10 +7,14 @@ scriptSDK.setAttribute('src','../ChromaCommon/ChromaSDKImpl.js?cache=' + Date.no
 document.head.appendChild(scriptSDK);
 // END *** avoid caching
 </script>
-<script>
-var onPageLoad = function () { }
-var onPageUnload = function () { }
-</script>
+<script src="../ChromaCommon/Vue/vue.js"></script>
+<!-- import CSS -->
+<link rel="stylesheet" href="../ChromaCommon/Vue/index.css">
+<link rel="stylesheet" href="../ChromaCommon/index.css">
+<!-- import JavaScript -->
+<!-- import JavaScript -->
+<script src="../ChromaCommon/Vue/index.js"></script>
+<script src="../ChromaCommon/Vue/en.js"></script>
 <style>
 body {
   background-color: black;
@@ -61,6 +65,7 @@ td {
 <img name="imgEmulatorMouse" style="display: none" src="emulator/EmulatorMouse.png"/>
 <img name="imgEmulatorMousepad" style="display: none" src="emulator/EmulatorMousepad.png"/>
 <img name="imgEmulator_18_10" style="display: none" src="emulator/Emulator_18_10.png"/>
+
 <h1>Generate Chroma Animations</h1>
 
 <br/><br/>
@@ -115,6 +120,33 @@ Background: <input id="inputBackground" type="checkbox" checked style="width: 50
     </td>
   </tr>
 </table>
+
+<div id="root">
+
+  <div id="editPanel" class="editPanel" style="display: none">
+    <div id="editComponents">
+      <el-select v-for="layer in layers" @change="onLayerChange" v-model="layer.value" placeholder="Select">
+        <el-option v-for="layerOption in layerOptions" :key="layerOption.value" :label="layerOption.label" :value="layerOption.value"></el-option>
+      </el-select><br/>
+      <el-slider v-for="threshold in thresholds" @change="onThresholdChange" v-model="threshold.threshold" :min="0" :max="threshold.max" :step="threshold.step" style="width: 100px; display: inline-table; padding: 10px"></el-slider><br/>
+      <el-color-picker v-for="color in colors" @active-change="onColorChange" v-model="color.color" :predefine="predefineColors"></el-color-picker>
+    </div>
+    <div>
+      <el-input type="textarea" @change="onTextChange" v-model="editText" :rows="100"></el-input>
+    </div>
+  </div>
+
+  <div id="rootAnimations" style="padding: 10px; background: hsl(0, 0%, 25%)"><br/><br/>
+  </div>
+</div>
+
+<script>
+// START *** avoid caching
+var scriptLiveEditor = document.createElement('script');
+scriptLiveEditor.setAttribute('src','../ChromaCommon/ChromaLiveEditor.js?cache=' + Date.now() );
+document.head.appendChild(scriptLiveEditor);
+// END *** avoid caching
+</script>
 
 <script>
 var canvasTimers = [];
@@ -284,48 +316,28 @@ function CreateKeyboardCanvas(animationName) {
     rootAnimations.appendChild(br);
     return;
   }
-  animationName = animationName.substring(0, animationName.length-'_Keyboard.chroma'.length);
-  var tbl = document.createElement('table');
-  tbl.setAttribute('border', '1');
-  tbl.setAttribute('class', 'tableInline');
-  var tr = document.createElement('tr');
-  var baseLayer = 'animations/' + animationName + '_Keyboard.chroma';
-  var td = document.createElement('td');
-  td.innerText = 'showEffect'+animationId;
-  tr.appendChild(td);
-  var td = document.createElement('td');
-  td.setAttribute('class', 'tdEmpty');
-  tr.appendChild(td);
-  tbl.appendChild(tr);
 
-  var tr = document.createElement('tr');
-  var td = document.createElement('td');
-  td.setAttribute('align', 'center');
-  tr.appendChild(td);
-  var button = document.createElement('button');
-  button.setAttribute('id', 'showEffect'+animationId);
-  button.animationId = animationId;
-  button.innerText = animationId;
-  button.onclick = function() {
-    outputScript.innerText = this.chromaSource;
-    var canvasName = 'canvasShowEffect'+this.animationId;
-    ChromaAnimation.playAnimation(canvasName, true);
+  // <div-chroma-set index="1" header="Effect 1"></div-chroma-set>
+  var divChromaSet = document.createElement('div-chroma-set');
+  divChromaSet.setAttribute('index', ""+animationId);
+  divChromaSet.setAttribute('header', "Effect "+animationId);
+  rootAnimations.insertBefore(divChromaSet, rootAnimations.children[0]);
+  var vm = ( new ( Vue.extend(vue) ) ).$mount(divChromaSet);
+
+  // @todo use common code to setup events
+  var canvases = document.getElementsByClassName('canvasKeyboard');
+  for (var i in canvases) {
+    var canvas = canvases[i];
+    if (canvas != undefined &&
+      canvas.id == "canvasKeyboardShowEffect"+animationId &&
+      canvas.getContext != undefined) {
+        var ctx = canvas.getContext("2d");
+        ctx.font = "30px Arial";
+        ctx.fillStyle ='rgb(127, 127, 127)';
+        ctx.fillText("Loading...",225,100);
+        setupLiveEditOnClick(canvas);
+    }
   }
-  td.appendChild(button);
-  var td = document.createElement('td');
-  var canvas = document.createElement('canvas');
-  canvas.setAttribute('id', 'canvasShowEffect'+animationId);
-  canvas.setAttribute('width', '640');
-  canvas.setAttribute('height', '214');
-  var ctx = canvas.getContext("2d");
-  ctx.font = "30px Arial";
-  ctx.fillStyle ='rgb(127, 127, 127)';
-  ctx.fillText("Loading...",225,100);
-  td.appendChild(canvas);
-  tr.appendChild(td);
-  tbl.appendChild(tr);
-
-  rootAnimations.insertBefore(tbl, rootAnimations.children[0]);
 }
 getAnimation = function() {
   var animationGroup = animations;
@@ -558,10 +570,8 @@ generateScript = function() {
   text += indent + "ChromaAnimation.setChromaCustomFlag(baseLayer, true);" + newline;
   text += indent + "ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);" + newline;
   text += indent + "ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);" + newline;
-  text += indent + "ChromaAnimation.playAnimation(baseLayer, true);" + newline;
 
-  text += indent + "ChromaAnimation.closeAnimation('canvasShowEffect"+animationId+"');" + newline;
-  text += indent + "displayCanvas(baseLayer, 'canvasShowEffect"+animationId+"');" + newline;
+  text += indent + "displayAndPlayAnimation(baseLayer, 'ShowEffect"+animationId+"', true);" + newline;
 
   for (var layerId = numberOfLayers - 1; layerId >= 0; --layerId) {
     var indent = "";
@@ -656,355 +666,14 @@ inputAuto.onclick();
 
 <br/><br/>
 
-<div id="rootAnimations"/>
-
-<br/><br/>
-
 </body>
+
 <script>
-// browser function to determine tab is hidden
-// ref: https://stackoverflow.com/questions/7389328/detect-if-browser-tab-has-focus/46719827#46719827
-var browserTabIsVisible = true;
-handleTabVisibility = function() {
-
-  // check the visiblility of the page
-  var hidden, visibilityState, visibilityChange;
-
-  if (typeof document.hidden !== "undefined") {
-      hidden = "hidden", visibilityChange = "visibilitychange", visibilityState = "visibilityState";
-  }
-  else if (typeof document.mozHidden !== "undefined") {
-      hidden = "mozHidden", visibilityChange = "mozvisibilitychange", visibilityState = "mozVisibilityState";
-  }
-  else if (typeof document.msHidden !== "undefined") {
-      hidden = "msHidden", visibilityChange = "msvisibilitychange", visibilityState = "msVisibilityState";
-  }
-  else if (typeof document.webkitHidden !== "undefined") {
-      hidden = "webkitHidden", visibilityChange = "webkitvisibilitychange", visibilityState = "webkitVisibilityState";
-  }
-
-  if (typeof document.addEventListener === "undefined" || typeof hidden === "undefined") {
-      // not supported
-  }
-  else {
-      document.addEventListener(visibilityChange, function() {
-          //console.log('hidden', document[hidden]);
-          //console.log('visibilityState: ', document[visibilityState]);
-
-          switch (document[visibilityState]) {
-          case "visible":
-              // visible
-              browserTabIsVisible = true;
-              break;
-          case "hidden":
-              // hidden
-              browserTabIsVisible = false;
-              break;
-          }
-      }, false);
-  }
-
-};
-// end of browser function
-
-
-var chromaSDK = undefined;
-var initialized = false;
-var exampleInterval = undefined;
-var pageHadFocus = undefined;
-var drawInProgress = false;
-function chromaSetStaticColor(color) {
-  if (!initialized) {
-    console.log('chromaSetStaticColor', 'not initialized!');
-    return;
-  }
-  ChromaAnimation.staticColorAll(color);
-}
-detectWindowFocus = function() {
-  if (browserTabIsVisible == true) {
-    if (pageHadFocus != true) {
-      chromaSDK.init();
-      setTimeout(function() {
-        initialized = true;
-        //console.log('set static color');
-        chromaSetStaticColor(0x808080);
-      }, 100);
-      pageHadFocus = true;
-      //console.log('page has focus');
-    } else {
-      //console.log('page already has focus');
-    }
-  } else {
-    if (pageHadFocus == true) {
-      ChromaAnimation.clearAll();
-      chromaSDK.uninit();
-      pageHadFocus = false;
-      initialized = false;
-      //console.log('page lost focus');
-    }
-  }
-}
-onPageLoad = function () {
-  handleTabVisibility();
-  chromaSDK = new ChromaSDK();
-  detectWindowFocus();
-  setInterval(function() {
-    detectWindowFocus();
-  }, 1000);
-};
-onPageUnload = function () {
-  if (chromaSDK != undefined &&
-    initialized) {
-    chromaSDK.uninit()
-  }
-};
-function lerp (start, end, amt) {
-  return (1-amt)*start+amt*end;
-}
-function lerpColor (from, to, t) {
-  var red = Math.floor(lerp((from & 0xFF), (to & 0xFF), t));
-  var green = Math.floor(lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
-  var blue = Math.floor(lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
-  var color = red | (green << 8) | (blue << 16);
-  return color;
-}
-exampleReset = function () {
-  if (exampleInterval != undefined) {
-    clearInterval(exampleInterval);
-    exampleInterval = undefined;
-  }
-};
-getRGBString = function(red, green, blue) {
-  return "rgb("+red+", "+green+", "+blue+")";
-}
-getRGBAString = function(red, green, blue, alpha) {
-  return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
-}
-function drawKeyboard(canvasName, animationName) {
-
-  var animation = ChromaAnimation.getAnimation(animationName);
-  if (animation == undefined) {
-    return;
-  }
-
-  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-    animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-    return;
-  }
-
-  var canvas = document.getElementById(canvasName);
-  var ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var map = {};
-  map['RZKEY.RZKEY_ESC'] = [46, 5, 27, 28];
-  map['RZKEY.RZKEY_F1'] = [113, 5, 25, 28];
-  map['RZKEY.RZKEY_F2'] = [139, 5, 25, 28];
-  map['RZKEY.RZKEY_F3'] = [165, 5, 25, 28];
-  map['RZKEY.RZKEY_F4'] = [190, 5, 26, 28];
-  map['RZKEY.RZKEY_F5'] = [222, 5, 24, 28];
-  map['RZKEY.RZKEY_F6'] = [248, 5, 24, 28];
-  map['RZKEY.RZKEY_F7'] = [274, 5, 24, 28];
-  map['RZKEY.RZKEY_F8'] = [299, 5, 25, 28];
-  map['RZKEY.RZKEY_F9'] = [330, 5, 25, 28];
-  map['RZKEY.RZKEY_F10'] = [356, 5, 25, 28];
-  map['RZKEY.RZKEY_F11'] = [382, 5, 25, 28];
-  map['RZKEY.RZKEY_F12'] = [407, 5, 25, 28];
-  map['RZKEY.RZKEY_1'] = [72, 37, 26, 25];
-  map['RZKEY.RZKEY_2'] = [98, 37, 25, 25];
-  map['RZKEY.RZKEY_3'] = [124, 37, 25, 25];
-  map['RZKEY.RZKEY_4'] = [150, 37, 25, 25];
-  map['RZKEY.RZKEY_5'] = [176, 37, 24, 25];
-  map['RZKEY.RZKEY_6'] = [202, 37, 24, 25];
-  map['RZKEY.RZKEY_7'] = [228, 37, 24, 25];
-  map['RZKEY.RZKEY_8'] = [253, 37, 25, 25];
-  map['RZKEY.RZKEY_9'] = [279, 37, 25, 25];
-  map['RZKEY.RZKEY_0'] = [305, 37, 25, 25];
-  map['RZKEY.RZKEY_A'] = [92, 89, 25, 25];
-  map['RZKEY.RZKEY_B'] = [208, 114, 25, 26];
-  map['RZKEY.RZKEY_C'] = [156, 114, 26, 26];
-  map['RZKEY.RZKEY_D'] = [144, 89, 24, 25];
-  map['RZKEY.RZKEY_E'] = [137, 63, 25, 25];
-  map['RZKEY.RZKEY_F'] = [169, 89, 25, 25];
-  map['RZKEY.RZKEY_G'] = [195, 89, 25, 25];
-  map['RZKEY.RZKEY_H'] = [221, 89, 25, 25];
-  map['RZKEY.RZKEY_I'] = [266, 63, 25, 25];
-  map['RZKEY.RZKEY_J'] = [247, 89, 25, 25];
-  map['RZKEY.RZKEY_K'] = [272, 89, 25, 25];
-  map['RZKEY.RZKEY_L'] = [298, 89, 25, 25];
-  map['RZKEY.RZKEY_M'] = [259, 114, 25, 26];
-  map['RZKEY.RZKEY_N'] = [233, 114, 26, 26];
-  map['RZKEY.RZKEY_O'] = [292, 63, 25, 25];
-  map['RZKEY.RZKEY_P'] = [318, 63, 25, 25];
-  map['RZKEY.RZKEY_Q'] = [86, 63, 24, 25];
-  map['RZKEY.RZKEY_R'] = [163, 63, 25, 25];
-  map['RZKEY.RZKEY_S'] = [118, 89, 25, 25];
-  map['RZKEY.RZKEY_T'] = [188, 63, 26, 25];
-  map['RZKEY.RZKEY_U'] = [240, 63, 25, 25];
-  map['RZKEY.RZKEY_V'] = [182, 114, 25, 26];
-  map['RZKEY.RZKEY_W'] = [112, 63, 24, 25];
-  map['RZKEY.RZKEY_X'] = [131, 114, 25, 26];
-  map['RZKEY.RZKEY_Y'] = [214, 63, 25, 25];
-  map['RZKEY.RZKEY_Z'] = [105, 114, 25, 26];
-  map['RZKEY.RZKEY_NUMLOCK'] = [521, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD0'] = [521, 140, 52, 26];
-  map['RZKEY.RZKEY_NUMPAD1'] = [521, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD2'] = [547, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD3'] = [573, 114, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD4'] = [521, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD5'] = [547, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD6'] = [573, 88, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD7'] = [521, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD8'] = [547, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
-  map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 26, 26];
-  map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 26, 51];
-  map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 26, 52];
-  map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
-  map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
-  map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
-  map['RZKEY.RZKEY_PAUSE'] = [490, 5, 26, 28];
-  map['RZKEY.RZKEY_INSERT'] = [438, 37, 26, 27];
-  map['RZKEY.RZKEY_HOME'] = [464, 37, 26, 27];
-  map['RZKEY.RZKEY_PAGEUP'] = [490, 37, 26, 27];
-  map['RZKEY.RZKEY_DELETE'] = [438, 63, 26, 27];
-  map['RZKEY.RZKEY_END'] = [464, 63, 26, 27];
-  map['RZKEY.RZKEY_PAGEDOWN'] = [490, 63, 26, 27];
-  map['RZKEY.RZKEY_UP'] = [464, 114, 26, 26];
-  map['RZKEY.RZKEY_LEFT'] = [438, 140, 26, 26];
-  map['RZKEY.RZKEY_DOWN'] = [464, 140, 26, 26];
-  map['RZKEY.RZKEY_RIGHT'] = [490, 140, 25, 26];
-  map['RZKEY.RZKEY_TAB'] = [46, 63, 39, 25];
-  map['RZKEY.RZKEY_CAPSLOCK'] = [46, 89, 45, 25];
-  map['RZKEY.RZKEY_BACKSPACE'] = [382, 37, 50, 25];
-  map['RZKEY.RZKEY_ENTER'] = [375, 89, 57, 25];
-  map['RZKEY.RZKEY_LCTRL'] = [46, 140, 39, 26];
-  map['RZKEY.RZKEY_LWIN'] = [86, 140, 25, 26];
-  map['RZKEY.RZKEY_LALT'] = [111, 140, 38, 26];
-  map['RZKEY.RZKEY_SPACE'] = [149, 140, 156, 26];
-  map['RZKEY.RZKEY_RALT'] = [305, 140, 37, 26];
-  map['RZKEY.RZKEY_FN'] = [342, 140, 26, 26];
-  map['RZKEY.RZKEY_RMENU'] = [368, 140, 26, 26];
-  map['RZKEY.RZKEY_RCTRL'] = [395, 140, 37, 26];
-  map['RZKEY.RZKEY_LSHIFT'] = [46, 114, 58, 26];
-  map['RZKEY.RZKEY_RSHIFT'] = [362, 114, 70, 26];
-  map['RZKEY.RZKEY_MACRO1'] = [15, 37, 27, 25];
-  map['RZKEY.RZKEY_MACRO2'] = [15, 62, 27, 26];
-  map['RZKEY.RZKEY_MACRO3'] = [15, 88, 27, 26];
-  map['RZKEY.RZKEY_MACRO4'] = [15, 114, 27, 26];
-  map['RZKEY.RZKEY_MACRO5'] = [15, 140, 27, 26];
-  map['RZKEY.RZKEY_OEM_1'] = [46, 37, 26, 25];
-  map['RZKEY.RZKEY_OEM_2'] = [330, 37, 25, 25];
-  map['RZKEY.RZKEY_OEM_3'] = [356, 37, 25, 25];
-  map['RZKEY.RZKEY_OEM_4'] = [343, 63, 25, 25];
-  map['RZKEY.RZKEY_OEM_5'] = [369, 63, 25, 25];
-  map['RZKEY.RZKEY_OEM_6'] = [394, 63, 38, 25];
-  map['RZKEY.RZKEY_OEM_7'] = [324, 89, 25, 25];
-  map['RZKEY.RZKEY_OEM_8'] = [350, 89, 24, 25];
-  map['RZKEY.RZKEY_OEM_9'] = [285, 114, 25, 26];
-  map['RZKEY.RZKEY_OEM_10'] = [311, 114, 25, 26];
-  map['RZKEY.RZKEY_OEM_11'] = [337, 114, 25, 26];
-  map['RZKEY.RZKEY_EUR_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_EUR_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_3'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_4'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_JPN_5'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_1'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_2'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_3'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_4'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_5'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_6'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_KOR_7'] = [0, 0, 0, 0];
-  map['RZKEY.RZKEY_INVALID'] = [0, 0, 0, 0];
-  map['RZLED.RZLED_LOGO'] = [309, 185, 24, 25];
-
-  var frameCount = animation.getFrameCount();
-  //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-  var frameId = animation.CurrentIndex;
-  //console.log('frameId', frameId);
-  if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
-    var colors = frame.Colors;
-
-    for (var key in RZKEY) {
-      //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
-      var val = RZKEY[key];
-      if (val == RZKEY.RZKEY_INVALID) {
-        continue;
-      }
-      var i = getHighByte(val);
-      var row = colors[i];
-      var j = getLowByte(val);
-      var color = row[j];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var keyDesc = 'RZKEY.'+key;
-      var coords = map[keyDesc];
-
-      var color = getRGBString(red, green, blue);
-      ctx.fillStyle = color;
-      ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
-      ctx.stroke();
-    }
-
-    for (var key in RZLED) {
-      var val = RZKEY[key];
-      var i = getHighByte(val);
-      var row = colors[i];
-      var j = getLowByte(val);
-      var color = row[j];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var keyDesc = 'RZLED.'+key;
-      var coords = map[keyDesc];
-
-      var color = getRGBString(red, green, blue);
-      ctx.fillStyle = color;
-      var a = coords[0];
-      var b = coords[1];
-      var c = coords[2];
-      var d = coords[3];
-      ctx.fillRect(a,b,c,d);
-      ctx.stroke();
-    }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    ctx.drawImage(imgEmulatorKeyboard, 0, 0, drawWidth, drawHeight);
-  }
-
-  var duration = Number(animation.getDuration());
-  duration = Math.max(duration, 0.033);
-  if (canvasTimers[canvasName] != undefined) {
-    clearTimeout(canvasTimers[canvasName]);
-    canvasTimers[canvasName] = undefined;
-  }
-  canvasTimers[canvasName] = setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawKeyboard(canvasName, animationName);
-  }, duration * 1000);
-}
-displayCanvas = function(baseLayer, canvasName) {
-  if (ChromaAnimation.getAnimation(canvasName) == undefined) {
-    ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
-    drawKeyboard(canvasName, canvasName);
-  }
-  drawInProgress = false;
-}
+// START *** avoid caching
+var scriptIndex = document.createElement('script');
+scriptIndex.setAttribute('src','../ChromaCommon/index.js?cache=' + Date.now() );
+document.head.appendChild(scriptIndex);
+// END *** avoid caching
 
 </script>
 </html>
