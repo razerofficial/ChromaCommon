@@ -649,6 +649,7 @@ buttonClear.onclick = function() {
     vue.$data.dataDivChromaSets.pop();
   }
   animationId = 1;
+  ChromaAnimation.stopAll();
   // wait on Vue
   setTimeout(function() {
     CreateKeyboardCanvas("canvasShowEffect"+animationId);
