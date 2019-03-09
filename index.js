@@ -1113,3 +1113,9 @@ var displayAndPlayAnimation = function (baseLayer, canvasName, loop) {
     }
   }
 };
+var stopAllCanvasTimers = function () {
+  for (var element in canvasTimers.keyboard) {
+    clearTimeout(canvasTimers.keyboard[element]);
+  };
+  canvasTimers.keyboard = [];
+}

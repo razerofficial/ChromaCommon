@@ -151,7 +151,6 @@ document.head.appendChild(scriptLiveEditor);
 </script>
 
 <script>
-var canvasTimers = [];
 var animations = [];
 var animationsWithLines = [];
 var animationsWithExplosion = [];
@@ -645,13 +644,7 @@ buttonSave.onclick = function() {
   generateScript();
 }
 buttonClear.onclick = function() {
-  for (var canvasName in canvasTimers) {
-    if (canvasTimers[canvasName] != undefined) {
-      clearTimeout(canvasTimers[canvasName]);
-      canvasTimers[canvasName] = undefined;
-    }
-    canvasTimers = [];
-  }
+  stopAllCanvasTimers();
   while (vue.$data.dataDivChromaSets.length > 0) {
     vue.$data.dataDivChromaSets.pop();
   }
