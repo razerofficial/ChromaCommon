@@ -111,7 +111,7 @@ Background: <input id="inputBackground" type="checkbox" checked style="width: 50
 
     </td>
     <td>
-      Auto: <input id="inputAuto" type="checkbox" checked style="width: 50px; height: 50px"></input>
+      Auto: <input id="inputAuto" type="checkbox" style="width: 50px; height: 50px"></input>
       <button id="buttonGenerateScript">Generate Script</button>
       <button id="buttonSave">Save</button>
       <button id="buttonClear">Clear</button>
@@ -135,6 +135,8 @@ Background: <input id="inputBackground" type="checkbox" checked style="width: 50
       <el-input type="textarea" @change="onTextChange" v-model="editText" :rows="100"></el-input>
     </div>
   </div>
+
+  <div-chroma-set-list></div-chroma-set-list>
 
   <div id="rootAnimations" style="padding: 10px; background: hsl(0, 0%, 25%)"><br/><br/>
   </div>
@@ -317,27 +319,26 @@ function CreateKeyboardCanvas(animationName) {
     return;
   }
 
-  // <div-chroma-set index="1" header="Effect 1"></div-chroma-set>
-  var divChromaSet = document.createElement('div-chroma-set');
-  divChromaSet.setAttribute('index', ""+animationId);
-  divChromaSet.setAttribute('header', "Effect "+animationId);
-  rootAnimations.insertBefore(divChromaSet, rootAnimations.children[0]);
-  var vm = ( new ( Vue.extend(vue) ) ).$mount(divChromaSet);
+  // Dynamically add view component
+  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } )
 
-  // @todo use common code to setup events
-  var canvases = document.getElementsByClassName('canvasKeyboard');
-  for (var i in canvases) {
-    var canvas = canvases[i];
-    if (canvas != undefined &&
-      canvas.id == "canvasKeyboardShowEffect"+animationId &&
-      canvas.getContext != undefined) {
-        var ctx = canvas.getContext("2d");
-        ctx.font = "30px Arial";
-        ctx.fillStyle ='rgb(127, 127, 127)';
-        ctx.fillText("Loading...",225,100);
-        setupLiveEditOnClick(canvas);
+  // wait on Vue
+  setTimeout(function() {
+    // @todo use common code to setup events
+    var canvases = document.getElementsByClassName('canvasKeyboard');
+    for (var i in canvases) {
+      var canvas = canvases[i];
+      if (canvas != undefined &&
+        canvas.id == "canvasKeyboardShowEffect"+animationId &&
+        canvas.getContext != undefined) {
+          var ctx = canvas.getContext("2d");
+          ctx.font = "30px Arial";
+          ctx.fillStyle ='rgb(127, 127, 127)';
+          ctx.fillText("Loading...",225,100);
+          setupLiveEditOnClick(canvas);
+      }
     }
-  }
+  }, 100);
 }
 getAnimation = function() {
   var animationGroup = animations;
@@ -601,7 +602,10 @@ generateScript = function() {
   onclick += "handleButtonClick('showTableEffect'+"+animationId+");\r\n";
   onclick += text;
   onclick += "\r\n};\r\n";
-  eval(onclick);
+  // wait on vue
+  setTimeout(function() {
+    eval(onclick);
+  }, 100);
 }
 generateColors = function() {
   if (selectColors.value == "Random") {
@@ -648,12 +652,15 @@ buttonClear.onclick = function() {
     }
     canvasTimers = [];
   }
-  while (rootAnimations.firstChild) {
-    rootAnimations.removeChild(rootAnimations.firstChild);
+  while (vue.$data.dataDivChromaSets.length > 0) {
+    vue.$data.dataDivChromaSets.pop();
   }
   animationId = 1;
-  CreateKeyboardCanvas("canvasShowEffect"+animationId);
-  generateScript();
+  // wait on Vue
+  setTimeout(function() {
+    CreateKeyboardCanvas("canvasShowEffect"+animationId);
+    generateScript();
+  }, 100);
 }
 var intervalAuto = undefined;
 inputAuto.onclick = function() {

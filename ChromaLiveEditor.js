@@ -56,6 +56,18 @@ Vue.component('div-chroma-set', {
     </div>
   </div>
   `});
+  Vue.component('div-chroma-set-list', {
+    template: `
+      <div>
+        <div-chroma-set v-for="item in items" :index="item.index" :header="item.header" ></div-chroma-set>
+      </div>
+    `,
+    data() {
+      return {
+        items: this.$root.dataDivChromaSets
+      };
+    }
+  });
   Vue.component('inline-chroma-set', {
     props: [ 'index', 'alt-index', 'header', 'video', 'priority', 'devices', 'description' ],
     template: `
@@ -206,6 +218,8 @@ vue = new Vue({
       '#1e90ff',
       '#c71585',
       '#ff00ff'
+    ],
+    dataDivChromaSets: [
     ]
   },
 
