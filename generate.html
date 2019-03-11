@@ -399,6 +399,7 @@ randomizeLayers = function() {
 buttonRandomLayers.onclick = function() {
   randomizeLayers();
   generateScript();
+  reshowLiveEditor();
 }
 randomizeOperations = function() {
   operations = [];
@@ -412,6 +413,7 @@ randomizeOperations = function() {
 buttonRandomOperations.onclick = function() {
   randomizeOperations();
   generateScript();
+  reshowLiveEditor();
 }
 randomizeColors = function() {
   colors = [];
@@ -629,6 +631,7 @@ generateColors = function() {
 buttonRandomColors.onclick = function() {
   generateColors();
   generateScript();
+  reshowLiveEditor();
 }
 buttonGenerateScript.onclick = function() {
   numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
@@ -667,6 +670,18 @@ var isLiveEditorOpen = function() {
     return (panel.style.display != "none");
   }
   return false;
+}
+
+var reshowLiveEditor = function() {
+  var canvas = document.getElementById('canvasKeyboardShowEffect'+animationId);
+  var buttonName = 'showEffect'+animationId;
+  if (canvas != undefined &&
+    buttonName != undefined) {
+    if (isLiveEditorOpen()) {
+      hideLiveEditor();
+      openLiveEditor(canvas, buttonName);
+    }
+  }
 }
 
 buttonSave.onclick = function() {
