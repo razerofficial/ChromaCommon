@@ -16,44 +16,9 @@ document.head.appendChild(scriptSDK);
 <script src="../ChromaCommon/Vue/index.js"></script>
 <script src="../ChromaCommon/Vue/en.js"></script>
 <style>
-body {
-  background-color: black;
-  color: white;
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-}
-button {
-  font-size: 1.5em;
-  padding: 0.5em;
-  background-color: 888888;
-  color: 00DD00;
-}
-select {
-  font-size: 1.5em;
-  padding: 0.5em;
-  background-color: 888888;
-  color: 00DD00;
-}
-a {
-  color: white;
-}
-div {
-  font-size: 1.2em;
-}
-pre {
-  font-size: 1.5em;
-}
-td {
-  font-size: 1.5em;
-}
-.tableInline {
+.divInline {
   display: inline-table;
-}
-.tdEmpty {
-  background-color: 222222;
-}
-.imgThumbnail {
-  width: 600px;
-  display: inline-table;
+  vertical-align: top;
 }
 </style>
 </head>
@@ -70,56 +35,63 @@ td {
 
 <br/><br/>
 
-<table border="0">
-  <tr valign="top">
-    <td>
-Number of Layers: <input id="inputNumberOfLayers" type="text" value="5"></input><br/><br/>
+<div class="divInline">
+  <div>
+    Number of Layers: <input id="inputNumberOfLayers" type="text" value="5"></input>
+  </div>
 
-Source: <select>
-  <option selected>JavaScript</option>
-  <option>C++</option>
-  <option>UE4</option>
-</select><br/><br/>
+  <div>
+    Source: <select>
+      <option selected>JavaScript</option>
+      <option>C++</option>
+      <option>UE4</option>
+    </select>
+  </div>
 
-Style: <select id="selectStyle">
-  <option selected>Misc</option>
-  <option>Clouds</option>
-  <option>Particle Systems</option>
-  <option>Lines</option>
-  <option>Explosion</option>
-  <option>Shapes</option>
-</select><br/><br/>
+  <div>
+    Style: <select id="selectStyle">
+      <option selected>Misc</option>
+      <option>Clouds</option>
+      <option>Particle Systems</option>
+      <option>Lines</option>
+      <option>Explosion</option>
+      <option>Shapes</option>
+    </select>
+  </div>
 
-Random Layers: <input id="inputRandomLayers" type="checkbox" checked style="width: 50px; height: 50px"></input>
-<button id="buttonRandomLayers">Apply</button><br/></br>
+  <div>
+    Colors: <select id="selectColors">
+      <option selected>Random</option>
+      <option>Rainbow</option>
+      <option>Black and White</option>
+      <option>Blood</option>
+      <option>Fire</option>
+      <option>Water</option>
+    </select>
+  </div>
+</div>
 
-Random Operations: <input id="inputRandomOperations" type="checkbox" checked style="width: 50px; height: 50px"></input>
-<button id="buttonRandomOperations">Apply</button><br/><br/>
+<div class="divInline" style="background: #444">
+  <div>
+    Random Layers: <input id="inputRandomLayers" type="checkbox" checked style="width: 50px; height: 50px"></input>
+    <button id="buttonRandomLayers">Apply</button>
+  </div>
+  <div>
+    Random Operations: <input id="inputRandomOperations" type="checkbox" checked style="width: 50px; height: 50px"></input>
+    <button id="buttonRandomOperations">Apply</button>
+  </div>
+  <div>
+    Background: <input id="inputBackground" type="checkbox" checked style="width: 50px; height: 50px"></input>
+    <button id="buttonRandomColors">Apply</button>
+  </div>
+</div>
 
-Colors: <select id="selectColors">
-  <option selected>Random</option>
-  <option>Rainbow</option>
-  <option>Black and White</option>
-  <option>Blood</option>
-  <option>Fire</option>
-  <option>Water</option>
-</select>
-
-Background: <input id="inputBackground" type="checkbox" checked style="width: 50px; height: 50px"></input>
-
-<button id="buttonRandomColors">Apply</button><br/><br/>
-
-    </td>
-    <td>
-      Auto: <input id="inputAuto" type="checkbox" style="width: 50px; height: 50px"></input>
-      <button id="buttonGenerateScript">Generate Script</button>
-      <button id="buttonSave">Save</button>
-      <button id="buttonClear">Clear</button>
-      <br/><br/>
-      <textarea id="outputScript" rows="20" cols="150"></textarea>
-    </td>
-  </tr>
-</table>
+<div class="divInline">
+  Auto: <input id="inputAuto" type="checkbox" style="width: 50px; height: 50px"></input>
+  <button id="buttonGenerateScript">Generate Script</button>
+  <button id="buttonSave">Save</button>
+  <button id="buttonClear">Clear</button>
+</div>
 
 <div id="root">
 
@@ -157,152 +129,178 @@ var animationsWithExplosion = [];
 var animationsWithClouds = [];
 var animationsWithParticles = [];
 var animationsWithShapes = [];
-animations.push('Search1_Keyboard.chroma');
-animations.push('Search2_Keyboard.chroma');
-animations.push('Search3_Keyboard.chroma');
-animations.push('Search4_Keyboard.chroma');
-animationsWithClouds.push('BarrelFlash1_Keyboard.chroma');
-animationsWithClouds.push('BarrelFlash2_Keyboard.chroma');
-animationsWithClouds.push('BarrelFlash3_Keyboard.chroma');
-animationsWithClouds.push('Clouds1_Keyboard.chroma');
-animationsWithClouds.push('Clouds2_Keyboard.chroma');
-animationsWithClouds.push('Clouds3_Keyboard.chroma');
-animationsWithLines.push('Arc1_Keyboard.chroma');
-animationsWithLines.push('Arc2_Keyboard.chroma');
-animationsWithLines.push('Arc3_Keyboard.chroma');
-animationsWithLines.push('Arc4_Keyboard.chroma');
-animationsWithLines.push('Block1_Keyboard.chroma');
-animations.push('Block2_Keyboard.chroma');
-animationsWithLines.push('Bolt1_Keyboard.chroma');
-animationsWithLines.push('Bolt2_Keyboard.chroma');
-animationsWithLines.push('Bolt3_Keyboard.chroma');
-animationsWithLines.push('Bolt4_Keyboard.chroma');
-animations.push('Dragon1_Keyboard.chroma');
-animations.push('Dragon2_Keyboard.chroma');
-animations.push('Dragon3_Keyboard.chroma');
-animations.push('Claws1_Keyboard.chroma');
-animationsWithParticles.push('Energy1_Keyboard.chroma');
-animationsWithLines.push('Fireball1_Keyboard.chroma');
-animationsWithExplosion.push('Fork1_Keyboard.chroma');
-animationsWithExplosion.push('Fork2_Keyboard.chroma');
-animationsWithExplosion.push('Fork3_Keyboard.chroma');
-animationsWithExplosion.push('Fork4_Keyboard.chroma');
-animationsWithExplosion.push('Fork5_Keyboard.chroma');
-animations.push('FreeFall1_Keyboard.chroma');
-animations.push('FreeFall2_Keyboard.chroma');
-animations.push('Glider1_Keyboard.chroma');
-animations.push('Glider2_Keyboard.chroma');
-animations.push('LaserRotate_Keyboard.chroma');
-animations.push('LaserScroll_Keyboard.chroma');
-animations.push('Lightning1_Keyboard.chroma');
-animations.push('Lightning2_Keyboard.chroma');
-animations.push('Lightning3_Keyboard.chroma');
-animations.push('CircleExpanding_Keyboard.chroma');
-animations.push('Hatchet_Keyboard.chroma');
-animationsWithExplosion.push('Missile1_Keyboard.chroma');
-animationsWithExplosion.push('Missile2_Keyboard.chroma');
-animationsWithExplosion.push('Missile3_Keyboard.chroma');
-animations.push('MovementUpLeft_Keyboard.chroma');
-animations.push('MovementUpRight_Keyboard.chroma');
-animationsWithParticles.push('Particle1_Keyboard.chroma');
-animationsWithParticles.push('Particle2_Keyboard.chroma');
-animationsWithParticles.push('Particle3_Keyboard.chroma');
-animationsWithParticles.push('ParticleTrail1_Keyboard.chroma');
-animationsWithParticles.push('ParticleTrail2_Keyboard.chroma');
-animationsWithParticles.push('ParticleTrail3_Keyboard.chroma');
-animationsWithParticles.push('ParticleTrail4_Keyboard.chroma');
-animations.push('Projectiles_Keyboard.chroma');
-animations.push('Rain1_Keyboard.chroma');
-animations.push('Melee1_Keyboard.chroma');
-animations.push('Ray1_Keyboard.chroma');
-animations.push('Ray2_Keyboard.chroma');
-animationsWithLines.push('ReactiveSpace_Keyboard.chroma');
-animations.push('Reticle1_Keyboard.chroma');
-animations.push('Reticle2_Keyboard.chroma');
-animations.push('Reticle3_Keyboard.chroma');
-animations.push('Reticle4_Keyboard.chroma');
-animations.push('Spiral_Keyboard.chroma');
-animationsWithParticles.push('Spray1_Keyboard.chroma');
-animationsWithParticles.push('Spray2_Keyboard.chroma');
-animationsWithParticles.push('Spray3_Keyboard.chroma');
-animations.push('Star_Keyboard.chroma');
-animations.push('Stripes1_Keyboard.chroma');
-animationsWithLines.push('ThrowUpLeft_Keyboard.chroma');
-animationsWithLines.push('ThrowUpRight_Keyboard.chroma');
-animationsWithLines.push('ThrowUp_Keyboard.chroma');
-animations.push('Tongue1_Keyboard.chroma');
-animations.push('Tornado1_Keyboard.chroma');
-animations.push('Trail1_Keyboard.chroma');
-animations.push('Trail2_Keyboard.chroma');
-animations.push('Trail3_Keyboard.chroma');
-animations.push('Travel1_Keyboard.chroma');
-animationsWithParticles.push('UpParticle1_Keyboard.chroma');
-animationsWithParticles.push('UpParticle2_Keyboard.chroma');
-animationsWithParticles.push('UpParticle3_Keyboard.chroma');
-animations.push('Wisp1_Keyboard.chroma');
-animations.push('Wisp2_Keyboard.chroma');
-animations.push('Wisp3_Keyboard.chroma');
-animations.push('X1_Keyboard.chroma');
-animations.push('X2_Keyboard.chroma');
-animations.push('WindMill1_Keyboard.chroma');
-animations.push('MachineGun1_Keyboard.chroma');
-animations.push('MachineGun2_Keyboard.chroma');
-animations.push('SearchLight1_Keyboard.chroma');
-animations.push('Logo1_Keyboard.chroma');
-animations.push('Logo2_Keyboard.chroma');
-animations.push('RocketProjectile1_Keyboard.chroma');
-animations.push('Chainsaw1_Keyboard.chroma');
-animations.push('WispLarge_Keyboard.chroma');
-animations.push('BattleBus_Keyboard.chroma');
-animations.push('BlackAndWhiteRainbow_Keyboard.chroma');
-animations.push('BarRightToLeft_Keyboard.chroma');
-animations.push('BarTopDown_Keyboard.chroma');
-animations.push('OpenDoor1_Keyboard.chroma');
-animations.push('OpenDoor2_Keyboard.chroma');
-animations.push('Sword1_Keyboard.chroma');
-animations.push('Block3_Keyboard.chroma');
-animations.push('Block4_Keyboard.chroma');
-animations.push('Arrow1_Keyboard.chroma');
-animations.push('Train1_Keyboard.chroma');
-animations.push('Train2_Keyboard.chroma');
-animations.push('Ladder1_Keyboard.chroma');
-animations.push('Ladder2_Keyboard.chroma');
-animations.push('Chest1_Keyboard.chroma');
-animations.push('Bird1_Keyboard.chroma');
-animations.push('OutParticle1_Keyboard.chroma');
-animations.push('---');
-animations.push('Cinematic1_Keyboard.chroma');
-animations.push('Cinematic2_Keyboard.chroma');
-animations.push('Cinematic3_Keyboard.chroma');
-animationsWithShapes.push('CircleLargeLeft_Keyboard.chroma');
-animationsWithShapes.push('CircleLargeRight_Keyboard.chroma');
-animationsWithShapes.push('CircleLarge_Keyboard.chroma');
-animationsWithShapes.push('CircleLarge2_Keyboard.chroma');
-animationsWithShapes.push('CircleSmallLeft_Keyboard.chroma');
-animationsWithShapes.push('CircleSmallRight_Keyboard.chroma');
-animationsWithShapes.push('CircleSmall_Keyboard.chroma');
-animations.push('LaserA_Keyboard.chroma');
-animations.push('LaserB_Keyboard.chroma');
-animations.push('Llama1_Keyboard.chroma');
-animations.push('Llama2_Keyboard.chroma');
-animations.push('Llama3_Keyboard.chroma');
-animations.push('Llama4_Keyboard.chroma');
-animationsWithShapes.push('Ring1_Keyboard.chroma');
-animationsWithShapes.push('Ring2_Keyboard.chroma');
-animationsWithShapes.push('Ring3_Keyboard.chroma');
-animationsWithShapes.push('WispBuild_Keyboard.chroma');
-animations.push('XOutline_Keyboard.chroma');
-animations.push('X_Keyboard.chroma');
-animationsWithShapes.push('Bow1_Keyboard.chroma');
-animationsWithShapes.push('Heart1_Keyboard.chroma');
-animationsWithShapes.push('Damage1_Keyboard.chroma');
-animationsWithShapes.push('Damage2_Keyboard.chroma');
-animationsWithShapes.push('Damage3_Keyboard.chroma');
-animationsWithShapes.push('Damage4_Keyboard.chroma');
-animationsWithShapes.push('Damage5_Keyboard.chroma');
-animationsWithShapes.push('Damage6_Keyboard.chroma');
-animationsWithShapes.push('Damage7_Keyboard.chroma');
-animationsWithShapes.push('Damage8_Keyboard.chroma');
+
+var setupAnimations = function() {
+  animations.push('Arrow1_Keyboard.chroma');
+  animations.push('BarRightToLeft_Keyboard.chroma');
+  animations.push('BarTopDown_Keyboard.chroma');
+  animations.push('BattleBus_Keyboard.chroma');
+  animations.push('Bird1_Keyboard.chroma');
+  animations.push('BlackAndWhiteRainbow_Keyboard.chroma');
+  animations.push('Block2_Keyboard.chroma');
+  animations.push('Block3_Keyboard.chroma');
+  animations.push('Block4_Keyboard.chroma');
+  animations.push('Chainsaw1_Keyboard.chroma');
+  animations.push('Chest1_Keyboard.chroma');
+  animations.push('CircleExpanding_Keyboard.chroma');
+  animations.push('Claws1_Keyboard.chroma');
+  animations.push('Dragon1_Keyboard.chroma');
+  animations.push('Dragon2_Keyboard.chroma');
+  animations.push('Dragon3_Keyboard.chroma');
+  animations.push('FreeFall1_Keyboard.chroma');
+  animations.push('FreeFall2_Keyboard.chroma');
+  animations.push('Glider1_Keyboard.chroma');
+  animations.push('Glider2_Keyboard.chroma');
+  animations.push('Hatchet_Keyboard.chroma');
+  animations.push('Ladder1_Keyboard.chroma');
+  animations.push('Ladder2_Keyboard.chroma');
+  animations.push('LaserRotate_Keyboard.chroma');
+  animations.push('LaserScroll_Keyboard.chroma');
+  animations.push('Lightning1_Keyboard.chroma');
+  animations.push('Lightning2_Keyboard.chroma');
+  animations.push('Lightning3_Keyboard.chroma');
+  animations.push('Logo1_Keyboard.chroma');
+  animations.push('Logo2_Keyboard.chroma');
+  animations.push('MachineGun1_Keyboard.chroma');
+  animations.push('MachineGun2_Keyboard.chroma');
+  animations.push('Melee1_Keyboard.chroma');
+  animations.push('MovementUpLeft_Keyboard.chroma');
+  animations.push('MovementUpRight_Keyboard.chroma');
+  animations.push('OpenDoor1_Keyboard.chroma');
+  animations.push('OpenDoor2_Keyboard.chroma');
+  animations.push('Projectiles_Keyboard.chroma');
+  animations.push('Rain1_Keyboard.chroma');
+  animations.push('Ray1_Keyboard.chroma');
+  animations.push('Ray2_Keyboard.chroma');
+  animations.push('Reticle1_Keyboard.chroma');
+  animations.push('Reticle2_Keyboard.chroma');
+  animations.push('Reticle3_Keyboard.chroma');
+  animations.push('Reticle4_Keyboard.chroma');
+  animations.push('RocketProjectile1_Keyboard.chroma');
+  animations.push('Search1_Keyboard.chroma');
+  animations.push('Search2_Keyboard.chroma');
+  animations.push('Search3_Keyboard.chroma');
+  animations.push('Search4_Keyboard.chroma');
+  animations.push('SearchLight1_Keyboard.chroma');
+  animations.push('Spiral_Keyboard.chroma');
+  animations.push('Star_Keyboard.chroma');
+  animations.push('Stripes1_Keyboard.chroma');
+  animations.push('Sword1_Keyboard.chroma');
+  animations.push('Tongue1_Keyboard.chroma');
+  animations.push('Tornado1_Keyboard.chroma');
+  animations.push('Trail1_Keyboard.chroma');
+  animations.push('Trail2_Keyboard.chroma');
+  animations.push('Trail3_Keyboard.chroma');
+  animations.push('Train1_Keyboard.chroma');
+  animations.push('Train2_Keyboard.chroma');
+  animations.push('Travel1_Keyboard.chroma');
+  animations.push('WindMill1_Keyboard.chroma');
+  animations.push('Wisp1_Keyboard.chroma');
+  animations.push('Wisp2_Keyboard.chroma');
+  animations.push('Wisp3_Keyboard.chroma');
+  animations.push('WispLarge_Keyboard.chroma');
+  animations.push('X1_Keyboard.chroma');
+  animations.push('X2_Keyboard.chroma');
+
+  animations.push('---');
+  animations.push('Cinematic1_Keyboard.chroma');
+  animations.push('Cinematic2_Keyboard.chroma');
+  animations.push('Cinematic3_Keyboard.chroma');
+  animations.push('LaserA_Keyboard.chroma');
+  animations.push('LaserB_Keyboard.chroma');
+  animations.push('Llama1_Keyboard.chroma');
+  animations.push('Llama2_Keyboard.chroma');
+  animations.push('Llama3_Keyboard.chroma');
+  animations.push('Llama4_Keyboard.chroma');
+  animations.push('XOutline_Keyboard.chroma');
+  animations.push('X_Keyboard.chroma');
+};
+setupAnimations();
+
+var setupAnimations = function() {
+  animationsWithClouds.push('BarrelFlash1_Keyboard.chroma');
+  animationsWithClouds.push('BarrelFlash2_Keyboard.chroma');
+  animationsWithClouds.push('BarrelFlash3_Keyboard.chroma');
+  animationsWithClouds.push('Clouds1_Keyboard.chroma');
+  animationsWithClouds.push('Clouds2_Keyboard.chroma');
+  animationsWithClouds.push('Clouds3_Keyboard.chroma');
+};
+setupAnimations();
+
+var setupAnimations = function() {
+  animationsWithLines.push('Arc1_Keyboard.chroma');
+  animationsWithLines.push('Arc2_Keyboard.chroma');
+  animationsWithLines.push('Arc3_Keyboard.chroma');
+  animationsWithLines.push('Arc4_Keyboard.chroma');
+  animationsWithLines.push('Block1_Keyboard.chroma');
+  animationsWithLines.push('Bolt1_Keyboard.chroma');
+  animationsWithLines.push('Bolt2_Keyboard.chroma');
+  animationsWithLines.push('Bolt3_Keyboard.chroma');
+  animationsWithLines.push('Bolt4_Keyboard.chroma');
+  animationsWithLines.push('Fireball1_Keyboard.chroma');
+  animationsWithLines.push('ReactiveSpace_Keyboard.chroma');
+  animationsWithLines.push('ThrowUpLeft_Keyboard.chroma');
+  animationsWithLines.push('ThrowUpRight_Keyboard.chroma');
+  animationsWithLines.push('ThrowUp_Keyboard.chroma');
+};
+setupAnimations();
+
+var setupAnimations = function() {
+  animationsWithParticles.push('Energy1_Keyboard.chroma');
+  animationsWithParticles.push('OutParticle1_Keyboard.chroma');
+  animationsWithParticles.push('Particle1_Keyboard.chroma');
+  animationsWithParticles.push('Particle2_Keyboard.chroma');
+  animationsWithParticles.push('Particle3_Keyboard.chroma');
+  animationsWithParticles.push('ParticleTrail1_Keyboard.chroma');
+  animationsWithParticles.push('ParticleTrail2_Keyboard.chroma');
+  animationsWithParticles.push('ParticleTrail3_Keyboard.chroma');
+  animationsWithParticles.push('ParticleTrail4_Keyboard.chroma');
+  animationsWithParticles.push('Spray1_Keyboard.chroma');
+  animationsWithParticles.push('Spray2_Keyboard.chroma');
+  animationsWithParticles.push('Spray3_Keyboard.chroma');
+  animationsWithParticles.push('UpParticle1_Keyboard.chroma');
+  animationsWithParticles.push('UpParticle2_Keyboard.chroma');
+  animationsWithParticles.push('UpParticle3_Keyboard.chroma');
+};
+setupAnimations();
+
+var setupAnimations = function() {
+  animationsWithExplosion.push('Fork1_Keyboard.chroma');
+  animationsWithExplosion.push('Fork2_Keyboard.chroma');
+  animationsWithExplosion.push('Fork3_Keyboard.chroma');
+  animationsWithExplosion.push('Fork4_Keyboard.chroma');
+  animationsWithExplosion.push('Fork5_Keyboard.chroma');
+  animationsWithExplosion.push('Missile1_Keyboard.chroma');
+  animationsWithExplosion.push('Missile2_Keyboard.chroma');
+  animationsWithExplosion.push('Missile3_Keyboard.chroma');
+};
+setupAnimations();
+
+var setupAnimations = function() {
+  animationsWithShapes.push('Bow1_Keyboard.chroma');
+  animationsWithShapes.push('CircleLarge_Keyboard.chroma');
+  animationsWithShapes.push('CircleLarge2_Keyboard.chroma');
+  animationsWithShapes.push('CircleLargeLeft_Keyboard.chroma');
+  animationsWithShapes.push('CircleLargeRight_Keyboard.chroma');
+  animationsWithShapes.push('CircleSmall_Keyboard.chroma');
+  animationsWithShapes.push('CircleSmallLeft_Keyboard.chroma');
+  animationsWithShapes.push('CircleSmallRight_Keyboard.chroma');
+  animationsWithShapes.push('Damage1_Keyboard.chroma');
+  animationsWithShapes.push('Damage2_Keyboard.chroma');
+  animationsWithShapes.push('Damage3_Keyboard.chroma');
+  animationsWithShapes.push('Damage4_Keyboard.chroma');
+  animationsWithShapes.push('Damage5_Keyboard.chroma');
+  animationsWithShapes.push('Damage6_Keyboard.chroma');
+  animationsWithShapes.push('Damage7_Keyboard.chroma');
+  animationsWithShapes.push('Damage8_Keyboard.chroma');
+  animationsWithShapes.push('Heart1_Keyboard.chroma');
+  animationsWithShapes.push('Ring1_Keyboard.chroma');
+  animationsWithShapes.push('Ring2_Keyboard.chroma');
+  animationsWithShapes.push('Ring3_Keyboard.chroma');
+  animationsWithShapes.push('WispBuild_Keyboard.chroma');
+};
+setupAnimations();
+
 
 var animationId = 0;
 
@@ -319,7 +317,9 @@ function CreateKeyboardCanvas(animationName) {
   }
 
   // Dynamically add view component
-  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } )
+  vue.$data.dataDivChromaSets.reverse();
+  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
+  vue.$data.dataDivChromaSets.reverse();
 
   // wait on Vue
   setTimeout(function() {
@@ -580,25 +580,26 @@ generateScript = function() {
     }
     text += indent + "});" + newline;
   }
-  outputScript.innerText = text;
-  var prev = outputScript.innerHTML;
-  do {
-    prev = outputScript.innerHTML;
-    outputScript.innerHTML = outputScript.innerHTML.replace('&lt;br&gt;', '\r\n');
-  } while (prev != outputScript.innerHTML);
 
-  var button = document.getElementById("showEffect"+animationId);
-  if (button != undefined) {
-    button.chromaSource = text;
-  }
-  var canvasName = 'canvasShowEffect'+this.animationId;
+  //clean up previous canvas animation
+  var canvasName = 'canvasKeyboardShowEffect'+this.animationId;
   ChromaAnimation.closeAnimation(canvasName);
   eval(text);
 
-  // showTableEffect1.onclick = function () {
+  //clean up old timer
+  if (canvasTimers.keyboard[canvasName] != undefined) {
+    clearTimeout(canvasTimers.keyboard[canvasName]);
+    canvasTimers.keyboard[canvasName] = undefined;
+  }
+
+  if (vue.$data.dataDivChromaSets.length == 0) {
+    vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
+  }
+
+  // showEffect1.onclick = function () {
   var onclick = "showEffect"+animationId+".onclick = function () {\r\n";
   onclick += "exampleReset();\t\n";
-  onclick += "handleButtonClick('showTableEffect'+"+animationId+");\r\n";
+  onclick += "handleButtonClick('showEffect'+"+animationId+");\r\n";
   onclick += text;
   onclick += "\r\n};\r\n";
   // wait on vue
@@ -648,13 +649,7 @@ buttonClear.onclick = function() {
   while (vue.$data.dataDivChromaSets.length > 0) {
     vue.$data.dataDivChromaSets.pop();
   }
-  animationId = 1;
   ChromaAnimation.stopAll();
-  // wait on Vue
-  setTimeout(function() {
-    CreateKeyboardCanvas("canvasShowEffect"+animationId);
-    generateScript();
-  }, 100);
 }
 var intervalAuto = undefined;
 inputAuto.onclick = function() {
