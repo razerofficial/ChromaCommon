@@ -642,13 +642,41 @@ buttonGenerateScript.onclick = function() {
   }
   generateColors();
   generateScript();
+
+  var canvas = document.getElementById('canvasKeyboardShowEffect'+animationId);
+  var buttonName = 'showEffect'+animationId;
+  if (canvas != undefined &&
+    buttonName != undefined) {
+    if (isLiveEditorOpen()) {
+      hideLiveEditor();
+      openLiveEditor(canvas, buttonName);
+    }
+  }
 }
+
+var hideLiveEditor = function() {
+  var panel = document.getElementById('editPanel');
+  if (panel != undefined) {
+    panel.style.display = "none";
+  }
+}
+
+var isLiveEditorOpen = function() {
+  var panel = document.getElementById('editPanel');
+  if (panel != undefined) {
+    return (panel.style.display != "none");
+  }
+  return false;
+}
+
 buttonSave.onclick = function() {
+  hideLiveEditor();
   ++animationId;
   createKeyboardCanvas("canvasShowEffect"+animationId);
   generateScript();
 }
 buttonClear.onclick = function() {
+  hideLiveEditor();
   stopAllCanvasTimers();
   while (vue.$data.dataDivChromaSets.length > 0) {
     vue.$data.dataDivChromaSets.pop();
