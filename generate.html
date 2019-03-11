@@ -304,23 +304,7 @@ setupAnimations();
 
 var animationId = 0;
 
-function CreateKeyboardCanvas(animationName) {
-  var rootAnimations = document.getElementById('rootAnimations');
-  if (animationName == '---') {
-    var br = document.createElement('br');
-    rootAnimations.appendChild(br);
-    var br = document.createElement('hr');
-    rootAnimations.appendChild(br);
-    var br = document.createElement('br');
-    rootAnimations.appendChild(br);
-    return;
-  }
-
-  // Dynamically add view component
-  vue.$data.dataDivChromaSets.reverse();
-  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
-  vue.$data.dataDivChromaSets.reverse();
-
+function setupKeyboardCanvasEvent() {
   // wait on Vue
   setTimeout(function() {
     // @todo use common code to setup events
@@ -338,6 +322,25 @@ function CreateKeyboardCanvas(animationName) {
       }
     }
   }, 100);
+}
+
+function createKeyboardCanvas(animationName) {
+  var rootAnimations = document.getElementById('rootAnimations');
+  if (animationName == '---') {
+    var br = document.createElement('br');
+    rootAnimations.appendChild(br);
+    var br = document.createElement('hr');
+    rootAnimations.appendChild(br);
+    var br = document.createElement('br');
+    rootAnimations.appendChild(br);
+    return;
+  }
+
+  // Dynamically add view component
+  vue.$data.dataDivChromaSets.reverse();
+  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
+  vue.$data.dataDivChromaSets.reverse();
+  setupKeyboardCanvasEvent();
 }
 getAnimation = function() {
   var animationGroup = animations;
@@ -594,6 +597,7 @@ generateScript = function() {
 
   if (vue.$data.dataDivChromaSets.length == 0) {
     vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
+    setupKeyboardCanvasEvent();
   }
 
   // showEffect1.onclick = function () {
@@ -641,7 +645,7 @@ buttonGenerateScript.onclick = function() {
 }
 buttonSave.onclick = function() {
   ++animationId;
-  CreateKeyboardCanvas("canvasShowEffect"+animationId);
+  createKeyboardCanvas("canvasShowEffect"+animationId);
   generateScript();
 }
 buttonClear.onclick = function() {
@@ -660,7 +664,7 @@ inputAuto.onclick = function() {
   if (inputAuto.checked) {
     intervalAuto = setInterval(function() {
       ++animationId;
-      CreateKeyboardCanvas("canvasShowEffect"+animationId);
+      createKeyboardCanvas("canvasShowEffect"+animationId);
       buttonGenerateScript.onclick();
     }, 250);
   }
