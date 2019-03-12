@@ -378,11 +378,12 @@ var colors = [];
 randomizeLayers = function() {
   layers = [];
   for (var i = 0; i < numberOfLayers; ++i) {
+    var animationName = "";
     if (i == 0) {
-      layers.push("../ChromaCommon/animations/Blank_Keyboard.chroma");
+      animationName = animationsWithShapes[Math.floor(Math.random() * animationsWithShapes.length)];
+      layers.push('../ChromaCommon/animations/'+animationName);
       continue;
     }
-    var animationName = "";
     for (var tries = 0; tries < 3; ++tries) {
       animationName = getAnimation();
       if (!layers.includes(animationName)) {
@@ -405,8 +406,8 @@ randomizeOperations = function() {
   operations = [];
   for (var i = 0; i < numberOfLayers; ++i) {
     var ops = [];
-    ops.push(Math.floor(Math.random() * 3));
-    ops.push(Math.floor(Math.random() * 6));
+    ops.push(Math.floor(Math.random() * 4)); //number of color operation actions
+    ops.push(Math.floor(Math.random() * 6)); //number of copy/add/subtract actions
     operations.push(ops);
   }
 }
@@ -471,6 +472,12 @@ setWaterColors = function() {
   colors.push(ChromaAnimation.getRGB(0, 200, 255));
   colors.push(ChromaAnimation.getRGB(0, 255, 255));
 }
+convertIntToHexStr = function(color) {
+  var blue = color & 0xFF;
+  var green = (color & 0xFF00) >> 8;
+  var red = (color & 0xFF0000) >> 16;
+  return "0x" + vue.convertIntToHex(blue) + vue.convertIntToHex(green) + vue.convertIntToHex(red);
+}
 generateScript = function() {
   var text = "";
   var newline = "\n";
@@ -515,7 +522,7 @@ generateScript = function() {
   if (inputBackground.checked) {
     text += indent + "ChromaAnimation.makeBlankFramesRGB(baseLayer, frameCount, 0.1, "+red+", "+green+", "+blue+");" + newline;
   } else {
-    text += indent + "ChromaAnimation.makeBlankFrames(baseLayer, frameCount, 0.1, 0);" + newline;
+    text += indent + "ChromaAnimation.duplicateFirstFrame(baseLayer, frameCount);" + newline;
   }
   for (var layerId = 1; layerId < numberOfLayers; ++layerId) {
     switch (operations[layerId][0]) {
@@ -546,6 +553,11 @@ generateScript = function() {
         var maxGreen = ChromaAnimation.getGreen(color);
         var maxBlue = ChromaAnimation.getBlue(color);
         text += indent + "ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB("+ getLayer(layerId) +", "+minThreshold+", "+minRed+", "+minGreen+", "+minBlue+", "+maxThreshold+", "+maxRed+", "+maxGreen+", "+maxBlue+");" + newline;
+        break;
+      case 3:
+        var color1 = colors[Math.floor(Math.random() * colors.length)];
+        var color2 = colors[Math.floor(Math.random() * colors.length)];
+        text += indent + "ChromaAnimation.multiplyColorLerpAllFrames("+ getLayer(layerId) +", "+convertIntToHexStr(color1)+", "+convertIntToHexStr(color2)+");" + newline;
         break;
     }
   }
