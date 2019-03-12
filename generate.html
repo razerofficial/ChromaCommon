@@ -30,6 +30,7 @@ document.head.appendChild(scriptSDK);
 <img name="imgEmulatorMouse" style="display: none" src="emulator/EmulatorMouse.png"/>
 <img name="imgEmulatorMousepad" style="display: none" src="emulator/EmulatorMousepad.png"/>
 <img name="imgEmulator_18_10" style="display: none" src="emulator/Emulator_18_10.png"/>
+<a id="lnkDownload" style="display: none" download="client.chroma" href="" target="_blank"></a>
 
 <h1>Generate Chroma Animations</h1>
 
@@ -89,7 +90,6 @@ document.head.appendChild(scriptSDK);
 <div class="divInline">
   Auto: <input id="inputAuto" type="checkbox" style="width: 50px; height: 50px"></input>
   <button id="buttonGenerateScript">Generate Script</button>
-  <button id="buttonSave">Save</button>
   <button id="buttonClear">Clear</button>
 </div>
 
@@ -312,7 +312,6 @@ function setupKeyboardCanvasEvent() {
     for (var i in canvases) {
       var canvas = canvases[i];
       if (canvas != undefined &&
-        canvas.id == "canvasKeyboardShowEffect"+animationId &&
         canvas.getContext != undefined) {
           var ctx = canvas.getContext("2d");
           ctx.font = "30px Arial";
@@ -324,24 +323,35 @@ function setupKeyboardCanvasEvent() {
   }, 100);
 }
 
-function createKeyboardCanvas(animationName) {
-  var rootAnimations = document.getElementById('rootAnimations');
-  if (animationName == '---') {
-    var br = document.createElement('br');
-    rootAnimations.appendChild(br);
-    var br = document.createElement('hr');
-    rootAnimations.appendChild(br);
-    var br = document.createElement('br');
-    rootAnimations.appendChild(br);
-    return;
-  }
+var keyboardClickEvents = {};
+var generateDivChromaSet = function() {
+  ++animationId;
+  var text = generateScript();
 
-  // Dynamically add view component
+  // Dynamically add vue component
   vue.$data.dataDivChromaSets.reverse();
-  vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
+  var divChromaSet = { index: ''+animationId, header: 'Effect '+animationId };
+  vue.$data.dataDivChromaSets.push(divChromaSet);
+  setupKeyboardButtonEvent(text);
   vue.$data.dataDivChromaSets.reverse();
+
+  // wait on vue
+  setTimeout(function() {
+    for (var i in vue.dataDivChromaSets) {
+      var divChromaSet = vue.dataDivChromaSets[i];
+      var onclick = "showEffect"+divChromaSet.index+".onclick = vue.$data.dataDivChromaSets["+i+"].keyboardClick;\r\n";
+      eval(onclick);
+      if (divChromaSet.index == animationId) {
+        eval("showEffect"+divChromaSet.index+".onclick()");
+      }
+    }
+  }, 100);
+
+  // assign hover, click events on canvases
   setupKeyboardCanvasEvent();
-}
+
+  reshowLiveEditor();
+};
 getAnimation = function() {
   var animationGroup = animations;
   if (selectStyle.value == "Misc") {
@@ -398,9 +408,13 @@ randomizeLayers = function() {
   }
 }
 buttonRandomLayers.onclick = function() {
+  if (layers.length == 0 ||
+    operations.length == 0) {
+    buttonGenerateScript.onclick();
+    return;
+  }
   randomizeLayers();
-  generateScript();
-  reshowLiveEditor();
+  generateDivChromaSet();
 }
 randomizeOperations = function() {
   operations = [];
@@ -412,9 +426,13 @@ randomizeOperations = function() {
   }
 }
 buttonRandomOperations.onclick = function() {
+  if (layers.length == 0 ||
+    operations.length == 0) {
+    buttonGenerateScript.onclick();
+    return;
+  }
   randomizeOperations();
-  generateScript();
-  reshowLiveEditor();
+  generateDivChromaSet();
 }
 randomizeColors = function() {
   colors = [];
@@ -477,6 +495,16 @@ convertIntToHexStr = function(color) {
   var green = (color & 0xFF00) >> 8;
   var red = (color & 0xFF0000) >> 16;
   return "0x" + vue.convertIntToHex(blue) + vue.convertIntToHex(green) + vue.convertIntToHex(red);
+}
+setupKeyboardButtonEvent = function(text) {
+  // set vue event
+  // vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].keyboardClick=;
+  var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].keyboardClick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += "handleButtonClick(showEffect"+animationId+");\r\n";
+  onclick += text;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
 }
 generateScript = function() {
   var text = "";
@@ -598,32 +626,7 @@ generateScript = function() {
     text += indent + "});" + newline;
   }
 
-  //clean up previous canvas animation
-  var canvasName = 'canvasKeyboardShowEffect'+this.animationId;
-  ChromaAnimation.closeAnimation(canvasName);
-  eval(text);
-
-  //clean up old timer
-  if (canvasTimers.keyboard[canvasName] != undefined) {
-    clearTimeout(canvasTimers.keyboard[canvasName]);
-    canvasTimers.keyboard[canvasName] = undefined;
-  }
-
-  if (vue.$data.dataDivChromaSets.length == 0) {
-    vue.$data.dataDivChromaSets.push( { index: ''+animationId, header: 'Effect '+animationId } );
-    setupKeyboardCanvasEvent();
-  }
-
-  // showEffect1.onclick = function () {
-  var onclick = "showEffect"+animationId+".onclick = function () {\r\n";
-  onclick += "exampleReset();\t\n";
-  onclick += "handleButtonClick('showEffect'+"+animationId+");\r\n";
-  onclick += text;
-  onclick += "\r\n};\r\n";
-  // wait on vue
-  setTimeout(function() {
-    eval(onclick);
-  }, 100);
+  return text;
 }
 generateColors = function() {
   if (selectColors.value == "Random") {
@@ -641,9 +644,13 @@ generateColors = function() {
   }
 }
 buttonRandomColors.onclick = function() {
+  if (layers.length == 0 ||
+    operations.length == 0) {
+    buttonGenerateScript.onclick();
+    return;
+  }
   generateColors();
-  generateScript();
-  reshowLiveEditor();
+  generateDivChromaSet();
 }
 buttonGenerateScript.onclick = function() {
   numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
@@ -656,17 +663,8 @@ buttonGenerateScript.onclick = function() {
     randomizeOperations();
   }
   generateColors();
-  generateScript();
 
-  var canvas = document.getElementById('canvasKeyboardShowEffect'+animationId);
-  var buttonName = 'showEffect'+animationId;
-  if (canvas != undefined &&
-    buttonName != undefined) {
-    if (isLiveEditorOpen()) {
-      hideLiveEditor();
-      openLiveEditor(canvas, buttonName);
-    }
-  }
+  generateDivChromaSet();
 }
 
 var hideLiveEditor = function() {
@@ -675,7 +673,6 @@ var hideLiveEditor = function() {
     panel.style.display = "none";
   }
 }
-
 var isLiveEditorOpen = function() {
   var panel = document.getElementById('editPanel');
   if (panel != undefined) {
@@ -683,7 +680,6 @@ var isLiveEditorOpen = function() {
   }
   return false;
 }
-
 var reshowLiveEditor = function() {
   var canvas = document.getElementById('canvasKeyboardShowEffect'+animationId);
   var buttonName = 'showEffect'+animationId;
@@ -691,17 +687,13 @@ var reshowLiveEditor = function() {
     buttonName != undefined) {
     if (isLiveEditorOpen()) {
       hideLiveEditor();
-      openLiveEditor(canvas, buttonName);
+      setTimeout(function() {
+        openLiveEditor(canvas, buttonName);
+      }, 100);
     }
   }
 }
 
-buttonSave.onclick = function() {
-  hideLiveEditor();
-  ++animationId;
-  createKeyboardCanvas("canvasShowEffect"+animationId);
-  generateScript();
-}
 buttonClear.onclick = function() {
   hideLiveEditor();
   stopAllCanvasTimers();
@@ -718,8 +710,12 @@ inputAuto.onclick = function() {
   }
   if (inputAuto.checked) {
     intervalAuto = setInterval(function() {
-      ++animationId;
-      createKeyboardCanvas("canvasShowEffect"+animationId);
+      if (vue == undefined) {
+        return;
+      }
+      if (isLiveEditorOpen()) {
+        hideLiveEditor();
+      }
       buttonGenerateScript.onclick();
     }, 250);
   }

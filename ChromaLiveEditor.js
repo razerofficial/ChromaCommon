@@ -10,7 +10,7 @@ Vue.component('div-chroma-set', {
   <div style="padding-bottom: 50px; display: inline-table">
     <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table">
       <div style="background: hsl(0, 0%, 20%); width: 100%">
-        <button class="buttonChroma" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
+        <button class="buttonChroma" :onclick="this.keyboardClick" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
         <div style="width: 550px; display: inline-table">{{ header }}</div>
       </div>
       <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
@@ -786,8 +786,20 @@ openLiveEditor = function(canvas, buttonName) {
     return;
   }
   if (editButton.onclick == undefined) {
-    console.error(buttonName, 'does not have a click event');
-    return;
+    var index = buttonName.substring('showEffect'.length);
+    var keyboardClick = undefined;
+    for (var i in vue.dataDivChromaSets) {
+      var divChromaSet = vue.dataDivChromaSets[i];
+      if (divChromaSet.index == index) {
+        keyboardClick = divChromaSet.keyboardClick;
+        break;
+      }
+    }
+    if (keyboardClick == undefined) {
+      console.error(buttonName, 'does not have a click event');
+      return;
+    }
+    editButton.onclick = keyboardClick;
   }
   var editText = editButton.onclick.toString();
   if (panel.style.display == "none" ||
