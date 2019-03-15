@@ -47,7 +47,7 @@ Vue.component('div-chroma-set', {
         <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
         <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
         <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
-        <div style="width: 670px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+        <div style="width: 675px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
           <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
           <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
           <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
