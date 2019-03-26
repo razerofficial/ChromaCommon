@@ -23,7 +23,7 @@ document.head.appendChild(scriptSDK);
 </style>
 </head>
 <body onload="onPageLoad()" onunload="onPageUnload()">
-<img name="imgEmulatorChromaLink" style="display: none" src="emulator/EmulatorChromaLink.png"/>
+<img name="imgEmulatorChromaLink" style="display: none" src="emulator/EmulatorChromaLink5.png"/>
 <img name="imgEmulatorHeadset" style="display: none" src="emulator/EmulatorHeadset.png"/>
 <img name="imgEmulatorKeyboard" style="display: none" src="emulator/EmulatorKeyboard.png"/>
 <img name="imgEmulatorKeypad" style="display: none" src="emulator/EmulatorKeypad.png"/>
@@ -123,184 +123,12 @@ document.head.appendChild(scriptLiveEditor);
 </script>
 
 <script>
-var animations = [];
-var animationsWithLines = [];
-var animationsWithExplosion = [];
-var animationsWithClouds = [];
-var animationsWithParticles = [];
-var animationsWithShapes = [];
-
-var setupAnimations = function() {
-  animations.push('Arrow1_Keyboard.chroma');
-  animations.push('BarRightToLeft_Keyboard.chroma');
-  animations.push('BarTopDown_Keyboard.chroma');
-  animations.push('BattleBus_Keyboard.chroma');
-  animations.push('Bird1_Keyboard.chroma');
-  animations.push('BlackAndWhiteRainbow_Keyboard.chroma');
-  animations.push('Block2_Keyboard.chroma');
-  animations.push('Block3_Keyboard.chroma');
-  animations.push('Block4_Keyboard.chroma');
-  animations.push('Chainsaw1_Keyboard.chroma');
-  animations.push('Chest1_Keyboard.chroma');
-  animations.push('CircleExpanding_Keyboard.chroma');
-  animations.push('Claws1_Keyboard.chroma');
-  animations.push('Dragon1_Keyboard.chroma');
-  animations.push('Dragon2_Keyboard.chroma');
-  animations.push('Dragon3_Keyboard.chroma');
-  animations.push('FreeFall1_Keyboard.chroma');
-  animations.push('FreeFall2_Keyboard.chroma');
-  animations.push('Glider1_Keyboard.chroma');
-  animations.push('Glider2_Keyboard.chroma');
-  animations.push('Hatchet_Keyboard.chroma');
-  animations.push('Ladder1_Keyboard.chroma');
-  animations.push('Ladder2_Keyboard.chroma');
-  animations.push('LaserRotate_Keyboard.chroma');
-  animations.push('LaserScroll_Keyboard.chroma');
-  animations.push('Lightning1_Keyboard.chroma');
-  animations.push('Lightning2_Keyboard.chroma');
-  animations.push('Lightning3_Keyboard.chroma');
-  animations.push('Logo1_Keyboard.chroma');
-  animations.push('Logo2_Keyboard.chroma');
-  animations.push('MachineGun1_Keyboard.chroma');
-  animations.push('MachineGun2_Keyboard.chroma');
-  animations.push('Melee1_Keyboard.chroma');
-  animations.push('MovementUpLeft_Keyboard.chroma');
-  animations.push('MovementUpRight_Keyboard.chroma');
-  animations.push('OpenDoor1_Keyboard.chroma');
-  animations.push('OpenDoor2_Keyboard.chroma');
-  animations.push('Projectiles_Keyboard.chroma');
-  animations.push('Rain1_Keyboard.chroma');
-  animations.push('Ray1_Keyboard.chroma');
-  animations.push('Ray2_Keyboard.chroma');
-  animations.push('Reticle1_Keyboard.chroma');
-  animations.push('Reticle2_Keyboard.chroma');
-  animations.push('Reticle3_Keyboard.chroma');
-  animations.push('Reticle4_Keyboard.chroma');
-  animations.push('RocketProjectile1_Keyboard.chroma');
-  animations.push('Search1_Keyboard.chroma');
-  animations.push('Search2_Keyboard.chroma');
-  animations.push('Search3_Keyboard.chroma');
-  animations.push('Search4_Keyboard.chroma');
-  animations.push('SearchLight1_Keyboard.chroma');
-  animations.push('Spiral_Keyboard.chroma');
-  animations.push('Star_Keyboard.chroma');
-  animations.push('Stripes1_Keyboard.chroma');
-  animations.push('Sword1_Keyboard.chroma');
-  animations.push('Tongue1_Keyboard.chroma');
-  animations.push('Tornado1_Keyboard.chroma');
-  animations.push('Trail1_Keyboard.chroma');
-  animations.push('Trail2_Keyboard.chroma');
-  animations.push('Trail3_Keyboard.chroma');
-  animations.push('Train1_Keyboard.chroma');
-  animations.push('Train2_Keyboard.chroma');
-  animations.push('Travel1_Keyboard.chroma');
-  animations.push('WindMill1_Keyboard.chroma');
-  animations.push('Wisp1_Keyboard.chroma');
-  animations.push('Wisp2_Keyboard.chroma');
-  animations.push('Wisp3_Keyboard.chroma');
-  animations.push('WispLarge_Keyboard.chroma');
-  animations.push('X1_Keyboard.chroma');
-  animations.push('X2_Keyboard.chroma');
-
-  animations.push('---');
-  animations.push('Cinematic1_Keyboard.chroma');
-  animations.push('Cinematic2_Keyboard.chroma');
-  animations.push('Cinematic3_Keyboard.chroma');
-  animations.push('LaserA_Keyboard.chroma');
-  animations.push('LaserB_Keyboard.chroma');
-  animations.push('Llama1_Keyboard.chroma');
-  animations.push('Llama2_Keyboard.chroma');
-  animations.push('Llama3_Keyboard.chroma');
-  animations.push('Llama4_Keyboard.chroma');
-  animations.push('XOutline_Keyboard.chroma');
-  animations.push('X_Keyboard.chroma');
-};
-setupAnimations();
-
-var setupAnimations = function() {
-  animationsWithClouds.push('BarrelFlash1_Keyboard.chroma');
-  animationsWithClouds.push('BarrelFlash2_Keyboard.chroma');
-  animationsWithClouds.push('BarrelFlash3_Keyboard.chroma');
-  animationsWithClouds.push('Clouds1_Keyboard.chroma');
-  animationsWithClouds.push('Clouds2_Keyboard.chroma');
-  animationsWithClouds.push('Clouds3_Keyboard.chroma');
-};
-setupAnimations();
-
-var setupAnimations = function() {
-  animationsWithLines.push('Arc1_Keyboard.chroma');
-  animationsWithLines.push('Arc2_Keyboard.chroma');
-  animationsWithLines.push('Arc3_Keyboard.chroma');
-  animationsWithLines.push('Arc4_Keyboard.chroma');
-  animationsWithLines.push('Block1_Keyboard.chroma');
-  animationsWithLines.push('Bolt1_Keyboard.chroma');
-  animationsWithLines.push('Bolt2_Keyboard.chroma');
-  animationsWithLines.push('Bolt3_Keyboard.chroma');
-  animationsWithLines.push('Bolt4_Keyboard.chroma');
-  animationsWithLines.push('Fireball1_Keyboard.chroma');
-  animationsWithLines.push('ReactiveSpace_Keyboard.chroma');
-  animationsWithLines.push('ThrowUpLeft_Keyboard.chroma');
-  animationsWithLines.push('ThrowUpRight_Keyboard.chroma');
-  animationsWithLines.push('ThrowUp_Keyboard.chroma');
-};
-setupAnimations();
-
-var setupAnimations = function() {
-  animationsWithParticles.push('Energy1_Keyboard.chroma');
-  animationsWithParticles.push('OutParticle1_Keyboard.chroma');
-  animationsWithParticles.push('Particle1_Keyboard.chroma');
-  animationsWithParticles.push('Particle2_Keyboard.chroma');
-  animationsWithParticles.push('Particle3_Keyboard.chroma');
-  animationsWithParticles.push('ParticleTrail1_Keyboard.chroma');
-  animationsWithParticles.push('ParticleTrail2_Keyboard.chroma');
-  animationsWithParticles.push('ParticleTrail3_Keyboard.chroma');
-  animationsWithParticles.push('ParticleTrail4_Keyboard.chroma');
-  animationsWithParticles.push('Spray1_Keyboard.chroma');
-  animationsWithParticles.push('Spray2_Keyboard.chroma');
-  animationsWithParticles.push('Spray3_Keyboard.chroma');
-  animationsWithParticles.push('UpParticle1_Keyboard.chroma');
-  animationsWithParticles.push('UpParticle2_Keyboard.chroma');
-  animationsWithParticles.push('UpParticle3_Keyboard.chroma');
-};
-setupAnimations();
-
-var setupAnimations = function() {
-  animationsWithExplosion.push('Fork1_Keyboard.chroma');
-  animationsWithExplosion.push('Fork2_Keyboard.chroma');
-  animationsWithExplosion.push('Fork3_Keyboard.chroma');
-  animationsWithExplosion.push('Fork4_Keyboard.chroma');
-  animationsWithExplosion.push('Fork5_Keyboard.chroma');
-  animationsWithExplosion.push('Missile1_Keyboard.chroma');
-  animationsWithExplosion.push('Missile2_Keyboard.chroma');
-  animationsWithExplosion.push('Missile3_Keyboard.chroma');
-};
-setupAnimations();
-
-var setupAnimations = function() {
-  animationsWithShapes.push('Bow1_Keyboard.chroma');
-  animationsWithShapes.push('CircleLarge_Keyboard.chroma');
-  animationsWithShapes.push('CircleLarge2_Keyboard.chroma');
-  animationsWithShapes.push('CircleLargeLeft_Keyboard.chroma');
-  animationsWithShapes.push('CircleLargeRight_Keyboard.chroma');
-  animationsWithShapes.push('CircleSmall_Keyboard.chroma');
-  animationsWithShapes.push('CircleSmallLeft_Keyboard.chroma');
-  animationsWithShapes.push('CircleSmallRight_Keyboard.chroma');
-  animationsWithShapes.push('Damage1_Keyboard.chroma');
-  animationsWithShapes.push('Damage2_Keyboard.chroma');
-  animationsWithShapes.push('Damage3_Keyboard.chroma');
-  animationsWithShapes.push('Damage4_Keyboard.chroma');
-  animationsWithShapes.push('Damage5_Keyboard.chroma');
-  animationsWithShapes.push('Damage6_Keyboard.chroma');
-  animationsWithShapes.push('Damage7_Keyboard.chroma');
-  animationsWithShapes.push('Damage8_Keyboard.chroma');
-  animationsWithShapes.push('Heart1_Keyboard.chroma');
-  animationsWithShapes.push('Ring1_Keyboard.chroma');
-  animationsWithShapes.push('Ring2_Keyboard.chroma');
-  animationsWithShapes.push('Ring3_Keyboard.chroma');
-  animationsWithShapes.push('WispBuild_Keyboard.chroma');
-};
-setupAnimations();
-
+var animations = {};
+var animationsWithLines = {};
+var animationsWithExplosion = {};
+var animationsWithClouds = {};
+var animationsWithParticles = {};
+var animationsWithShapes = {};
 
 var animationId = 0;
 
@@ -326,21 +154,51 @@ function setupKeyboardCanvasEvent() {
 var keyboardClickEvents = {};
 var generateDivChromaSet = function() {
   ++animationId;
-  var text = generateScript();
+  var textKeyboard = generateDeviceScript(EChromaSDKDeviceEnum.DE_Keyboard);
+  var textChromaLink = generateDeviceScript(EChromaSDKDeviceEnum.DE_ChromaLink);
+  var textHeadset = generateDeviceScript(EChromaSDKDeviceEnum.DE_Headset);
+  var textMousepad = generateDeviceScript(EChromaSDKDeviceEnum.DE_Mousepad);
+  var textMouse = generateDeviceScript(EChromaSDKDeviceEnum.DE_Mouse);
+
+  //console.log('textChromaLink', textChromaLink);
+  //console.log('textHeadset', textHeadset);
+  //console.log('textKeypad', textKeypad);
+  //console.log('textMousepad', textMousepad);
+  //console.log('textMouse', textMouse);
 
   // Dynamically add vue component
   vue.$data.dataDivChromaSets.reverse();
   var divChromaSet = { index: ''+animationId, header: 'Effect '+animationId };
   vue.$data.dataDivChromaSets.push(divChromaSet);
-  setupKeyboardButtonEvent(text);
+  setupKeyboardButtonEvent(textKeyboard, textChromaLink, textHeadset, textMousepad, textMouse);
   vue.$data.dataDivChromaSets.reverse();
 
   // wait on vue
   setTimeout(function() {
     for (var i in vue.dataDivChromaSets) {
       var divChromaSet = vue.dataDivChromaSets[i];
+
+      // setup keyboard
       var onclick = "showEffect"+divChromaSet.index+".onclick = vue.$data.dataDivChromaSets["+i+"].keyboardClick;\r\n";
       eval(onclick);
+
+      // setup chromalink
+      var onclick = "showEffect"+divChromaSet.index+"ChromaLink.onclick = vue.$data.dataDivChromaSets["+i+"].chromaLinkClick;\r\n";
+      eval(onclick);
+
+      // setup headset
+      var onclick = "showEffect"+divChromaSet.index+"Headset.onclick = vue.$data.dataDivChromaSets["+i+"].headsetClick;\r\n";
+      eval(onclick);
+
+      // setup mousepad
+      var onclick = "showEffect"+divChromaSet.index+"Mousepad.onclick = vue.$data.dataDivChromaSets["+i+"].mousepadClick;\r\n";
+      eval(onclick);
+
+      // setup mouse
+      var onclick = "showEffect"+divChromaSet.index+"Mouse.onclick = vue.$data.dataDivChromaSets["+i+"].mouseClick;\r\n";
+      eval(onclick);
+
+      // click keyboard button
       if (divChromaSet.index == animationId) {
         eval("showEffect"+divChromaSet.index+".onclick()");
       }
@@ -352,25 +210,25 @@ var generateDivChromaSet = function() {
 
   reshowLiveEditor();
 };
-getAnimation = function() {
+getAnimation = function(device) {
   var animationGroup = animations;
   if (selectStyle.value == "Misc") {
-    animationGroup = animations;
+    animationGroup = animations[device];
   } else if (selectStyle.value == "Clouds") {
-    animationGroup = animationsWithClouds;
+    animationGroup = animationsWithClouds[device];
   } else if (selectStyle.value == "Particle Systems") {
-    animationGroup = animationsWithParticles;
+    animationGroup = animationsWithParticles[device];
   } else if (selectStyle.value == "Lines") {
-    animationGroup = animationsWithLines;
+    animationGroup = animationsWithLines[device];
   } else if (selectStyle.value == "Explosion") {
-    animationGroup = animationsWithExplosion;
+    animationGroup = animationsWithExplosion[device];
   } else if (selectStyle.value == "Shapes") {
-    animationGroup = animationsWithShapes;
+    animationGroup = animationsWithShapes[device];
   }
   var i = Math.floor(Math.random() * animationGroup.length) % animationGroup.length;
   var name = animationGroup[i];
   if (name == '---') {
-    return getAnimation();
+    return getAnimation(device);
   }
   return '../ChromaCommon/animations/' + animationGroup[i];
 }
@@ -381,34 +239,37 @@ function getLayer(layerId) {
     return 'layer' + (layerId+1);
   }
 }
-var numberOfLayers = 5;
-var layers = [];
+var numberOfLayers = 3;
+var layers = {};
 var operations = [];
 var colors = [];
 randomizeLayers = function() {
-  layers = [];
-  for (var i = 0; i < numberOfLayers; ++i) {
-    var animationName = "";
-    if (i == 0) {
-      animationName = animationsWithShapes[Math.floor(Math.random() * animationsWithShapes.length)];
-      layers.push('../ChromaCommon/animations/'+animationName);
-      continue;
-    }
-    for (var tries = 0; tries < 3; ++tries) {
-      animationName = getAnimation();
-      if (!layers.includes(animationName)) {
-        layers.push(animationName);
-        animationName = "";
-        break;
+  for (var device = 0; device < EChromaSDKDeviceEnum.DE_MAX; ++device) {
+    layers[device] = [];
+    for (var i = 0; i < numberOfLayers; ++i) {
+      var animationName = "";
+      if (i == 0) {
+        var index = Math.floor(Math.random() * animationsWithShapes[device].length);
+        animationName = animationsWithShapes[device][index];
+        layers[device].push('../ChromaCommon/animations/'+animationName);
+        continue;
       }
-    }
-    if (animationName != "") {
-      layers.push(animationName);
+      for (var tries = 0; tries < 3; ++tries) {
+        animationName = getAnimation(device);
+        if (!layers[device].includes(animationName)) {
+          layers[device].push(animationName);
+          animationName = "";
+          break;
+        }
+      }
+      if (animationName != "") {
+        layers[device].push(animationName);
+      }
     }
   }
 }
 buttonRandomLayers.onclick = function() {
-  if (layers.length == 0 ||
+  if (layers[EChromaSDKDeviceEnum.DE_Keyboard].length == 0 ||
     operations.length == 0) {
     buttonGenerateScript.onclick();
     return;
@@ -426,7 +287,7 @@ randomizeOperations = function() {
   }
 }
 buttonRandomOperations.onclick = function() {
-  if (layers.length == 0 ||
+  if (layers[EChromaSDKDeviceEnum.DE_Keyboard].length == 0 ||
     operations.length == 0) {
     buttonGenerateScript.onclick();
     return;
@@ -496,25 +357,49 @@ convertIntToHexStr = function(color) {
   var red = (color & 0xFF0000) >> 16;
   return "0x" + vue.convertIntToHex(blue) + vue.convertIntToHex(green) + vue.convertIntToHex(red);
 }
-setupKeyboardButtonEvent = function(text) {
+setupKeyboardButtonEvent = function(textKeyboard, textChromaLink, textHeadset, textMousepad, textMouse) {
   // set vue event
   // vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].keyboardClick=;
   var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].keyboardClick = function () {\r\n";
   onclick += "exampleReset();\t\n";
   onclick += "handleButtonClick(showEffect"+animationId+");\r\n";
-  onclick += text;
+  onclick += textKeyboard;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
+
+  var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].chromaLinkClick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += textChromaLink;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
+
+  var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].headsetClick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += textHeadset;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
+
+  var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].mousepadClick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += textMousepad;
+  onclick += "\r\n};\r\n";
+  eval(onclick);
+
+  var onclick = "vue.$data.dataDivChromaSets[vue.$data.dataDivChromaSets.length-1].mouseClick = function () {\r\n";
+  onclick += "exampleReset();\t\n";
+  onclick += textMouse;
   onclick += "\r\n};\r\n";
   eval(onclick);
 }
-generateScript = function() {
+generateDeviceScript = function(device) {
   var text = "";
   var newline = "\n";
   var baseLayer = "";
   for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
     if (layerId == 0) {
-      baseLayer = layers[0];
+      baseLayer = layers[device][0];
     }
-    text += "var " + getLayer(layerId) + " = '"+layers[layerId]+"';" + newline;
+    text += "var " + getLayer(layerId) + " = '"+layers[device][layerId]+"';" + newline;
   }
   for (var layerId = 0; layerId < numberOfLayers; ++layerId) {
     text += "ChromaAnimation.closeAnimation("+ getLayer(layerId) +");" + newline;
@@ -612,11 +497,23 @@ generateScript = function() {
     }
   }
 
-  text += indent + "ChromaAnimation.setChromaCustomFlag(baseLayer, true);" + newline;
-  text += indent + "ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);" + newline;
+  if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
+    text += indent + "ChromaAnimation.setChromaCustomFlag(baseLayer, true);" + newline;
+    text += indent + "ChromaAnimation.setChromaCustomColorAllFrames(baseLayer);" + newline;
+  }
   text += indent + "ChromaAnimation.overrideFrameDuration(baseLayer, 0.033);" + newline;
 
   text += indent + "displayAndPlayAnimation(baseLayer, 'ShowEffect"+animationId+"', true);" + newline;
+
+  if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
+    text += indent + "showEffect"+animationId+"ChromaLink.onclick();" + newline;
+  } else if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
+    text += indent + "showEffect"+animationId+"Headset.onclick();" + newline;
+  } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
+    text += indent + "showEffect"+animationId+"Mousepad.onclick();" + newline;
+  } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
+    text += indent + "showEffect"+animationId+"Mouse.onclick();" + newline;
+  }
 
   for (var layerId = numberOfLayers - 1; layerId >= 0; --layerId) {
     var indent = "";
@@ -644,7 +541,7 @@ generateColors = function() {
   }
 }
 buttonRandomColors.onclick = function() {
-  if (layers.length == 0 ||
+  if (layers[EChromaSDKDeviceEnum.DE_Keyboard].length == 0 ||
     operations.length == 0) {
     buttonGenerateScript.onclick();
     return;
@@ -654,7 +551,7 @@ buttonRandomColors.onclick = function() {
 }
 buttonGenerateScript.onclick = function() {
   numberOfLayers = Math.floor(parseInt(inputNumberOfLayers.value));
-  if (layers.length != numberOfLayers ||
+  if (layers[EChromaSDKDeviceEnum.DE_Keyboard].length != numberOfLayers ||
     inputRandomLayers.checked) {
     randomizeLayers();
   }
@@ -733,6 +630,309 @@ var scriptIndex = document.createElement('script');
 scriptIndex.setAttribute('src','../ChromaCommon/index.js?cache=' + Date.now() );
 document.head.appendChild(scriptIndex);
 // END *** avoid caching
+
+function setupAllChromaEffects() {
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('Arrow1_Keyboard.chroma');
+    list.push('BarRightToLeft_Keyboard.chroma');
+    list.push('BarTopDown_Keyboard.chroma');
+    list.push('BattleBus_Keyboard.chroma');
+    list.push('Bird1_Keyboard.chroma');
+    list.push('BlackAndWhiteRainbow_Keyboard.chroma');
+    list.push('Block2_Keyboard.chroma');
+    list.push('Block3_Keyboard.chroma');
+    list.push('Block4_Keyboard.chroma');
+    list.push('Chainsaw1_Keyboard.chroma');
+    list.push('Chest1_Keyboard.chroma');
+    list.push('CircleExpanding_Keyboard.chroma');
+    list.push('Claws1_Keyboard.chroma');
+    list.push('Dragon1_Keyboard.chroma');
+    list.push('Dragon2_Keyboard.chroma');
+    list.push('Dragon3_Keyboard.chroma');
+    list.push('FreeFall1_Keyboard.chroma');
+    list.push('FreeFall2_Keyboard.chroma');
+    list.push('Glider1_Keyboard.chroma');
+    list.push('Glider2_Keyboard.chroma');
+    list.push('Hatchet_Keyboard.chroma');
+    list.push('Ladder1_Keyboard.chroma');
+    list.push('Ladder2_Keyboard.chroma');
+    list.push('LaserRotate_Keyboard.chroma');
+    list.push('LaserScroll_Keyboard.chroma');
+    list.push('Lightning1_Keyboard.chroma');
+    list.push('Lightning2_Keyboard.chroma');
+    list.push('Lightning3_Keyboard.chroma');
+    list.push('Logo1_Keyboard.chroma');
+    list.push('Logo2_Keyboard.chroma');
+    list.push('MachineGun1_Keyboard.chroma');
+    list.push('MachineGun2_Keyboard.chroma');
+    list.push('Melee1_Keyboard.chroma');
+    list.push('MovementUpLeft_Keyboard.chroma');
+    list.push('MovementUpRight_Keyboard.chroma');
+    list.push('OpenDoor1_Keyboard.chroma');
+    list.push('OpenDoor2_Keyboard.chroma');
+    list.push('Projectiles_Keyboard.chroma');
+    list.push('Rain1_Keyboard.chroma');
+    list.push('Ray1_Keyboard.chroma');
+    list.push('Ray2_Keyboard.chroma');
+    list.push('Reticle1_Keyboard.chroma');
+    list.push('Reticle2_Keyboard.chroma');
+    list.push('Reticle3_Keyboard.chroma');
+    list.push('Reticle4_Keyboard.chroma');
+    list.push('RocketProjectile1_Keyboard.chroma');
+    list.push('Search1_Keyboard.chroma');
+    list.push('Search2_Keyboard.chroma');
+    list.push('Search3_Keyboard.chroma');
+    list.push('Search4_Keyboard.chroma');
+    list.push('SearchLight1_Keyboard.chroma');
+    list.push('Spiral_Keyboard.chroma');
+    list.push('Star_Keyboard.chroma');
+    list.push('Stripes1_Keyboard.chroma');
+    list.push('Sword1_Keyboard.chroma');
+    list.push('Tongue1_Keyboard.chroma');
+    list.push('Tornado1_Keyboard.chroma');
+    list.push('Trail1_Keyboard.chroma');
+    list.push('Trail2_Keyboard.chroma');
+    list.push('Trail3_Keyboard.chroma');
+    list.push('Train1_Keyboard.chroma');
+    list.push('Train2_Keyboard.chroma');
+    list.push('Travel1_Keyboard.chroma');
+    list.push('WindMill1_Keyboard.chroma');
+    list.push('Wisp1_Keyboard.chroma');
+    list.push('Wisp2_Keyboard.chroma');
+    list.push('Wisp3_Keyboard.chroma');
+    list.push('WispLarge_Keyboard.chroma');
+    list.push('X1_Keyboard.chroma');
+    list.push('X2_Keyboard.chroma');
+
+    list.push('---');
+    list.push('Cinematic1_Keyboard.chroma');
+    list.push('Cinematic2_Keyboard.chroma');
+    list.push('Cinematic3_Keyboard.chroma');
+    list.push('LaserA_Keyboard.chroma');
+    list.push('LaserB_Keyboard.chroma');
+    list.push('Llama1_Keyboard.chroma');
+    list.push('Llama2_Keyboard.chroma');
+    list.push('Llama3_Keyboard.chroma');
+    list.push('Llama4_Keyboard.chroma');
+    list.push('XOutline_Keyboard.chroma');
+    list.push('X_Keyboard.chroma');
+
+    animations[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('BlackAndWhiteRainbow_ChromaLink.chroma');
+    animations[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('BlackAndWhiteRainbow_Headset.chroma');
+    animations[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    animations[EChromaSDKDeviceEnum.DE_Keypad] = [];
+
+    var list = [];
+    list.push('BlackAndWhiteRainbow_Mouse.chroma');
+    animations[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('BlackAndWhiteRainbow_Mousepad.chroma');
+    animations[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('BarrelFlash1_Keyboard.chroma');
+    list.push('BarrelFlash2_Keyboard.chroma');
+    list.push('BarrelFlash3_Keyboard.chroma');
+    list.push('Clouds1_Keyboard.chroma');
+    list.push('Clouds2_Keyboard.chroma');
+    list.push('Clouds3_Keyboard.chroma');
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('Clouds1_ChromaLink.chroma');
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('Clouds1_Headset.chroma');
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_Keypad] = [];
+
+    var list = [];
+    list.push('Clouds1_Mouse.chroma');
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('Clouds1_Mousepad.chroma');
+    animationsWithClouds[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('Arc1_Keyboard.chroma');
+    list.push('Arc2_Keyboard.chroma');
+    list.push('Arc3_Keyboard.chroma');
+    list.push('Arc4_Keyboard.chroma');
+    list.push('Block1_Keyboard.chroma');
+    list.push('Bolt1_Keyboard.chroma');
+    list.push('Bolt2_Keyboard.chroma');
+    list.push('Bolt3_Keyboard.chroma');
+    list.push('Bolt4_Keyboard.chroma');
+    list.push('Fireball1_Keyboard.chroma');
+    list.push('ReactiveSpace_Keyboard.chroma');
+    list.push('ThrowUpLeft_Keyboard.chroma');
+    list.push('ThrowUpRight_Keyboard.chroma');
+    list.push('ThrowUp_Keyboard.chroma');
+    animationsWithLines[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('Arc3_ChromaLink.chroma');
+    animationsWithLines[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('Arc3_Headset.chroma');
+    animationsWithLines[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    animationsWithLines[EChromaSDKDeviceEnum.DE_Keypad] = [];
+
+    var list = [];
+    list.push('Arc3_Mouse.chroma');
+    animationsWithLines[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('Arc3_Mousepad.chroma');
+    animationsWithLines[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('Energy1_Keyboard.chroma');
+    list.push('OutParticle1_Keyboard.chroma');
+    list.push('Particle1_Keyboard.chroma');
+    list.push('Particle2_Keyboard.chroma');
+    list.push('Particle3_Keyboard.chroma');
+    list.push('ParticleTrail1_Keyboard.chroma');
+    list.push('ParticleTrail2_Keyboard.chroma');
+    list.push('ParticleTrail3_Keyboard.chroma');
+    list.push('ParticleTrail4_Keyboard.chroma');
+    list.push('Spray1_Keyboard.chroma');
+    list.push('Spray2_Keyboard.chroma');
+    list.push('Spray3_Keyboard.chroma');
+    list.push('UpParticle1_Keyboard.chroma');
+    list.push('UpParticle2_Keyboard.chroma');
+    list.push('UpParticle3_Keyboard.chroma');
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('OutParticle1_ChromaLink.chroma');
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('OutParticle1_Headset.chroma');
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    var list = [];
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_Keypad] = list;
+
+    var list = [];
+    list.push('OutParticle1_Mouse.chroma');
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('OutParticle1_Mousepad.chroma');
+    animationsWithParticles[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('Fork1_Keyboard.chroma');
+    list.push('Fork2_Keyboard.chroma');
+    list.push('Fork3_Keyboard.chroma');
+    list.push('Fork4_Keyboard.chroma');
+    list.push('Fork5_Keyboard.chroma');
+    list.push('Missile1_Keyboard.chroma');
+    list.push('Missile2_Keyboard.chroma');
+    list.push('Missile3_Keyboard.chroma');
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('Tongue1_ChromaLink.chroma');
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('Tongue1_Headset.chroma');
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_Keypad] = [];
+
+    var list = [];
+    list.push('Tongue1_Mouse.chroma');
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('Tongue1_Mousepad.chroma');
+    animationsWithExplosion[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  var setupAnimations = function() {
+    var list = [];
+    list.push('Bow1_Keyboard.chroma');
+    list.push('CircleLarge_Keyboard.chroma');
+    list.push('CircleLarge2_Keyboard.chroma');
+    list.push('CircleLargeLeft_Keyboard.chroma');
+    list.push('CircleLargeRight_Keyboard.chroma');
+    list.push('CircleSmall_Keyboard.chroma');
+    list.push('CircleSmallLeft_Keyboard.chroma');
+    list.push('CircleSmallRight_Keyboard.chroma');
+    list.push('Damage1_Keyboard.chroma');
+    list.push('Damage2_Keyboard.chroma');
+    list.push('Damage3_Keyboard.chroma');
+    list.push('Damage4_Keyboard.chroma');
+    list.push('Damage5_Keyboard.chroma');
+    list.push('Damage6_Keyboard.chroma');
+    list.push('Damage7_Keyboard.chroma');
+    list.push('Damage8_Keyboard.chroma');
+    list.push('Heart1_Keyboard.chroma');
+    list.push('Ring1_Keyboard.chroma');
+    list.push('Ring2_Keyboard.chroma');
+    list.push('Ring3_Keyboard.chroma');
+    list.push('WispBuild_Keyboard.chroma');
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_Keyboard] = list;
+
+    var list = [];
+    list.push('CircleSmall_ChromaLink.chroma');
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_ChromaLink] = list;
+
+    var list = [];
+    list.push('CircleSmall_Headset.chroma');
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_Headset] = list;
+
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_Keypad] = [];
+
+    var list = [];
+    list.push('CircleSmall_Mouse.chroma');
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_Mouse] = list;
+
+    var list = [];
+    list.push('CircleSmall_Mousepad.chroma');
+    animationsWithShapes[EChromaSDKDeviceEnum.DE_Mousepad] = list;
+  };
+  setupAnimations();
+
+  layers[EChromaSDKDeviceEnum.DE_ChromaLink] = [];
+  layers[EChromaSDKDeviceEnum.DE_Headset] = [];
+  layers[EChromaSDKDeviceEnum.DE_Keyboard] = [];
+  layers[EChromaSDKDeviceEnum.DE_Keypad] = [];
+  layers[EChromaSDKDeviceEnum.DE_Mouse] = [];
+  layers[EChromaSDKDeviceEnum.DE_Mousepad] = [];
+};
 
 </script>
 </html>

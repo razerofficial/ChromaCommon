@@ -8,7 +8,7 @@ Vue.component('div-chroma-set', {
   props: [ 'index', 'header', 'image', 'video' ],
   template: `
   <div style="padding-bottom: 50px; display: inline-table">
-    <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table">
+    <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table; vertical-align: top;">
       <div style="background: hsl(0, 0%, 20%); width: 100%">
         <button class="buttonChroma" :onclick="this.keyboardClick" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
         <div style="width: 550px; display: inline-table">{{ header }}</div>

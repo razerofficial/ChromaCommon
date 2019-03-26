@@ -722,7 +722,8 @@ var EChromaSDKDeviceEnum = {
   'DE_Keyboard': 2,
   'DE_Keypad': 3,
   'DE_Mouse': 4,
-  'DE_Mousepad': 5
+  'DE_Mousepad': 5,
+  'DE_MAX': 6
 };
 
 function ChromaAnimationFrame1D() {
