@@ -4484,29 +4484,46 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return;
-    }
     var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = colors[i];
           if (color != 0) {
             //console.log('color', color);
             var red = (color & 0xFF) / 255.0;
             var green = ((color & 0xFF00) >> 8) / 255.0;
             var blue = ((color & 0xFF0000) >> 16) / 255.0;
             var t = (red+green+blue) / 3.0;
-            row[j] = ChromaAnimation.lerpColor(color1, color2, t);
+            colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = row[j];
+            if (color != 0) {
+              //console.log('color', color);
+              var red = (color & 0xFF) / 255.0;
+              var green = ((color & 0xFF00) >> 8) / 255.0;
+              var blue = ((color & 0xFF0000) >> 16) / 255.0;
+              var t = (red+green+blue) / 3.0;
+              row[j] = ChromaAnimation.lerpColor(color1, color2, t);
+            }
           }
         }
       }
