@@ -77,3 +77,16 @@ td {
   color: white;
   background-color: #444444;
 }
+.divInline {
+  display: inline-table;
+  vertical-align: top;
+}
+.divBorder {
+  display: inline-block;
+  border: 1px solid white;
+  vertical-align: top;
+}
+.divBlock {
+  display: inline-block;
+  vertical-align: top;
+}
