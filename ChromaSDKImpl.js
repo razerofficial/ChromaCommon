@@ -5064,6 +5064,81 @@ var ChromaAnimation = {
     this.clear(EChromaSDKDeviceEnum.DE_Keypad);
     this.clear(EChromaSDKDeviceEnum.DE_Mouse);
     this.clear(EChromaSDKDeviceEnum.DE_Mousepad);
+  },
+  getKey: function (row, col) {
+    return (row << 8) | col;
+  },
+
+  // Helper function to implement reactive key setEffect
+  reactiveKeyEffectAllFrames: function (layer, key, lineWidth, color) {
+
+    var frameCount = ChromaAnimation.getFrameCount(layer);
+
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+
+    var startRow = getHighByte(key);
+    var startColumn = getLowByte(key);
+
+    // console.log('Start Column =', startColumn);
+    // console.log('Start Row =', startRow);
+
+    var radius = 0;
+    var speed = 25/ frameCount;
+
+    for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+      var stroke = radius;
+      for (var t = 0; t < lineWidth; ++t) {
+        for (var i = 0; i < 360; ++i) {
+          var angle = i * Math.PI / 180;
+          var r = Math.floor(startRow + stroke * Math.sin(angle));
+          var c = Math.floor(startColumn + stroke * Math.cos(angle));
+          if (r >= 0 && r < maxRow &&
+            c >= 0 && c < maxColumn) {
+              var rkey = ChromaAnimation.getKey(r, c);
+              ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
+          }
+        }
+        stroke += speed;
+      }
+      radius += speed;
+    }
+  },
+
+  reactiveKeyEffectAllFramesRGB: function (layer, key, lineWidth, red, green, blue) {
+
+    var frameCount = ChromaAnimation.getFrameCount(layer);
+
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+
+    var startRow = getHighByte(key);
+    var startColumn = getLowByte(key);
+
+    // console.log('Start Column =', startColumn);
+    // console.log('Start Row =', startRow);
+
+    var color = ChromaAnimation.getRGB(red, green, blue);
+    var radius = 0;
+    var speed = 25/ frameCount;
+
+    for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+      var stroke = radius;
+      for (var t = 0; t < lineWidth; ++t) {
+        for (var i = 0; i < 360; ++i) {
+          var angle = i * Math.PI / 180;
+          var r = Math.floor(startRow + stroke * Math.sin(angle));
+          var c = Math.floor(startColumn + stroke * Math.cos(angle));
+          if (r >= 0 && r < maxRow &&
+            c >= 0 && c < maxColumn) {
+              var rkey = ChromaAnimation.getKey(r, c);
+              ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
+          }
+        }
+        stroke += speed;
+      }
+      radius += speed;
+    }
   }
 };
 ChromaAnimation.updateFrame();
