@@ -6,11 +6,16 @@ var editButton = undefined;
 
 Vue.component('div-chroma-set', {
   props: [ 'index', 'header', 'image', 'video' ],
+  methods: {
+    keyboardClick: function() {
+      console.log('function not set');
+    }
+  },
   template: `
   <div style="padding-bottom: 50px; display: inline-table">
     <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table; vertical-align: top;">
       <div style="background: hsl(0, 0%, 20%); width: 100%">
-        <button class="buttonChroma" :onclick="this.keyboardClick" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
+        <button class="buttonChroma" :onclick="keyboardClick" style="font-size: 1.2em; display: inline-table" :id="'showEffect'+index">{{ index }}</button>
         <div style="width: 550px; display: inline-table">{{ header }}</div>
       </div>
       <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
@@ -47,7 +52,7 @@ Vue.component('div-chroma-set', {
         <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
         <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
         <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
-        <div style="width: 675px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+        <div style="width: 690px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
           <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
           <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
           <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
@@ -64,7 +69,7 @@ Vue.component('div-chroma-set', {
     `,
     data() {
       return {
-        items: this.$root.dataDivChromaSets
+        items: $root.dataDivChromaSets
       };
     }
   });
