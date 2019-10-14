@@ -57,6 +57,16 @@ Vue.component('div-chroma-set', {
           <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
           <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
         </div>
+        <div>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeypad.svg" width="120" height="214"></object>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMouse.svg" width="120" height="214"></object>
+        </div>
+        <div>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorChromaLink.svg" width="214" height="214"></object>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorHeadset.svg" width="214" height="214"></object>
+          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMousepad.svg" width="214" height="214"></object>
+        </div>
       </section>
     </div>
   </div>
