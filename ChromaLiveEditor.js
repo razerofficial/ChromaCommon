@@ -40,33 +40,21 @@ Vue.component('div-chroma-set', {
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
       </section>
       <section v-show="index != undefined && index != ''">
-        <div style="width: 645px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
-          <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas>
-        </div>
-      </section>
-      <section v-show="index != undefined && index != ''">
         <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
-        <canvas class="canvasChromaLink" style="padding-left: 25px" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas>
+        <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
+        <button class="buttonKeypad" style="display: none" :id="'showEffect'+index+'Keypad'">1</button>
+        <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
+        <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
       </section>
       <section v-show="index != undefined && index != ''">
-        <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
-        <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
-        <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
-        <div style="width: 690px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
-          <canvas class="canvasHeadset" style="padding-left: 25px" :id="'canvasHeadsetShowEffect'+index" width="210" height="214"></canvas>
-          <canvas class="canvasMousepad" style="padding-left: 5px" :id="'canvasMousepadShowEffect'+index" width="294" height="214"></canvas>
-          <canvas class="canvasMouse" style="padding-left: 5px" :id="'canvasMouseShowEffect'+index" width="128" height="214"></canvas>
-        </div>
-        <div>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeypad.svg" width="120" height="214"></object>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMouse.svg" width="120" height="214"></object>
-        </div>
-        <div>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorChromaLink.svg" width="214" height="214"></object>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorHeadset.svg" width="214" height="214"></object>
-          <object type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMousepad.svg" width="214" height="214"></object>
-        </div>
+        <object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object>
+        <object :id="'canvasKeypadShowEffect'+index" class="canvasKeypad" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeypad.svg" width="110" height="214"></object>
+        <object :id="'canvasMouseShowEffect'+index" class="canvasMouse" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMouse.svg" width="110" height="214"></object>
+      </section>
+      <section v-show="index != undefined && index != ''">
+        <object :id="'canvasChromaLinkShowEffect'+index" class="canvasChromaLink" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorChromaLink.svg" width="200" height="200"></object>
+        <object :id="'canvasHeadsetShowEffect'+index" class="canvasHeadset" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorHeadset.svg" width="214" height="214"></object>
+        <object :id="'canvasMousepadShowEffect'+index" class="canvasMousepad" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMousepad.svg" width="214" height="214"></object>
       </section>
     </div>
   </div>

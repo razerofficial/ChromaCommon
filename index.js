@@ -48,6 +48,11 @@ var initialized = false;
 var exampleInterval = undefined;
 var pageHadFocus = undefined;
 var drawInProgress = false;
+var maps = {};
+var useTint = false;
+var tintRed = 255;
+var tintGreen = 255;
+var tintBlue = 255;
 detectWindowFocus = function() {
   if (browserTabIsVisible == true) {
     if (pageHadFocus != true) {
@@ -64,6 +69,305 @@ detectWindowFocus = function() {
     }
   }
 }
+
+findLeds = function(children, collection, className) {
+  for (var i = 0; i < children.length; ++i) {
+    var child = children[i];
+    if (child == undefined) {
+      continue;
+    }
+    //console.log('class', child.getAttribute("class"));
+    var childClassName = child.getAttribute("class");
+    if (childClassName != undefined) {
+      var classes = childClassName.split(" ");
+      for (var c = 0; c < classes.length; ++c) {
+        if (classes[c] == className) {
+          collection.push(child);
+          break;
+        }
+      }
+    }
+    findLeds(child.children, collection, className);
+  }
+}
+
+function getHexColor(bgrColor) {
+  var red = (bgrColor & 0xFF);
+  var green = (bgrColor & 0xFF00) >> 8;
+  var blue = (bgrColor & 0xFF0000) >> 16;
+  return 'rgb('+red+','+green+','+blue+')';
+}
+
+function applyTint(bgrColor) {
+  if (useTint) {
+    var red = (bgrColor & 0xFF);
+    var green = (bgrColor & 0xFF00) >> 8;
+    var blue = (bgrColor & 0xFF0000) >> 16;
+    var v = Math.max(Math.max(red, green), blue);
+    red = 0xFF & Math.floor(v * tintRed / 255);
+    green = 0xFF & Math.floor(v * tintGreen / 255);
+    blue = 0xFF & Math.floor(v * tintBlue / 255);
+    return getRGB(red, green, blue);
+  } else {
+    return bgrColor;
+  }
+}
+
+function getMouseColor(colors, led) {
+  var i = getHighByte(led);
+  var row = colors[i];
+  var j = getLowByte(led);
+  return getHexColor(applyTint(row[j]));
+}
+
+setupMapChromaLink = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('canvasChromaLink: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapChromaLink != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapChromaLink = undefined;
+  var leds = [];
+  findLeds(svgObject.children, leds, 'led');
+  var map = [];
+  map.push(leds[4]);
+  map.push(leds[0]);
+  map.push(leds[1]);
+  map.push(leds[2]);
+  map.push(leds[3]);
+  //console.log('map', map);
+  maps[canvasName].mapChromaLink = map;
+};
+
+setupMapHeadset = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('canvasHeadset: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapHeadset != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapHeadset = undefined;
+  var leds = [];
+  findLeds(svgObject.children, leds, 'led');
+  var map = [];
+  map.push(leds[0].children[0]);
+  map.push(leds[0].children[1]);
+  //console.log('map', map);
+  maps[canvasName].mapHeadset = map;
+};
+
+setupMapKeyboard = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('canvasKeyboard: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapKeyboard != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapKeyboard = undefined;
+
+  var map = {};
+  map[RZKEY.RZKEY_ESC] = 'keyEsc';
+  map[RZKEY.RZKEY_F1] = 'keyF1';
+  map[RZKEY.RZKEY_F2] = 'keyF2';
+  map[RZKEY.RZKEY_F3] = 'keyF3';
+  map[RZKEY.RZKEY_F4] = 'keyF4';
+  map[RZKEY.RZKEY_F5] = 'keyF5';
+  map[RZKEY.RZKEY_F6] = 'keyF6';
+  map[RZKEY.RZKEY_F7] = 'keyF7';
+  map[RZKEY.RZKEY_F8] = 'keyF8';
+  map[RZKEY.RZKEY_F9] = 'keyF9';
+  map[RZKEY.RZKEY_F10] = 'keyF10';
+  map[RZKEY.RZKEY_F11] = 'keyF11';
+  map[RZKEY.RZKEY_F12] = 'keyF12';
+  map[RZKEY.RZKEY_1] = 'key1';
+  map[RZKEY.RZKEY_2] = 'key2';
+  map[RZKEY.RZKEY_3] = 'key3';
+  map[RZKEY.RZKEY_4] = 'key4';
+  map[RZKEY.RZKEY_5] = 'key5';
+  map[RZKEY.RZKEY_6] = 'key6';
+  map[RZKEY.RZKEY_7] = 'key7';
+  map[RZKEY.RZKEY_8] = 'key8';
+  map[RZKEY.RZKEY_9] = 'key9';
+  map[RZKEY.RZKEY_0] = 'key0';
+  map[RZKEY.RZKEY_A] = 'keyA';
+  map[RZKEY.RZKEY_B] = 'keyB';
+  map[RZKEY.RZKEY_C] = 'keyC';
+  map[RZKEY.RZKEY_D] = 'keyD';
+  map[RZKEY.RZKEY_E] = 'keyE';
+  map[RZKEY.RZKEY_F] = 'keyF';
+  map[RZKEY.RZKEY_G] = 'keyG';
+  map[RZKEY.RZKEY_H] = 'keyH';
+  map[RZKEY.RZKEY_I] = 'keyI';
+  map[RZKEY.RZKEY_J] = 'keyJ';
+  map[RZKEY.RZKEY_K] = 'keyK';
+  map[RZKEY.RZKEY_L] = 'keyL';
+  map[RZKEY.RZKEY_M] = 'keyM';
+  map[RZKEY.RZKEY_N] = 'keyN';
+  map[RZKEY.RZKEY_O] = 'keyO';
+  map[RZKEY.RZKEY_P] = 'keyP';
+  map[RZKEY.RZKEY_Q] = 'keyQ';
+  map[RZKEY.RZKEY_R] = 'keyR';
+  map[RZKEY.RZKEY_S] = 'keyS';
+  map[RZKEY.RZKEY_T] = 'keyT';
+  map[RZKEY.RZKEY_U] = 'keyU';
+  map[RZKEY.RZKEY_V] = 'keyV';
+  map[RZKEY.RZKEY_W] = 'keyW';
+  map[RZKEY.RZKEY_X] = 'keyX';
+  map[RZKEY.RZKEY_Y] = 'keyY';
+  map[RZKEY.RZKEY_Z] = 'keyZ';
+  map[RZKEY.RZKEY_NUMLOCK] = 'keyNumPad';
+  map[RZKEY.RZKEY_NUMPAD0] = 'keyNumPad0';
+  map[RZKEY.RZKEY_NUMPAD1] = 'keyNumPad1';
+  map[RZKEY.RZKEY_NUMPAD2] = 'keyNumPad2';
+  map[RZKEY.RZKEY_NUMPAD3] = 'keyNumPad3';
+  map[RZKEY.RZKEY_NUMPAD4] = 'keyNumPad4';
+  map[RZKEY.RZKEY_NUMPAD5] = 'keyNumPad5';
+  map[RZKEY.RZKEY_NUMPAD6] = 'keyNumPad6';
+  map[RZKEY.RZKEY_NUMPAD7] = 'keyNumPad7';
+  map[RZKEY.RZKEY_NUMPAD8] = 'keyNumPad8';
+  map[RZKEY.RZKEY_NUMPAD9] = 'keyNumPad9';
+  map[RZKEY.RZKEY_NUMPAD_DIVIDE] = 'keyNumPadForwardSlash';
+  map[RZKEY.RZKEY_NUMPAD_MULTIPLY] = 'keyNumPadAsterisk';
+  map[RZKEY.RZKEY_NUMPAD_SUBTRACT] = 'keyNumPadMinus';
+  map[RZKEY.RZKEY_NUMPAD_ADD] = 'keyNumPadPlus';
+  map[RZKEY.RZKEY_NUMPAD_ENTER] = 'keyNumPadEnter';
+  map[RZKEY.RZKEY_NUMPAD_DECIMAL] = 'keyNumPadDot';
+  map[RZKEY.RZKEY_PRINTSCREEN] = 'keyPrintScreen';
+  map[RZKEY.RZKEY_SCROLL] = 'keyScrollLock';
+  map[RZKEY.RZKEY_PAUSE] = 'keyPauseBreak';
+  map[RZKEY.RZKEY_INSERT] = 'keyInsert';
+  map[RZKEY.RZKEY_HOME] = 'keyHome';
+  map[RZKEY.RZKEY_PAGEUP] = 'keyPageUp';
+  map[RZKEY.RZKEY_DELETE] = 'keyDelete';
+  map[RZKEY.RZKEY_END] = 'keyEnd';
+  map[RZKEY.RZKEY_PAGEDOWN] = 'keyPageDown';
+  map[RZKEY.RZKEY_UP] = 'keyUpArrow';
+  map[RZKEY.RZKEY_LEFT] = 'keyLeftArrow';
+  map[RZKEY.RZKEY_DOWN] = 'keyDownArrow';
+  map[RZKEY.RZKEY_RIGHT] = 'keyRightArrow';
+  map[RZKEY.RZKEY_TAB] = 'keyTab';
+  map[RZKEY.RZKEY_CAPSLOCK] = 'keyCaps';
+  map[RZKEY.RZKEY_BACKSPACE] = 'keyBackspace';
+  map[RZKEY.RZKEY_ENTER] = 'keyEnter';
+  map[RZKEY.RZKEY_LCTRL] = 'keyLeftCtrl';
+  map[RZKEY.RZKEY_LWIN] = 'keyWindow';
+  map[RZKEY.RZKEY_LALT] = 'keyLeftAlt';
+  map[RZKEY.RZKEY_SPACE] = 'keySpace';
+  map[RZKEY.RZKEY_RALT] = 'keyRightAlt';
+  map[RZKEY.RZKEY_FN] = 'keyFunction_1_';
+  map[RZKEY.RZKEY_RMENU] = 'keyMenu';
+  map[RZKEY.RZKEY_RCTRL] = 'keyRightCtrl';
+  map[RZKEY.RZKEY_LSHIFT] = 'keyLeftShift';
+  map[RZKEY.RZKEY_RSHIFT] = 'keyRightShift';
+  map[RZKEY.RZKEY_OEM_1] = 'keyTilde';               /*!< ~ (tilde/半角/全角) (VK_OEM_3) */
+  map[RZKEY.RZKEY_OEM_2] = 'keyDash';               /*!< -- (minus) (VK_OEM_MINUS) */
+  map[RZKEY.RZKEY_OEM_3] = 'keyEqual';               /*!< = (equal) (VK_OEM_PLUS) */
+  map[RZKEY.RZKEY_OEM_4] = 'keyStartSquareBracket';               /*!< [ (left sqaure bracket) (VK_OEM_4) */
+  map[RZKEY.RZKEY_OEM_5] = 'keyEndSquareBracket';               /*!< ] (right square bracket) (VK_OEM_6) */
+  map[RZKEY.RZKEY_OEM_6] = 'keyBackslash';               /*!< \ (backslash) (VK_OEM_5) */
+  map[RZKEY.RZKEY_OEM_7] = 'keySemiColon';               /*!< ; (semi-colon) (VK_OEM_1) */
+  map[RZKEY.RZKEY_OEM_8] = 'keyApostrophe';               /*!< ' (apostrophe) (VK_OEM_7) */
+  map[RZKEY.RZKEY_OEM_9] = 'keyComma';               /*!< , (comma) (VK_OEM_COMMA) */
+  map[RZKEY.RZKEY_OEM_10] = 'keyDot';              /*!< . (period) (VK_OEM_PERIOD) */
+  map[RZKEY.RZKEY_OEM_11] = 'keyForwardSlash';              /*!< / (forward slash) (VK_OEM_2) */
+
+  var entries = Object.entries(map);
+  for (let [key, value] of entries) {
+    //console.log(key, value);
+    var leds = [];
+    findLeds(svgObject.children, leds, value);
+    map[key] = leds[0];
+    //console.log(key, map[key]);
+  }
+
+  //console.log('map', map);
+  maps[canvasName].mapKeyboard = map;
+};
+
+setupMapMousepad = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('setupMapMousepad: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapMousepad != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapMousepad = undefined;
+  var leds = [];
+  findLeds(svgObject.children, leds, 'led');
+  var map = [];
+  for (var led = 14; led >= 0; --led) {
+    map.push(leds[led]);
+  }
+  //console.log('map', map);
+  maps[canvasName].mapMousepad = map;
+};
+
+setupMapMouse = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('canvasMouse: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapMouse != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapMouse = undefined;
+  var leds = [];
+  findLeds(svgObject.children, leds, 'led');
+  var map = [];
+  for (var led = 0; led < leds.length; ++led) {
+    map.push(leds[led]);
+  }
+  //console.log('map', map);
+  maps[canvasName].mapMouse = map;
+
+};
+
+setupMapKeypad = function(canvasName, svgObject) {
+  if (svgObject == undefined) {
+    console.error('canvasKeypad: SVG Object cannot be accessed!', svgObject.children);
+    return;
+  }
+  if (maps[canvasName] == undefined) {
+    maps[canvasName] = {};
+  }
+  if (maps[canvasName].mapKeypad != undefined) {
+    return; ///already set
+  }
+  maps[canvasName].mapKeypad = undefined;
+  var leds = [];
+  findLeds(svgObject.children, leds, 'ledkeys');
+  var map = [];
+  for (var led = 0; led < leds.length; ++led) {
+    map.push(leds[led]);
+  }
+  var leds = [];
+  findLeds(svgObject.children, leds, 'led');
+  map.push(leds[0]);
+  //console.log('map', map);
+  maps[canvasName].mapKeypad = map;
+
+};
+
 loadCanvases = function() {
   //show loading text on canvases
   var canvases = document.getElementsByClassName('canvasKeyboard');
@@ -228,141 +532,6 @@ function drawKeyboard(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  var ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var map = {};
-  var setupMapping = function() {
-    map['RZKEY.RZKEY_ESC'] = [46, 5, 27, 28];
-    map['RZKEY.RZKEY_F1'] = [113, 5, 25, 28];
-    map['RZKEY.RZKEY_F2'] = [139, 5, 25, 28];
-    map['RZKEY.RZKEY_F3'] = [165, 5, 25, 28];
-    map['RZKEY.RZKEY_F4'] = [190, 5, 26, 28];
-    map['RZKEY.RZKEY_F5'] = [222, 5, 24, 28];
-    map['RZKEY.RZKEY_F6'] = [248, 5, 24, 28];
-    map['RZKEY.RZKEY_F7'] = [274, 5, 24, 28];
-    map['RZKEY.RZKEY_F8'] = [299, 5, 25, 28];
-    map['RZKEY.RZKEY_F9'] = [330, 5, 25, 28];
-    map['RZKEY.RZKEY_F10'] = [356, 5, 25, 28];
-    map['RZKEY.RZKEY_F11'] = [382, 5, 25, 28];
-    map['RZKEY.RZKEY_F12'] = [407, 5, 25, 28];
-    map['RZKEY.RZKEY_1'] = [72, 37, 26, 25];
-    map['RZKEY.RZKEY_2'] = [98, 37, 25, 25];
-    map['RZKEY.RZKEY_3'] = [124, 37, 25, 25];
-    map['RZKEY.RZKEY_4'] = [150, 37, 25, 25];
-    map['RZKEY.RZKEY_5'] = [176, 37, 24, 25];
-    map['RZKEY.RZKEY_6'] = [202, 37, 24, 25];
-    map['RZKEY.RZKEY_7'] = [228, 37, 24, 25];
-    map['RZKEY.RZKEY_8'] = [253, 37, 25, 25];
-    map['RZKEY.RZKEY_9'] = [279, 37, 25, 25];
-    map['RZKEY.RZKEY_0'] = [305, 37, 25, 25];
-    map['RZKEY.RZKEY_A'] = [92, 89, 25, 25];
-    map['RZKEY.RZKEY_B'] = [208, 114, 25, 26];
-    map['RZKEY.RZKEY_C'] = [156, 114, 26, 26];
-    map['RZKEY.RZKEY_D'] = [144, 89, 24, 25];
-    map['RZKEY.RZKEY_E'] = [137, 63, 25, 25];
-    map['RZKEY.RZKEY_F'] = [169, 89, 25, 25];
-    map['RZKEY.RZKEY_G'] = [195, 89, 25, 25];
-    map['RZKEY.RZKEY_H'] = [221, 89, 25, 25];
-    map['RZKEY.RZKEY_I'] = [266, 63, 25, 25];
-    map['RZKEY.RZKEY_J'] = [247, 89, 25, 25];
-    map['RZKEY.RZKEY_K'] = [272, 89, 25, 25];
-    map['RZKEY.RZKEY_L'] = [298, 89, 25, 25];
-    map['RZKEY.RZKEY_M'] = [259, 114, 25, 26];
-    map['RZKEY.RZKEY_N'] = [233, 114, 26, 26];
-    map['RZKEY.RZKEY_O'] = [292, 63, 25, 25];
-    map['RZKEY.RZKEY_P'] = [318, 63, 25, 25];
-    map['RZKEY.RZKEY_Q'] = [86, 63, 24, 25];
-    map['RZKEY.RZKEY_R'] = [163, 63, 25, 25];
-    map['RZKEY.RZKEY_S'] = [118, 89, 25, 25];
-    map['RZKEY.RZKEY_T'] = [188, 63, 26, 25];
-    map['RZKEY.RZKEY_U'] = [240, 63, 25, 25];
-    map['RZKEY.RZKEY_V'] = [182, 114, 25, 26];
-    map['RZKEY.RZKEY_W'] = [112, 63, 24, 25];
-    map['RZKEY.RZKEY_X'] = [131, 114, 25, 26];
-    map['RZKEY.RZKEY_Y'] = [214, 63, 25, 25];
-    map['RZKEY.RZKEY_Z'] = [105, 114, 25, 26];
-    map['RZKEY.RZKEY_NUMLOCK'] = [521, 37, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD0'] = [521, 140, 52, 26];
-    map['RZKEY.RZKEY_NUMPAD1'] = [521, 114, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD2'] = [547, 114, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD3'] = [573, 114, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD4'] = [521, 88, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD5'] = [547, 88, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD6'] = [573, 88, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD7'] = [521, 63, 26, 25];
-    map['RZKEY.RZKEY_NUMPAD8'] = [547, 63, 26, 25];
-    map['RZKEY.RZKEY_NUMPAD9'] = [573, 63, 26, 25];
-    map['RZKEY.RZKEY_NUMPAD_DIVIDE'] = [547, 37, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD_MULTIPLY'] = [573, 37, 26, 26];
-    map['RZKEY.RZKEY_NUMPAD_SUBTRACT'] = [598, 37, 27, 26];
-    map['RZKEY.RZKEY_NUMPAD_ADD'] = [598, 63, 27, 51];
-    map['RZKEY.RZKEY_NUMPAD_ENTER'] = [598, 114, 27, 60];
-    map['RZKEY.RZKEY_NUMPAD_DECIMAL'] = [572, 140, 52, 26];
-    map['RZKEY.RZKEY_PRINTSCREEN'] = [438, 5, 26, 28];
-    map['RZKEY.RZKEY_SCROLL'] = [464, 5, 26, 28];
-    map['RZKEY.RZKEY_PAUSE'] = [490, 5, 26, 28];
-    map['RZKEY.RZKEY_INSERT'] = [438, 37, 26, 27];
-    map['RZKEY.RZKEY_HOME'] = [464, 37, 26, 27];
-    map['RZKEY.RZKEY_PAGEUP'] = [490, 37, 26, 27];
-    map['RZKEY.RZKEY_DELETE'] = [438, 63, 26, 27];
-    map['RZKEY.RZKEY_END'] = [464, 63, 26, 27];
-    map['RZKEY.RZKEY_PAGEDOWN'] = [490, 63, 26, 27];
-    map['RZKEY.RZKEY_UP'] = [464, 114, 26, 26];
-    map['RZKEY.RZKEY_LEFT'] = [438, 140, 26, 26];
-    map['RZKEY.RZKEY_DOWN'] = [464, 140, 26, 26];
-    map['RZKEY.RZKEY_RIGHT'] = [490, 140, 25, 26];
-    map['RZKEY.RZKEY_TAB'] = [46, 63, 39, 25];
-    map['RZKEY.RZKEY_CAPSLOCK'] = [46, 89, 45, 25];
-    map['RZKEY.RZKEY_BACKSPACE'] = [382, 37, 50, 25];
-    map['RZKEY.RZKEY_ENTER'] = [375, 89, 57, 25];
-    map['RZKEY.RZKEY_LCTRL'] = [46, 140, 39, 26];
-    map['RZKEY.RZKEY_LWIN'] = [86, 140, 25, 26];
-    map['RZKEY.RZKEY_LALT'] = [111, 140, 38, 26];
-    map['RZKEY.RZKEY_SPACE'] = [149, 140, 156, 26];
-    map['RZKEY.RZKEY_RALT'] = [305, 140, 37, 26];
-    map['RZKEY.RZKEY_FN'] = [342, 140, 26, 26];
-    map['RZKEY.RZKEY_RMENU'] = [368, 140, 26, 26];
-    map['RZKEY.RZKEY_RCTRL'] = [395, 140, 37, 26];
-    map['RZKEY.RZKEY_LSHIFT'] = [46, 114, 58, 26];
-    map['RZKEY.RZKEY_RSHIFT'] = [362, 114, 70, 26];
-    map['RZKEY.RZKEY_MACRO1'] = [15, 37, 27, 25];
-    map['RZKEY.RZKEY_MACRO2'] = [15, 62, 27, 26];
-    map['RZKEY.RZKEY_MACRO3'] = [15, 88, 27, 26];
-    map['RZKEY.RZKEY_MACRO4'] = [15, 114, 27, 26];
-    map['RZKEY.RZKEY_MACRO5'] = [15, 140, 27, 26];
-    map['RZKEY.RZKEY_OEM_1'] = [46, 37, 26, 25];
-    map['RZKEY.RZKEY_OEM_2'] = [330, 37, 25, 25];
-    map['RZKEY.RZKEY_OEM_3'] = [356, 37, 25, 25];
-    map['RZKEY.RZKEY_OEM_4'] = [343, 63, 25, 25];
-    map['RZKEY.RZKEY_OEM_5'] = [369, 63, 25, 25];
-    map['RZKEY.RZKEY_OEM_6'] = [394, 63, 38, 25];
-    map['RZKEY.RZKEY_OEM_7'] = [324, 89, 25, 25];
-    map['RZKEY.RZKEY_OEM_8'] = [350, 89, 24, 25];
-    map['RZKEY.RZKEY_OEM_9'] = [285, 114, 25, 26];
-    map['RZKEY.RZKEY_OEM_10'] = [311, 114, 25, 26];
-    map['RZKEY.RZKEY_OEM_11'] = [337, 114, 25, 26];
-    map['RZKEY.RZKEY_EUR_1'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_EUR_2'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_JPN_1'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_JPN_2'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_JPN_3'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_JPN_4'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_JPN_5'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_1'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_2'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_3'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_4'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_5'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_6'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_KOR_7'] = [0, 0, 0, 0];
-    map['RZKEY.RZKEY_INVALID'] = [0, 0, 0, 0];
-    map['RZLED.RZLED_LOGO'] = [309, 185, 24, 25];
-  };
-  setupMapping();
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
@@ -373,53 +542,28 @@ function drawKeyboard(canvasName, animationName, loop) {
     var frame = animation.Frames[state.FrameId];
     var colors = frame.Colors;
 
-    for (var key in RZKEY) {
-      //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
-      var val = RZKEY[key];
-      if (val == RZKEY.RZKEY_INVALID) {
-        continue;
+    setupMapKeyboard(canvasName, canvas.contentDocument);
+
+    if (maps[canvasName] != undefined) {
+      var mapKeyboard = maps[canvasName].mapKeyboard;
+      if (mapKeyboard != undefined) {
+        for (var key in RZKEY) {
+          //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
+          var val = RZKEY[key];
+          if (val == RZKEY.RZKEY_INVALID) {
+            continue;
+          }
+          var i = getHighByte(val);
+          var row = colors[i];
+          var j = getLowByte(val);
+          var color = row[j];
+          var keyDesc = eval('RZKEY.'+key);
+          if (mapKeyboard[keyDesc] != undefined) {
+            mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(applyTint(color)));
+          }
+        }
       }
-      var i = getHighByte(val);
-      var row = colors[i];
-      var j = getLowByte(val);
-      var color = row[j];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var keyDesc = 'RZKEY.'+key;
-      var coords = map[keyDesc];
-
-      var color = getRGBString(red, green, blue);
-      ctx.fillStyle = color;
-      ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
-      ctx.stroke();
     }
-
-    for (var key in RZLED) {
-      var val = RZLED[key];
-      var i = getHighByte(val);
-      var row = colors[i];
-      var j = getLowByte(val);
-      var color = row[j];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var keyDesc = 'RZLED.'+key;
-      var coords = map[keyDesc];
-
-      var color = getRGBString(red, green, blue);
-      ctx.fillStyle = color;
-      var a = coords[0];
-      var b = coords[1];
-      var c = coords[2];
-      var d = coords[3];
-      ctx.fillRect(a,b,c,d);
-      ctx.stroke();
-    }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    ctx.drawImage(imgEmulatorKeyboard, 0, 0, drawWidth, drawHeight);
   }
 
   var duration = Number(animation.getDuration());
@@ -444,6 +588,105 @@ function drawKeyboard(canvasName, animationName, loop) {
     drawKeyboard(canvasName, animationName);
   }, duration * 1000);
   canvasTimers.keyboard[canvasName] = timer;
+}
+function drawKeypad(canvasName, animationName, loop) {
+
+  var animation = ChromaAnimation.getAnimation(animationName);
+  if (animation == undefined) {
+    return;
+  }
+
+  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+    animation.Device != EChromaSDKDevice2DEnum.DE_Keypad) {
+    return;
+  }
+
+  var state = stateDisplay.keypad[canvasName];
+  if (state == undefined) {
+    state = {};
+    stateDisplay.keypad[canvasName] = state;
+    state.FrameId = 0;
+    state.Delay = undefined;
+    state.Loop = loop;
+  }
+
+  // play idle animation for non-looping animations
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad]);
+  var usingIdle = false;
+  if (state.Loop == false &&
+    idleAnimation != undefined &&
+    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] &&
+    state.Delay != undefined) {
+    if (state.Delay < Date.now()) {
+      state.Delay = undefined;
+      state.FrameId = 0;
+    } else {
+      animation = idleAnimation;
+      usingIdle = true;
+    }
+  }
+
+  var canvas = document.getElementById(canvasName);
+  if (canvas == undefined) {
+    console.error('Canvas is missing!', canvasName);
+    return;
+  }
+
+  var frameCount = animation.getFrameCount();
+  //console.log('frameCount', frameCount);
+  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keypad);
+  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keypad);
+  //console.log('frameId', frameId);
+  if (state.FrameId >= 0 && state.FrameId < frameCount) {
+    var frame = animation.Frames[state.FrameId];
+    var colors = frame.Colors;
+
+    setupMapKeypad(canvasName, canvas.contentDocument);
+
+    if (maps[canvasName] != undefined) {
+      var mapKeypad = maps[canvasName].mapKeypad;
+      if (mapKeypad != undefined) {
+        mapKeypad[0].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][0])));
+        mapKeypad[1].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][1])));
+        mapKeypad[2].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][2])));
+        mapKeypad[3].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][3])));
+        mapKeypad[4].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][4])));
+        mapKeypad[5].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][0])));
+        mapKeypad[6].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][1])));
+        mapKeypad[7].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][2])));
+        mapKeypad[8].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][3])));
+        mapKeypad[9].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][4])));
+        mapKeypad[10].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][0])));
+        mapKeypad[11].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][1])));
+        mapKeypad[12].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][2])));
+        mapKeypad[13].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][3])));
+        mapKeypad[14].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][4])));
+        mapKeypad[15].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][0])));
+        mapKeypad[16].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][1])));
+        mapKeypad[17].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][2])));
+        mapKeypad[18].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][3])));
+        mapKeypad[20].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][4])));
+      }
+    }
+  }
+
+  var duration = Number(animation.getDuration());
+  duration = Math.max(duration, 0.033);
+  setTimeout(function() {
+    if (state.Loop == false) {
+      if (!usingIdle &&
+        (state.FrameId+1) >= animation.getFrameCount()) {
+        // delay before looping again
+        state.Delay = Date.now() + 3000;
+        state.FrameId = 0;
+      } else {
+        state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+      }
+    } else {
+      state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
+    }
+    drawKeypad(canvasName, animationName, loop);
+  }, duration * 1000);
 }
 function drawChromaLink(canvasName, animationName, loop) {
 
@@ -487,47 +730,24 @@ function drawChromaLink(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  var ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var map = [];
-  var setupMapping = function() {
-    map[0] = [0, 0, 128, 50];
-    map[1] = [128, 0, 128, 50];
-    map[2] = [256, 0, 128, 50];
-    map[3] = [384, 0, 128, 50];
-    map[4] = [512, 0, 128, 50];
-  };
-  setupMapping();
+  setupMapChromaLink(canvasName, canvas.contentDocument);
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
   var frameId = state.FrameId;
-  if (frameId >= 0 && frameId < frameCount) {
-    var frame = animation.Frames[state.FrameId];
-    var colors = frame.Colors;
-
-    for (var led = 0; led < 5; ++led) {
-      var color = colors[led];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var coords = map[led];
-
-      ctx.fillStyle = getRGBString(red, green, blue, 0.3);
-      ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
-      ctx.stroke();
+  if (maps[canvasName] != undefined) {
+    var mapChromaLink = maps[canvasName].mapChromaLink;
+    if (mapChromaLink != undefined) {
+      if (frameId >= 0 && frameId < frameCount) {
+        var frame = animation.Frames[state.FrameId];
+        var colors = frame.Colors;
+        for (var led = 0; led < 5; ++led) {
+          mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+        }
+      }
     }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    var halfWidth = Math.floor(drawWidth / 2);
-    var halfHeight = Math.floor(drawHeight / 2);
-    ctx.drawImage(imgEmulatorChromaLink, 0, 0, drawWidth, drawHeight);
   }
 
   var duration = Number(animation.getDuration());
@@ -546,78 +766,6 @@ function drawChromaLink(canvasName, animationName, loop) {
       state.FrameId = (state.FrameId + 1) % animation.getFrameCount();
     }
     drawChromaLink(canvasName, animationName, loop);
-  }, duration * 1000);
-}
-function drawChromaLink2(canvasName, animationName) {
-
-  var animation = ChromaAnimation.getAnimation(animationName);
-  if (animation == undefined) {
-    return;
-  }
-
-  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_1D ||
-    animation.Device != EChromaSDKDevice1DEnum.DE_ChromaLink) {
-    return;
-  }
-
-  var canvas = document.getElementById(canvasName);
-  if (canvas == undefined) {
-    console.error('Canvas is missing!', canvasName);
-    return;
-  }
-  var ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var map = [];
-  map[0] = [0, 0, 640, 214];
-  var radius = 50;
-  map[1] = [78, 145, 0, 0];
-  map[2] = [238, 145, 0, 0];
-  map[3] = [398, 145, 0, 0];
-  map[4] = [558, 145, 0, 0];
-
-  var frameCount = animation.getFrameCount();
-  //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
-  var frameId = animation.CurrentIndex;
-  if (frameId >= 0 && frameId < frameCount) {
-    //var frame = animation.Frames[frameId];
-    var frame = animation.Frames[animation.CurrentIndex];
-    var colors = frame.Colors;
-
-    for (var led = 0; led < 5; ++led) {
-      var color = colors[led];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var coords = map[led];
-
-      ctx.fillStyle = getRGBString(red, green, blue);
-      if (led == 0) {
-        ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
-        ctx.stroke();
-      } else {
-        ctx.beginPath();
-        ctx.arc(coords[0], coords[1], radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-      }
-    }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    var halfWidth = Math.floor(drawWidth / 2);
-    var halfHeight = Math.floor(drawHeight / 2);
-    ctx.drawImage(imgEmulatorChromaLink, 0, 0, drawWidth, drawHeight);
-  }
-
-  var duration = Number(animation.getDuration());
-  duration = Math.max(duration, 0.033);
-  setTimeout(function() {
-    animation.CurrentIndex = (animation.CurrentIndex + 1) % animation.getFrameCount();
-    drawChromaLink(canvasName, animationName);
   }, duration * 1000);
 }
 function drawHeadset(canvasName, animationName, loop) {
@@ -662,47 +810,27 @@ function drawHeadset(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  var ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var map = [];
-  var setupMapping = function() {
-    map[0] = [105, 0, 105, 214];
-    map[1] = [0, 0, 105, 214];
-    map[2] = [0, 0, 0, 0];
-    map[3] = [0, 0, 0, 0];
-    map[4] = [0, 0, 0, 0];
-  };
-  setupMapping();
+  setupMapHeadset(canvasName, canvas.contentDocument);
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
   var frameId = state.FrameId;
-  if (frameId >= 0 && frameId < frameCount) {
-    var frame = animation.Frames[frameId];
-    var colors = frame.Colors;
+  if (maps[canvasName] != undefined) {
+    var mapHeadset = maps[canvasName].mapHeadset;
+    if (mapHeadset != undefined) {
+      if (frameId >= 0 && frameId < frameCount) {
+        var frame = animation.Frames[frameId];
+        var colors = frame.Colors;
 
-    for (var led = 0; led < 2; ++led) {
-      var color = colors[led];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var coords = map[led];
-
-      ctx.fillStyle = getRGBString(red, green, blue, 0.3);
-      ctx.fillRect(coords[0],coords[1],coords[2],coords[3]);
-      ctx.stroke();
+        if (mapHeadset != undefined) {
+          for (var led = 0; led < 2; ++led) {
+            mapHeadset[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+          }
+        }
+      }
     }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    var halfWidth = Math.floor(drawWidth / 2);
-    var halfHeight = Math.floor(drawHeight / 2);
-    ctx.drawImage(imgEmulatorHeadset, 0, 0, drawWidth, drawHeight);
   }
 
   var duration = Number(animation.getDuration());
@@ -765,84 +893,43 @@ function drawMouse(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  var ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var regionWidth = 50;
-  var regionHeight = 49;
-  var x;
-  var y;
-
-  var map = {};
-  var setupMapping = function() {
-    map[Mouse.RZLED2.RZLED2_SCROLLWHEEL] = [285, 59, 97, 112];
-    map[Mouse.RZLED2.RZLED2_LOGO] = [256, 365, 111, 118];
-    map[Mouse.RZLED2.RZLED2_BACKLIGHT] = [0, 0, 0, 0];
-    x = 160;
-    y = 86;
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_LEFT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_BOTTOM1] = [0, 0, 0, 0];
-    map[Mouse.RZLED2.RZLED2_BOTTOM2] = [0, 0, 0, 0];
-    map[Mouse.RZLED2.RZLED2_BOTTOM3] = [0, 0, 0, 0];
-    map[Mouse.RZLED2.RZLED2_BOTTOM4] = [0, 0, 0, 0];
-    map[Mouse.RZLED2.RZLED2_BOTTOM5] = [0, 0, 0, 0];
-    x = 426;
-    y = 86;
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE1] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE2] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE3] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE4] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE5] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE6] = [x, y+=regionHeight, regionWidth, regionHeight];
-    map[Mouse.RZLED2.RZLED2_RIGHT_SIDE7] = [x, y+=regionHeight, regionWidth, regionHeight];
-  };
-  setupMapping();
+  setupMapMouse(canvasName, canvas.contentDocument);
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
   var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
   var frameId = state.FrameId;
-  if (frameId >= 0 && frameId < frameCount) {
-    var frame = animation.Frames[frameId];
-    var colors = frame.Colors;
+  if (maps[canvasName] != undefined) {
+    var mapMouse = maps[canvasName].mapMouse;
+    if (mapMouse != undefined) {
+      if (frameId >= 0 && frameId < frameCount) {
+        var frame = animation.Frames[frameId];
+        var colors = frame.Colors;
 
-    for (var led in Mouse.RZLED2) {
-      var val = Mouse.RZLED2[led];
-      var i = getHighByte(val);
-      var row = colors[i];
-      var j = getLowByte(val);
-      var color = row[j];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var coords = map[val];
-      //console.log('led', led, val, 'coords', coords);
+        if (mapMouse != undefined) {
+          mapMouse[0].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE1));
+          mapMouse[3].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE2));
+          mapMouse[5].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE3));
+          mapMouse[7].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE4));
+          mapMouse[9].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE5));
+          mapMouse[11].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE6));
+          mapMouse[13].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE7));
 
-      ctx.fillStyle = getRGBString(red, green, blue, 0.3);
-      var offset = 59;
-      var a = Math.ceil(coords[0] * 248 / 640) - offset;
-      var b = Math.ceil(coords[1] * 214 / 552);
-      var c = Math.ceil(coords[2] * 248 / 640);
-      var d = Math.ceil(coords[3] * 214 / 552);
-      ctx.fillRect(a,b,c,d);
-      ctx.stroke();
+          mapMouse[2].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE1));
+          mapMouse[4].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE2));
+          mapMouse[6].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE3));
+          mapMouse[8].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE4));
+          mapMouse[10].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE5));
+          mapMouse[12].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE6));
+          mapMouse[14].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE7));
+
+          mapMouse[1].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_SCROLLWHEEL));
+          mapMouse[15].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LOGO));
+        }
+      }
     }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    var halfWidth = Math.floor(drawWidth / 2);
-    var halfHeight = Math.floor(drawHeight / 2);
-    ctx.drawImage(imgEmulatorMouse, 0, 0, drawWidth, drawHeight);
   }
 
   var duration = Number(animation.getDuration());
@@ -905,70 +992,27 @@ function drawMousepad(canvasName, animationName, loop)  {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  var ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = getRGBString(0, 0, 0);
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.stroke();
-
-  var regionWidth = 75;
-  var regionHeight = 83;
-  var x;
-  var y;
-
-  var map = [];
-  var setupMapping = function() {
-    map[0] = [515, 0, 124, 124];
-    x = 639 - regionWidth;
-    y = 124;
-    map[1] = [x, y, regionWidth, regionHeight];
-    map[2] = [x, y += regionHeight, regionWidth, regionHeight];
-    map[3] = [x, y += regionHeight, regionWidth, regionHeight];
-    map[4] = [x, y += regionHeight, regionWidth, regionHeight];
-    map[5] = [x -= regionWidth, y, regionWidth, regionHeight];
-    regionWidth = 95;
-    map[6] = [x -= regionWidth, y, regionWidth, regionHeight];
-    map[7] = [x -= regionWidth, y, regionWidth, regionHeight];
-    map[8] = [x -= regionWidth, y, regionWidth, regionHeight];
-    map[9] = [x -= regionWidth, y, regionWidth, regionHeight];
-    map[10] = [x -= regionWidth, y, regionWidth, regionHeight];
-    regionHeight = 90;
-    map[11] = [x, y -= regionHeight, regionWidth, regionHeight];
-    map[12] = [x, y -= regionHeight, regionWidth, regionHeight];
-    map[13] = [x, y -= regionHeight, regionWidth, regionHeight];
-    map[14] = [x, y -= regionHeight, regionWidth, regionHeight];
-  };
-  setupMapping();
+  setupMapMousepad(canvasName, canvas.contentDocument);
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
   var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
   var frameId = state.FrameId;
-  if (frameId >= 0 && frameId < frameCount) {
-    var frame = animation.Frames[frameId];
-    var colors = frame.Colors;
+  if (maps[canvasName] != undefined) {
+    var mapMousepad = maps[canvasName].mapMousepad;
+    if (mapMousepad != undefined) {
+      if (frameId >= 0 && frameId < frameCount) {
+        var frame = animation.Frames[frameId];
+        var colors = frame.Colors;
 
-    for (var led = 0; led < maxLeds; ++led) {
-      var color = colors[led];
-      var red = color & 0xFF;
-      var green = (color & 0xFF00) >> 8;
-      var blue = (color & 0xFF0000) >> 16;
-      var coords = map[led];
-      //console.log('led', led, val, 'coords', coords);
-
-      ctx.fillStyle = getRGBString(red, green, blue, 0.3);
-      var a = Math.ceil(coords[0] * 294 / 640);
-      var b = Math.ceil(coords[1] * 214 / 466);
-      var c = Math.ceil(coords[2] * 294 / 640);
-      var d = Math.ceil(coords[3] * 214 / 466);
-      ctx.fillRect(a,b,c,d);
+        if (mapMousepad != undefined) {
+          for (var led = 0; led < 15; ++led) {
+            mapMousepad[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+          }
+        }
+      }
     }
-
-    var drawWidth = canvas.width;
-    var drawHeight = canvas.height;
-    var halfWidth = Math.floor(drawWidth / 2);
-    var halfHeight = Math.floor(drawHeight / 2);
-    ctx.drawImage(imgEmulatorMousepad, 0, 0, drawWidth, drawHeight);
   }
 
   var duration = Number(animation.getDuration());
@@ -995,6 +1039,15 @@ displayKeyboardCanvas = function(baseLayer, effectName, loop) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
     ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawKeyboard(canvasName, canvasName, loop);
+  }
+  drawInProgress = false;
+}
+displayKeypadCanvas = function(baseLayer, effectName, loop) {
+  var canvasName = 'canvasKeypad' + effectName;
+  if (ChromaAnimation.getAnimation(canvasName) == undefined) {
+    ChromaAnimation.copyAnimation(baseLayer, canvasName);
+    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
+    drawKeypad(canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
@@ -1065,6 +1118,12 @@ var displayAndPlayAnimationHeadset = function (baseLayer, canvasName, loop) {
 };
 var displayAndPlayAnimationKeyboard = function (baseLayer, canvasName, loop) {
   displayKeyboardCanvas(baseLayer, canvasName, loop != false);
+  if (initialized && setupComplete) {
+    ChromaAnimation.playAnimation(baseLayer, loop != false);
+  }
+};
+var displayAndPlayAnimationKeypad = function (baseLayer, canvasName, loop) {
+  displayKeypadCanvas(baseLayer, canvasName, loop != false);
   if (initialized && setupComplete) {
     ChromaAnimation.playAnimation(baseLayer, loop != false);
   }
