@@ -373,12 +373,7 @@ loadCanvases = function() {
   var canvases = document.getElementsByClassName('canvasKeyboard');
   for (var i in canvases) {
     var canvas = canvases[i];
-    if (canvas != undefined &&
-      canvas.getContext != undefined) {
-      var ctx = canvas.getContext("2d");
-      ctx.font = "30px Arial";
-      ctx.fillStyle ='rgb(127, 127, 127)';
-      ctx.fillText("Loading...",225,100);
+    if (canvas != undefined) {
       setupLiveEditOnClick(canvas);
     }
   }

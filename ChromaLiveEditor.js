@@ -9,6 +9,9 @@ Vue.component('div-chroma-set', {
   methods: {
     keyboardClick: function() {
       console.log('function not set');
+    },
+    keyboardCanvasClick: function(event) {
+      //console.log('keyboardCanvasClick');
     }
   },
   template: `
@@ -47,7 +50,7 @@ Vue.component('div-chroma-set', {
         <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
       </section>
       <section v-show="index != undefined && index != ''">
-        <object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object>
+        <div v-on:click="keyboardCanvasClick" style="display: inline-table;"><object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" style="pointer-events:none;" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object></div>
         <object :id="'canvasKeypadShowEffect'+index" class="canvasKeypad" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeypad.svg" width="110" height="214"></object>
         <object :id="'canvasMouseShowEffect'+index" class="canvasMouse" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMouse.svg" width="110" height="214"></object>
       </section>
@@ -825,12 +828,13 @@ openLiveEditor = function(canvas, buttonName) {
   }
 }
 setupLiveEditOnClick = function(canvas) {
-  canvas.addEventListener('mouseover', function() {
-    var buttonName = 's'+this.id.substring('canvasKeyboardS'.length);
-    this.onclick = function() {
-      openLiveEditor(this, buttonName);
-    }
-  }, false);
+  if (canvas.id != undefined) {
+    //console.log('canvas.id', canvas.id);
+    var buttonName = 's'+canvas.id.substring('canvasKeyboardS'.length);
+    canvas.parentElement.onclick = function() {
+      openLiveEditor(canvas, buttonName);
+    };
+  }
 }
 function downloadAnimation(index, deviceType) {
   var canvasName = 'canvas'+deviceType+'ShowEffect'+index;
