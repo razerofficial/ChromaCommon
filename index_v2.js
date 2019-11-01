@@ -485,6 +485,11 @@ var stateDisplay = {
   mouse: [],
   mousepad: []
 };
+function checkVisible(elm) {
+  var rect = elm.getBoundingClientRect();
+  var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+  return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+}
 function drawKeyboard(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
@@ -527,34 +532,36 @@ function drawKeyboard(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-
-  var frameCount = animation.getFrameCount();
-  //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-  //console.log('frameId', frameId);
-  if (state.FrameId >= 0 && state.FrameId < frameCount) {
-    var frame = animation.Frames[state.FrameId];
-    var colors = frame.Colors;
-
+  
+  if (checkVisible(canvas)) {
+  
     setupMapKeyboard(canvasName, canvas.contentDocument);
 
-    if (maps[canvasName] != undefined) {
-      var mapKeyboard = maps[canvasName].mapKeyboard;
-      if (mapKeyboard != undefined) {
-        for (var key in RZKEY) {
-          //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
-          var val = RZKEY[key];
-          if (val == RZKEY.RZKEY_INVALID) {
-            continue;
-          }
-          var i = getHighByte(val);
-          var row = colors[i];
-          var j = getLowByte(val);
-          var color = row[j];
-          var keyDesc = eval('RZKEY.'+key);
-          if (mapKeyboard[keyDesc] != undefined) {
-            mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(applyTint(color)));
+    var frameCount = animation.getFrameCount();
+    //console.log('frameCount', frameCount);
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    //console.log('frameId', frameId);
+    if (state.FrameId >= 0 && state.FrameId < frameCount) {
+      var frame = animation.Frames[state.FrameId];
+      var colors = frame.Colors;
+      if (maps[canvasName] != undefined) {
+        var mapKeyboard = maps[canvasName].mapKeyboard;
+        if (mapKeyboard != undefined) {
+          for (var key in RZKEY) {
+            //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
+            var val = RZKEY[key];
+            if (val == RZKEY.RZKEY_INVALID) {
+              continue;
+            }
+            var i = getHighByte(val);
+            var row = colors[i];
+            var j = getLowByte(val);
+            var color = row[j];
+            var keyDesc = eval('RZKEY.'+key);
+            if (mapKeyboard[keyDesc] != undefined) {
+              mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(applyTint(color)));
+            }
           }
         }
       }
@@ -626,41 +633,43 @@ function drawKeypad(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-
-  var frameCount = animation.getFrameCount();
-  //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keypad);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keypad);
-  //console.log('frameId', frameId);
-  if (state.FrameId >= 0 && state.FrameId < frameCount) {
-    var frame = animation.Frames[state.FrameId];
-    var colors = frame.Colors;
-
+  
+  if (checkVisible(canvas)) {
+  
     setupMapKeypad(canvasName, canvas.contentDocument);
 
-    if (maps[canvasName] != undefined) {
-      var mapKeypad = maps[canvasName].mapKeypad;
-      if (mapKeypad != undefined) {
-        mapKeypad[0].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][0])));
-        mapKeypad[1].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][1])));
-        mapKeypad[2].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][2])));
-        mapKeypad[3].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][3])));
-        mapKeypad[4].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][4])));
-        mapKeypad[5].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][0])));
-        mapKeypad[6].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][1])));
-        mapKeypad[7].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][2])));
-        mapKeypad[8].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][3])));
-        mapKeypad[9].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][4])));
-        mapKeypad[10].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][0])));
-        mapKeypad[11].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][1])));
-        mapKeypad[12].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][2])));
-        mapKeypad[13].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][3])));
-        mapKeypad[14].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][4])));
-        mapKeypad[15].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][0])));
-        mapKeypad[16].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][1])));
-        mapKeypad[17].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][2])));
-        mapKeypad[18].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][3])));
-        mapKeypad[20].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][4])));
+    var frameCount = animation.getFrameCount();
+    //console.log('frameCount', frameCount);
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keypad);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keypad);
+    //console.log('frameId', frameId);
+    if (state.FrameId >= 0 && state.FrameId < frameCount) {
+      var frame = animation.Frames[state.FrameId];
+      var colors = frame.Colors;
+      if (maps[canvasName] != undefined) {
+        var mapKeypad = maps[canvasName].mapKeypad;
+        if (mapKeypad != undefined) {
+          mapKeypad[0].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][0])));
+          mapKeypad[1].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][1])));
+          mapKeypad[2].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][2])));
+          mapKeypad[3].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][3])));
+          mapKeypad[4].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][4])));
+          mapKeypad[5].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][0])));
+          mapKeypad[6].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][1])));
+          mapKeypad[7].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][2])));
+          mapKeypad[8].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][3])));
+          mapKeypad[9].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][4])));
+          mapKeypad[10].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][0])));
+          mapKeypad[11].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][1])));
+          mapKeypad[12].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][2])));
+          mapKeypad[13].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][3])));
+          mapKeypad[14].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][4])));
+          mapKeypad[15].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][0])));
+          mapKeypad[16].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][1])));
+          mapKeypad[17].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][2])));
+          mapKeypad[18].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][3])));
+          mapKeypad[20].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][4])));
+        }
       }
     }
   }
@@ -725,21 +734,24 @@ function drawChromaLink(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
+  
+  if (checkVisible(canvas)) {
 
-  setupMapChromaLink(canvasName, canvas.contentDocument);
+    setupMapChromaLink(canvasName, canvas.contentDocument);
 
-  var frameCount = animation.getFrameCount();
-  //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
-  var frameId = state.FrameId;
-  if (maps[canvasName] != undefined) {
-    var mapChromaLink = maps[canvasName].mapChromaLink;
-    if (mapChromaLink != undefined) {
-      if (frameId >= 0 && frameId < frameCount) {
-        var frame = animation.Frames[state.FrameId];
-        var colors = frame.Colors;
-        for (var led = 0; led < 5; ++led) {
-          mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+    var frameCount = animation.getFrameCount();
+    //console.log('FrameCount', frameCount);
+    var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
+    var frameId = state.FrameId;
+    if (maps[canvasName] != undefined) {
+      var mapChromaLink = maps[canvasName].mapChromaLink;
+      if (mapChromaLink != undefined) {
+        if (frameId >= 0 && frameId < frameCount) {
+          var frame = animation.Frames[state.FrameId];
+          var colors = frame.Colors;
+          for (var led = 0; led < 5; ++led) {
+            mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+          }
         }
       }
     }
@@ -805,23 +817,26 @@ function drawHeadset(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
+  
+  if (checkVisible(canvas)) {
 
-  setupMapHeadset(canvasName, canvas.contentDocument);
+    setupMapHeadset(canvasName, canvas.contentDocument);
 
-  var frameCount = animation.getFrameCount();
-  //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
-  var frameId = state.FrameId;
-  if (maps[canvasName] != undefined) {
-    var mapHeadset = maps[canvasName].mapHeadset;
-    if (mapHeadset != undefined) {
-      if (frameId >= 0 && frameId < frameCount) {
-        var frame = animation.Frames[frameId];
-        var colors = frame.Colors;
+    var frameCount = animation.getFrameCount();
+    //console.log('FrameCount', frameCount);
+    var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
+    var frameId = state.FrameId;
+    if (maps[canvasName] != undefined) {
+      var mapHeadset = maps[canvasName].mapHeadset;
+      if (mapHeadset != undefined) {
+        if (frameId >= 0 && frameId < frameCount) {
+          var frame = animation.Frames[frameId];
+          var colors = frame.Colors;
 
-        if (mapHeadset != undefined) {
-          for (var led = 0; led < 2; ++led) {
-            mapHeadset[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+          if (mapHeadset != undefined) {
+            for (var led = 0; led < 2; ++led) {
+              mapHeadset[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+            }
           }
         }
       }
@@ -888,40 +903,43 @@ function drawMouse(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
+  
+  if (checkVisible(canvas)) {
 
-  setupMapMouse(canvasName, canvas.contentDocument);
+    setupMapMouse(canvasName, canvas.contentDocument);
 
-  var frameCount = animation.getFrameCount();
-  //console.log('FrameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
-  var frameId = state.FrameId;
-  if (maps[canvasName] != undefined) {
-    var mapMouse = maps[canvasName].mapMouse;
-    if (mapMouse != undefined) {
-      if (frameId >= 0 && frameId < frameCount) {
-        var frame = animation.Frames[frameId];
-        var colors = frame.Colors;
+    var frameCount = animation.getFrameCount();
+    //console.log('FrameCount', frameCount);
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
+    var frameId = state.FrameId;  
+    if (maps[canvasName] != undefined) {
+      var mapMouse = maps[canvasName].mapMouse;
+      if (mapMouse != undefined) {
+        if (frameId >= 0 && frameId < frameCount) {
+          var frame = animation.Frames[frameId];
+          var colors = frame.Colors;
 
-        if (mapMouse != undefined) {
-          mapMouse[0].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE1));
-          mapMouse[3].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE2));
-          mapMouse[5].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE3));
-          mapMouse[7].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE4));
-          mapMouse[9].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE5));
-          mapMouse[11].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE6));
-          mapMouse[13].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE7));
+          if (mapMouse != undefined) {
+            mapMouse[0].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE1));
+            mapMouse[3].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE2));
+            mapMouse[5].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE3));
+            mapMouse[7].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE4));
+            mapMouse[9].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE5));
+            mapMouse[11].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE6));
+            mapMouse[13].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE7));
 
-          mapMouse[2].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE1));
-          mapMouse[4].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE2));
-          mapMouse[6].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE3));
-          mapMouse[8].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE4));
-          mapMouse[10].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE5));
-          mapMouse[12].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE6));
-          mapMouse[14].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE7));
+            mapMouse[2].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE1));
+            mapMouse[4].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE2));
+            mapMouse[6].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE3));
+            mapMouse[8].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE4));
+            mapMouse[10].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE5));
+            mapMouse[12].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE6));
+            mapMouse[14].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE7));
 
-          mapMouse[1].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_SCROLLWHEEL));
-          mapMouse[15].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LOGO));
+            mapMouse[1].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_SCROLLWHEEL));
+            mapMouse[15].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LOGO));
+          }
         }
       }
     }
@@ -987,23 +1005,26 @@ function drawMousepad(canvasName, animationName, loop)  {
     console.error('Canvas is missing!', canvasName);
     return;
   }
+  
+  if (checkVisible(canvas)) {
 
-  setupMapMousepad(canvasName, canvas.contentDocument);
+    setupMapMousepad(canvasName, canvas.contentDocument);
 
-  var frameCount = animation.getFrameCount();
-  //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
-  var frameId = state.FrameId;
-  if (maps[canvasName] != undefined) {
-    var mapMousepad = maps[canvasName].mapMousepad;
-    if (mapMousepad != undefined) {
-      if (frameId >= 0 && frameId < frameCount) {
-        var frame = animation.Frames[frameId];
-        var colors = frame.Colors;
+    var frameCount = animation.getFrameCount();
+    //console.log('FrameCount', frameCount);
+    var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
+    var frameId = state.FrameId;
+    if (maps[canvasName] != undefined) {
+      var mapMousepad = maps[canvasName].mapMousepad;
+      if (mapMousepad != undefined) {
+        if (frameId >= 0 && frameId < frameCount) {
+          var frame = animation.Frames[frameId];
+          var colors = frame.Colors;
 
-        if (mapMousepad != undefined) {
-          for (var led = 0; led < 15; ++led) {
-            mapMousepad[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+          if (mapMousepad != undefined) {
+            for (var led = 0; led < 15; ++led) {
+              mapMousepad[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+            }
           }
         }
       }
