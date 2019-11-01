@@ -23,17 +23,19 @@ Vue.component('div-chroma-set', {
       </div>
       <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
         <small>
-        Download:
+        <b>Download:</b>
         <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
         <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
         <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
         <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
         <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
-        Convert:
+        <a name="link" :onclick="'downloadKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a>
+        <br><b>Convert</b>:
           <a name="link" :onclick="'convertChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
           <a name="link" :onclick="'convertHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
           <a name="link" :onclick="'convertMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
           <a name="link" :onclick="'convertMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
+          <a name="link" :onclick="'convertKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a><br/>
         </small>
       </section>
       <section v-show="image != undefined && image != ''">
@@ -88,6 +90,7 @@ Vue.component('div-chroma-set', {
         <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
         <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
         <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+        <a name="link" :onclick="'downloadKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a>
       </td>
     </tr>
     <tr v-show="video != undefined && video != ''"><td align="center">{{ priority }}</td><td colspan="4"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></td>
@@ -129,12 +132,14 @@ Vue.component('div-chroma-set', {
         <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
         <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
         <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+        <a name="link" :onclick="'downloadKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a>
         </small><br/>
         <small>Convert:
         <a name="link" :onclick="'convertChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
         <a name="link" :onclick="'convertHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
         <a name="link" :onclick="'convertMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
         <a name="link" :onclick="'convertMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a>
+        <a name="link" :onclick="'convertKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a><br/>
         </small><br/>
         <canvas class="canvasKeyboard" :id="'canvasKeyboardShowEffect'+index" width="640" height="214"></canvas><br/>
         <canvas class="canvasChromaLink" :id="'canvasChromaLinkShowEffect'+index" width="640" height="50"></canvas><br/>
@@ -877,6 +882,9 @@ function downloadMouseAnimation(index) {
 function downloadMousepadAnimation(index) {
   downloadAnimation(index, 'Mousepad');
 }
+function downloadKeypadAnimation(index) {
+  downloadAnimation(index, 'Keypad');
+}
 function downloadKeyboardTableAnimation(index) {
   downloadTableAnimation(index, 'Keyboard');
 }
@@ -930,4 +938,7 @@ function convertMouseAnimation(index) {
 }
 function convertMousepadAnimation(index) {
   convertAnimation(index, 'Keyboard', 'Mousepad');
+}
+function convertKeypadAnimation(index) {
+  convertAnimation(index, 'Keyboard', 'Keypad');
 }
