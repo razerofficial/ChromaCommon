@@ -24,18 +24,18 @@ Vue.component('div-chroma-set', {
       <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
         <small>
         <b>Download:</b>
-        <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
-        <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
-        <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;">Keyboard</a>
-        <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
-        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
-        <a name="link" :onclick="'downloadKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a>
-        <br><b>Convert</b>:
-          <a name="link" :onclick="'convertChromaLinkAnimation('+index+')'" href="javascript:true;">ChromaLink</a>
-          <a name="link" :onclick="'convertHeadsetAnimation('+index+')'" href="javascript:true;">Headset</a>
-          <a name="link" :onclick="'convertMouseAnimation('+index+')'" href="javascript:true;">Mouse</a>
-          <a name="link" :onclick="'convertMousepadAnimation('+index+')'" href="javascript:true;">Mousepad</a><br/>
-          <a name="link" :onclick="'convertKeypadAnimation('+index+')'" href="javascript:true;">Keypad</a><br/>
+        <a name="link" :onclick="'downloadChromaLinkAnimation('+index+')'" href="javascript:true;"><img title="ChromaLink" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedChromaLink.svg"/></a>
+        <a name="link" :onclick="'downloadHeadsetAnimation('+index+')'" href="javascript:true;"><img title="Headset" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedHeadset.svg"/></a>
+        <a name="link" :onclick="'downloadKeyboardAnimation('+index+')'" href="javascript:true;"><img title="Keyboard" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedKeyboard.svg"/></a>
+        <a name="link" :onclick="'downloadMouseAnimation('+index+')'" href="javascript:true;"><img title="Mouse" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedMouse.svg"/></a>
+        <a name="link" :onclick="'downloadMousepadAnimation('+index+')'" href="javascript:true;"><img title="Mousepad" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedMousepad.svg"/></a>
+        <a name="link" :onclick="'downloadKeypadAnimation('+index+')'" href="javascript:true;"><img title="Keypad" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedKeypad.svg"/></a>
+        <wbr/> <b>Convert</b>:
+          <a name="link" :onclick="'convertChromaLinkAnimation('+index+')'" href="javascript:true;"><img title="ChromaLink" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedChromaLink.svg"/></a>
+          <a name="link" :onclick="'convertHeadsetAnimation('+index+')'" href="javascript:true;"><img title="Headset" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedHeadset.svg"/></a>
+          <a name="link" :onclick="'convertMouseAnimation('+index+')'" href="javascript:true;"><img title="Mouse" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedMouse.svg"/></a>
+          <a name="link" :onclick="'convertMousepadAnimation('+index+')'" href="javascript:true;"><img title="Mousepad" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedMousepad.svg"/></a>
+          <a name="link" :onclick="'convertKeypadAnimation('+index+')'" href="javascript:true;"><img title="Keypad" style="height: 24px; border-style: solid; border-color: #228;" src="../ChromaCommon/images/LedKeypad.svg"/></a><br/>
         </small>
       </section>
       <section v-show="image != undefined && image != ''">
