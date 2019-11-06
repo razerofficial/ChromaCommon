@@ -488,7 +488,8 @@ var stateDisplay = {
 function checkVisible(elm) {
   var rect = elm.getBoundingClientRect();
   var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-  return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+  var tolerance = 200;
+  return !((rect.bottom-tolerance) <= 0 || rect.top - (viewHeight+tolerance) >= 0);
 }
 function drawKeyboard(canvasName, animationName, loop) {
 
@@ -532,9 +533,9 @@ function drawKeyboard(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
-  
+
     setupMapKeyboard(canvasName, canvas.contentDocument);
 
     var frameCount = animation.getFrameCount();
@@ -633,9 +634,9 @@ function drawKeypad(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
-  
+
     setupMapKeypad(canvasName, canvas.contentDocument);
 
     var frameCount = animation.getFrameCount();
@@ -734,7 +735,7 @@ function drawChromaLink(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
 
     setupMapChromaLink(canvasName, canvas.contentDocument);
@@ -817,7 +818,7 @@ function drawHeadset(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
 
     setupMapHeadset(canvasName, canvas.contentDocument);
@@ -903,7 +904,7 @@ function drawMouse(canvasName, animationName, loop) {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
 
     setupMapMouse(canvasName, canvas.contentDocument);
@@ -912,7 +913,7 @@ function drawMouse(canvasName, animationName, loop) {
     //console.log('FrameCount', frameCount);
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
-    var frameId = state.FrameId;  
+    var frameId = state.FrameId;
     if (maps[canvasName] != undefined) {
       var mapMouse = maps[canvasName].mapMouse;
       if (mapMouse != undefined) {
@@ -1005,7 +1006,7 @@ function drawMousepad(canvasName, animationName, loop)  {
     console.error('Canvas is missing!', canvasName);
     return;
   }
-  
+
   if (checkVisible(canvas)) {
 
     setupMapMousepad(canvasName, canvas.contentDocument);
