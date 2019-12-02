@@ -2040,14 +2040,6 @@ var ChromaAnimation = {
     if (targetAnimation == undefined) {
       return;
     }
-    if (sourceAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      sourceAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return;
-    }
-    if (targetAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return;
-    }
     var sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
@@ -2056,22 +2048,41 @@ var ChromaAnimation = {
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
-          if (color != 0 &&
-            targetRow[j] != 0) {
-            targetRow[j] = color;
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var sourceColor = sourceColors[i];
+          var targetColor = targetColors[i];
+          if (sourceColor != 0 &&
+            targetColor != 0) {
+            targetColors[i] = sourceColor;
+          }
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = sourceRow[j];
+            if (color != 0 &&
+              targetRow[j] != 0) {
+              targetRow[j] = color;
+            }
           }
         }
       }
