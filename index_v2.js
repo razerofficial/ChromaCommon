@@ -488,7 +488,7 @@ var stateDisplay = {
 function checkVisible(elm) {
   var rect = elm.getBoundingClientRect();
   var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-  var tolerance = 200;
+  var tolerance = 400;
   return !((rect.bottom-tolerance) <= 0 || rect.top - (viewHeight+tolerance) >= 0);
 }
 function drawKeyboard(canvasName, animationName, loop) {
