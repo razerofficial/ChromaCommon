@@ -993,7 +993,7 @@ function convertAnimation(index, deviceType, targetDeviceType) {
     }).then(function(content) {
       var uriContent = URL.createObjectURL(content);
       var lnkDownload = document.getElementById('lnkDownload');
-      lnkDownload.download = 'ShowEffect'+index+'.zip';
+      lnkDownload.download = 'ShowEffect'+index+'Converted.zip';
       lnkDownload.href = uriContent;
       lnkDownload.click();
     });
