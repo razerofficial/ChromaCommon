@@ -72,14 +72,14 @@ Vue.component('div-chroma-set', {
         <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
       </section>
       <section v-show="index != undefined && index != ''">
-        <div v-on:click="keyboardCanvasClick" style="display: inline-table;"><object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" style="pointer-events:none;" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object></div>
-        <object :id="'canvasKeypadShowEffect'+index" class="canvasKeypad" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorKeypad.svg" width="110" height="214"></object>
-        <object :id="'canvasMouseShowEffect'+index" class="canvasMouse" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMouse.svg" width="110" height="214"></object>
+        <div v-on:click="keyboardCanvasClick" style="display: inline-table;"><object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" style="pointer-events:none;" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorKeyboard.svg" width="400" height="214"></object></div>
+        <object :id="'canvasKeypadShowEffect'+index" class="canvasKeypad" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorKeypad.svg" width="110" height="214"></object>
+        <object :id="'canvasMouseShowEffect'+index" class="canvasMouse" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorMouse.svg" width="110" height="214"></object>
       </section>
       <section v-show="index != undefined && index != ''">
-        <object :id="'canvasChromaLinkShowEffect'+index" class="canvasChromaLink" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorChromaLink.svg" width="200" height="200"></object>
-        <object :id="'canvasHeadsetShowEffect'+index" class="canvasHeadset" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorHeadset.svg" width="214" height="214"></object>
-        <object :id="'canvasMousepadShowEffect'+index" class="canvasMousepad" type="image/svg+xml" data="../ChromaCommon/emulator/EmulatorMousepad.svg" width="214" height="214"></object>
+        <object :id="'canvasChromaLinkShowEffect'+index" class="canvasChromaLink" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorChromaLink.svg" width="200" height="200"></object>
+        <object :id="'canvasHeadsetShowEffect'+index" class="canvasHeadset" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorHeadset.svg" width="214" height="214"></object>
+        <object :id="'canvasMousepadShowEffect'+index" class="canvasMousepad" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorMousepad.svg" width="214" height="214"></object>
       </section>
     </div>
   </div>
@@ -233,10 +233,10 @@ vue = new Vue({
       //{ threshold: 0, max: 255, step: 1},
     ],
     layers: [
-      { value: "../ChromaCommon/animations/BarrelFlash1_Keyboard.chroma" }
+      { value: "/ChromaCommon/animations/BarrelFlash1_Keyboard.chroma" }
     ],
     layerOptions: [
-      //{ label: "BarrelFlash1", value: "../ChromaCommon/animations/BarrelFlash1_Keyboard.chroma" }
+      //{ label: "BarrelFlash1", value: "/ChromaCommon/animations/BarrelFlash1_Keyboard.chroma" }
     ],
     predefineColors: [
       '#ff0000',
@@ -694,7 +694,7 @@ animations.push('XOutline_Keyboard.chroma');
 var layerOptions = [];
 for (var i in animations) {
   var animation = animations[i];
-  layerOptions.push({ label: animation, value: '../ChromaCommon/animations/'+animation });
+  layerOptions.push({ label: animation, value: '/ChromaCommon/animations/'+animation });
   vue._data.layerOptions = layerOptions;
 }
 
