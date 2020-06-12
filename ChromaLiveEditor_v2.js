@@ -1,4 +1,3 @@
-// jszip.min.js
 /*!
 
 JSZip v3.3.0 - A JavaScript class for generating and reading zip files
