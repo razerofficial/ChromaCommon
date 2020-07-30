@@ -2429,6 +2429,44 @@ var ChromaAnimation = {
       }
     }
   },
+  fillColorRGB: function(animationName, frameId, red, green, blue) {
+    var newColor = this.getRGB(red, green, blue);
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var frames = animation.Frames;
+    if (frames.length == 0) {
+      return;
+    }
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = colors[i];
+          colors[i] = newColor;
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = row[j];
+            row[j] = newColor;
+          }
+        }
+      }
+    }
+  },
   fillNonZeroColor: function(animationName, frameId, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
