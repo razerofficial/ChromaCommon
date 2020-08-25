@@ -779,15 +779,20 @@ var ChromaAnimation = {
           animation.playFrame();
           if (idleAnimation != animation) {
             useIdleAnimation = false;
+
+			if (idleAnimation != undefined) {
+			  idleAnimation.FrameTime = animation.FrameTime;
+			}
           }
         }
       }
 
       // play idle animation if no other animations are playing
-      if (useIdleAnimation &&
-        ChromaAnimation.UseIdleAnimation1D[device] &&
+      if (ChromaAnimation.UseIdleAnimation1D[device] &&
         idleAnimation != undefined) {
-        idleAnimation.playFrame();
+		if (useIdleAnimation) {
+          idleAnimation.playFrame();
+		}
       }
     }
 
@@ -802,16 +807,21 @@ var ChromaAnimation = {
           animation.playFrame();
           if (idleAnimation != animation) {
             useIdleAnimation = false;
+
+			if (idleAnimation != undefined) {
+			  idleAnimation.FrameTime = animation.FrameTime;
+			}
           }
         }
       }
 
       // play idle animation if no other animations are playing
-      if (useIdleAnimation &&
-        ChromaAnimation.UseIdleAnimation2D[device] &&
+      if (ChromaAnimation.UseIdleAnimation2D[device] &&
         idleAnimation != undefined) {
-        idleAnimation.playFrame();
-      }
+		if (useIdleAnimation) {
+          idleAnimation.playFrame();
+		}
+	  }
     }
 
   },
@@ -3575,6 +3585,7 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation1D();
+	  newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
       newAnimation.Frames = frames;
@@ -3597,6 +3608,7 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation2D();
+	  newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
       newAnimation.Frames = frames;
@@ -5356,7 +5368,8 @@ ChromaAnimation1D.prototype = {
     }
   },
   playFrame: function() {
-    if (this.FrameTime < Date.now()) {
+    if (this.FrameTime < Date.now() &&
+	  (Date.now() - this.FrameTime) < 3000) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
@@ -5379,7 +5392,7 @@ ChromaAnimation1D.prototype = {
       var refThis = this;
       if (duration < 0.1) {
         duration = 0.1;
-      }
+	  }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
@@ -5583,7 +5596,8 @@ ChromaAnimation2D.prototype = {
     }
   },
   playFrame: function() {
-    if (this.FrameTime < Date.now()) {
+    if (this.FrameTime < Date.now() &&
+	  (Date.now() - this.FrameTime) < 3000) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
@@ -5610,7 +5624,7 @@ ChromaAnimation2D.prototype = {
       var refThis = this;
       if (duration < 0.1) {
         duration = 0.1;
-      }
+	  }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
