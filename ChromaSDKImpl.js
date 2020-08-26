@@ -780,9 +780,9 @@ var ChromaAnimation = {
           if (idleAnimation != animation) {
             useIdleAnimation = false;
 
-			if (idleAnimation != undefined) {
-			  idleAnimation.FrameTime = animation.FrameTime;
-			}
+      			if (idleAnimation != undefined) {
+      			  idleAnimation.FrameTime = animation.FrameTime;
+      			}
           }
         }
       }
@@ -790,9 +790,9 @@ var ChromaAnimation = {
       // play idle animation if no other animations are playing
       if (ChromaAnimation.UseIdleAnimation1D[device] &&
         idleAnimation != undefined) {
-		if (useIdleAnimation) {
+        if (useIdleAnimation) {
           idleAnimation.playFrame();
-		}
+        }
       }
     }
 
@@ -808,9 +808,9 @@ var ChromaAnimation = {
           if (idleAnimation != animation) {
             useIdleAnimation = false;
 
-			if (idleAnimation != undefined) {
-			  idleAnimation.FrameTime = animation.FrameTime;
-			}
+          	if (idleAnimation != undefined) {
+          	  idleAnimation.FrameTime = animation.FrameTime;
+          	}
           }
         }
       }
@@ -818,10 +818,10 @@ var ChromaAnimation = {
       // play idle animation if no other animations are playing
       if (ChromaAnimation.UseIdleAnimation2D[device] &&
         idleAnimation != undefined) {
-		if (useIdleAnimation) {
-          idleAnimation.playFrame();
-		}
-	  }
+        if (useIdleAnimation) {
+              idleAnimation.playFrame();
+        }
+      }
     }
 
   },
