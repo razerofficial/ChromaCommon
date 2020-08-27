@@ -5368,8 +5368,7 @@ ChromaAnimation1D.prototype = {
     }
   },
   playFrame: function() {
-    if (this.FrameTime < Date.now() &&
-	  (Date.now() - this.FrameTime) < 3000) {
+    if (this.FrameTime > Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
@@ -5596,8 +5595,7 @@ ChromaAnimation2D.prototype = {
     }
   },
   playFrame: function() {
-    if (this.FrameTime < Date.now() &&
-	  (Date.now() - this.FrameTime) < 3000) {
+    if (this.FrameTime > Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
