@@ -6,99 +6,102 @@ function ChromaSDK() {
     var initialized = false;
 }
 
-function onTimer() {
-    if (this.uri == undefined) {
-      return;
-    }
-
-    if (!initialized) {
-      return;
-    }
-
-    var request = new XMLHttpRequest();
-
-    request.open("PUT", uri + "/heartbeat", true);
-
-    request.setRequestHeader("content-type", "application/json");
-
-    request.onerror = function () {
-      console.log('request onerror', request.status);
-    };
-
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status != 200){
-            console.log('request onreadystatechange', request.status);
-            /*
-            setTimeout(function() {
-              chromaSDK.uninit();
-            }, 0);
-            setTimeout(function() {
-              chromaSDK.init();
-            }, 100);
-            */
-        }
-    }
-
-    request.send(null);
-}
-
 ChromaSDK.prototype = {
 	uri: undefined,
-    init: function () {
-		setTimeout(function() {
+    onTimer: function () {
+      var refThis = chromaSDK; // used on interval so this is out of scope
+      if (refThis.uri == undefined) {
+        return;
+      }
 
-      if (this.timerId != undefined) {
-        clearInterval(this.timerId);
-        this.timerId = undefined;
+      if (!refThis.initialized) {
+        return;
       }
 
       var request = new XMLHttpRequest();
 
-      request.open("POST", "https://chromasdk.io:54236/razer/chromasdk", true);
+      request.open("PUT", refThis.uri + "/heartbeat", true);
 
       request.setRequestHeader("content-type", "application/json");
 
-      var data = JSON.stringify({
-          "title": "HTML5ChromaSDK",
-          "description": "JS Library for playing Chroma animations",
-          "author": {
-              "name": "Razer, Inc.",
-              "contact": "https://github.com/RazerOfficial/HTML5ChromaSDK"
-          },
-          "device_supported": [
-              "keyboard",
-              "mouse",
-              "headset",
-              "mousepad",
-              "keypad",
-              "chromalink"],
-          "category": "application"
-      });
-
-      request.send(data);
+      request.onerror = function () {
+        console.log('Heartbeat onerror', request.status);
+      };
 
       request.onreadystatechange = function () {
-          if (request.readyState == 4 && request.responseText != undefined && request.responseText != "") {
-              uri = JSON.parse(request.responseText)["uri"];
-              //console.log(uri);
-              timerId = setInterval(onTimer, 1000);
-              initialized = true;
+          if (request.readyState == 4 && request.status != 200){
+              console.log('Heartbeat error', request.status);
+              /*
+              setTimeout(function() {
+                chromaSDK.uninit();
+              }, 0);
+              setTimeout(function() {
+                chromaSDK.init();
+              }, 100);
+              */
           }
       }
-		}, 0);
+
+      request.send(null);
     },
-    uninit: function () {
-      setTimeout(function() {
+    init: function () {
+      var refThis = this;
+  		setTimeout(function() {
 
-        initialized = false;
-
-        if (this.uri == undefined) {
-          return;
+        if (refThis.timerId != undefined) {
+          clearInterval(refThis.timerId);
+          refThis.timerId = undefined;
         }
 
         var request = new XMLHttpRequest();
 
-        request.open("DELETE", uri, true);
+        request.open("POST", "https://chromasdk.io:54236/razer/chromasdk", true);
+
+        request.setRequestHeader("content-type", "application/json");
+
+        var data = JSON.stringify({
+            "title": "HTML5ChromaSDK",
+            "description": "JS Library for playing Chroma animations",
+            "author": {
+                "name": "Razer, Inc.",
+                "contact": "https://github.com/RazerOfficial/HTML5ChromaSDK"
+            },
+            "device_supported": [
+                "keyboard",
+                "mouse",
+                "headset",
+                "mousepad",
+                "keypad",
+                "chromalink"],
+            "category": "application"
+        });
+
+        request.send(data);
+
+        request.onreadystatechange = function () {
+            if (request.readyState == 4 && request.responseText != undefined && request.responseText != "") {
+                refThis.uri = JSON.parse(request.responseText)["uri"];
+                refThis.timerId = setInterval(refThis.onTimer, 1000);
+                refThis.initialized = true;
+                console.log('Chroma is initialized!');
+            }
+        }
+  		}, 0);
+    },
+    uninit: function () {
+      var refThis = this;
+      setTimeout(function() {
+
+        refThis.initialized = false;
+
+        if (refThis.uri == undefined) {
+          return;
+        }
+
+        console.log('Uninitializing Chroma...');
+        var request = new XMLHttpRequest();
+
+        request.open("DELETE", refThis.uri, true);
 
         request.setRequestHeader("content-type", "application/json");
 
@@ -107,17 +110,19 @@ ChromaSDK.prototype = {
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
                 //console.log(request.responseText);
+                console.log('Chroma uninitialized!');
             }
         }
-        uri = undefined;
-		}, 0);
+        refThis.uri = undefined;
+		  }, 0);
     },
     createKeyboardEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -137,51 +142,56 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/keyboard", true);
+        request.open("PUT", refThis.uri + "/keyboard", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+  		}, 0);
     },
     preCreateKeyboardEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
+      var jsonObj;
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        } else if (effect == "CHROMA_CUSTOM_KEY") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        }
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      } else if (effect == "CHROMA_CUSTOM_KEY") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      }
 
-        //console.log(jsonObj);
+      //console.log(jsonObj);
 
-        var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-        request.open("POST", uri + "/keyboard", false);
+      request.open("POST", refThis.uri + "/keyboard", false);
 
-        request.setRequestHeader("content-type", "application/json");
+      request.setRequestHeader("content-type", "application/json");
 
-        request.send(jsonObj);
+      request.send(jsonObj);
 
-        //console.log(request.responseText);
+      //console.log(request.responseText);
 
-        //console.log('preCreateKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      //console.log('preCreateKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
 
-        return JSON.parse(request.responseText)['id'];
+      return JSON.parse(request.responseText)['id'];
     },
     createMousematEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -198,47 +208,52 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/mousepad", true);
+        request.open("PUT", refThis.uri + "/mousepad", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     preCreateMousematEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
+      var jsonObj;
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
 
-        //console.log(jsonObj);
+      //console.log(jsonObj);
 
-        var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-        request.open("POST", uri + "/mousepad", false);
+      request.open("POST", refThis.uri + "/mousepad", false);
 
-        request.setRequestHeader("content-type", "application/json");
+      request.setRequestHeader("content-type", "application/json");
 
-        request.send(jsonObj);
+      request.send(jsonObj);
 
-        //console.log('preCreateMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      //console.log('preCreateMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
 
-        return JSON.parse(request.responseText)['id'];
+      return JSON.parse(request.responseText)['id'];
     },
     createMouseEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -255,47 +270,52 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/mouse", true);
+        request.open("PUT", refThis.uri + "/mouse", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     preCreateMouseEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
+      var jsonObj;
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM2") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM2") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
 
-        //console.log(jsonObj);
+      //console.log(jsonObj);
 
-        var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-        request.open("POST", uri + "/mouse", false);
+      request.open("POST", refThis.uri + "/mouse", false);
 
-        request.setRequestHeader("content-type", "application/json");
+      request.setRequestHeader("content-type", "application/json");
 
-        request.send(jsonObj);
+      request.send(jsonObj);
 
-        //console.log('preCreateMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      //console.log('preCreateMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
 
-        return JSON.parse(request.responseText)['id'];
+      return JSON.parse(request.responseText)['id'];
     },
     createHeadsetEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -312,47 +332,53 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/headset", true);
+        request.open("PUT", refThis.uri + "/headset", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     preCreateHeadsetEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
+      var jsonObj;
 
-        //console.log(jsonObj);
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
 
-        var request = new XMLHttpRequest();
+      //console.log(jsonObj);
 
-        request.open("POST", uri + "/headset", false);
+      var request = new XMLHttpRequest();
 
-        request.setRequestHeader("content-type", "application/json");
+      request.open("POST", refThis.uri + "/headset", false);
 
-        request.send(jsonObj);
+      request.setRequestHeader("content-type", "application/json");
 
-        //console.log('preCreateHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      request.send(jsonObj);
 
-        return JSON.parse(request.responseText)['id'];
+      //console.log('preCreateHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+      return JSON.parse(request.responseText)['id'];
     },
     createKeypadEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -369,47 +395,52 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/keypad", true);
+        request.open("PUT", refThis.uri + "/keypad", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     preCreateKeypadEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
+      var jsonObj;
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
 
-        //console.log(jsonObj);
+      //console.log(jsonObj);
 
-        var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-        request.open("POST", uri + "/keypad", false);
+      request.open("POST", refThis.uri + "/keypad", false);
 
-        request.setRequestHeader("content-type", "application/json");
+      request.setRequestHeader("content-type", "application/json");
 
-        request.send(jsonObj);
+      request.send(jsonObj);
 
-        //console.log('preCreateKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      //console.log('preCreateKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
 
-        return JSON.parse(request.responseText)['id'];
+      return JSON.parse(request.responseText)['id'];
     },
     createChromaLinkEffect: function (effect, data) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj;
 
@@ -426,47 +457,52 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/chromalink", true);
+        request.open("PUT", refThis.uri + "/chromalink", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('createChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     preCreateChromaLinkEffect: function (effect, data) {
-        var jsonObj;
+      var refThis = this;
+      if (refThis.uri == undefined) {
+        return;
+      }
+      var jsonObj;
 
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
+      if (effect == "CHROMA_NONE") {
+          jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+          var color = { "color": data };
+          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
 
-        //console.log(jsonObj);
+      //console.log(jsonObj);
 
-        var request = new XMLHttpRequest();
+      var request = new XMLHttpRequest();
 
-        request.open("POST", uri + "/chromalink", false);
+      request.open("POST", refThis.uri + "/chromalink", false);
 
-        request.setRequestHeader("content-type", "application/json");
+      request.setRequestHeader("content-type", "application/json");
 
-        request.send(jsonObj);
+      request.send(jsonObj);
 
-        //console.log('preCreateChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+      //console.log('preCreateChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
 
-        return JSON.parse(request.responseText)['id'];
+      return JSON.parse(request.responseText)['id'];
     },
     setEffect: function (id) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj = JSON.stringify({ "id": id });
 
@@ -474,21 +510,22 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("PUT", uri + "/effect", true);
+        request.open("PUT", refThis.uri + "/effect", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('setEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     deleteEffect: function (id) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj = JSON.stringify({ "id": id });
 
@@ -496,21 +533,22 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("DELETE", uri + "/effect", true);
+        request.open("DELETE", refThis.uri + "/effect", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('deleteEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
-		}, 0);
+		  }, 0);
     },
     deleteEffectGroup: function (ids) {
-		setTimeout(function() {
+      var refThis = this;
+  		setTimeout(function() {
 
-		if (this.uri == undefined) {
-			return;
-		}
+    		if (refThis.uri == undefined) {
+    			return;
+    		}
 
         var jsonObj = ids;
 
@@ -518,14 +556,14 @@ ChromaSDK.prototype = {
 
         var request = new XMLHttpRequest();
 
-        request.open("DELETE", uri + "/effect", true);
+        request.open("DELETE", refThis.uri + "/effect", true);
 
         request.setRequestHeader("content-type", "application/json");
 
         request.send(jsonObj);
 
         //console.log('deleteEffectGroup() returns ' + JSON.parse(request.responseText));
-		}, 0);
+		  }, 0);
     }
 }
 

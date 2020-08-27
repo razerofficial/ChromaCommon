@@ -57,15 +57,16 @@ detectWindowFocus = function() {
   if (browserTabIsVisible == true) {
     if (pageHadFocus != true) {
       pageHadFocus = true;
-      //console.log('page has focus');
+      console.log('page has focus');
     }
   } else {
     if (pageHadFocus == true) {
+      ChromaAnimation.stopAll();
       ChromaAnimation.clearAll();
       chromaSDK.uninit();
       pageHadFocus = false;
       initialized = false;
-      //console.log('page lost focus');
+      console.log('page lost focus');
     }
   }
 }
