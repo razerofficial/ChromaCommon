@@ -4670,6 +4670,52 @@ var ChromaAnimation = {
       this.multiplyIntensityColor(animationName, frameId, color);
     }
   },
+  multiplyTargetColorLerp: function(animationName, frameId, color1, color2) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var frames = animation.Frames;
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = colors[i];
+          //console.log('color', color);
+          var red = (color & 0xFF) / 255.0;
+          var green = ((color & 0xFF00) >> 8) / 255.0;
+          var blue = ((color & 0xFF0000) >> 16) / 255.0;
+          var t = (red+green+blue) / 3.0;
+          colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0 && frameId < frames.length) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = row[j];
+            //console.log('color', color);
+            var red = (color & 0xFF) / 255.0;
+            var green = ((color & 0xFF00) >> 8) / 255.0;
+            var blue = ((color & 0xFF0000) >> 16) / 255.0;
+            var t = (red+green+blue) / 3.0;
+            row[j] = ChromaAnimation.lerpColor(color1, color2, t);
+          }
+        }
+      }
+    }
+  },
   multiplyTargetColorLerpAllFrames: function(animationName, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
