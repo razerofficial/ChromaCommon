@@ -899,7 +899,7 @@ var ChromaAnimation = {
       return undefined;
     }
   },
-  openAnimation : function (animationName, callback) {
+  openAnimation : function (animationName, callback, useCache) {
     var refThis = this;
     var xhr = new XMLHttpRequest();
 
@@ -953,7 +953,11 @@ var ChromaAnimation = {
       }
     }
 
-    xhr.open('GET', animationName, true);
+    if (useCache == undefined || useCache == true) {
+      xhr.open('GET', animationName, true);
+    } else {
+      xhr.open('GET', animationName+'?cache=' + Date.now(), true);
+    }
     xhr.responseType = "arraybuffer";
     xhr.send('');
   },
