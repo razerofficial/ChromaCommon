@@ -3758,10 +3758,12 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation1D();
+      newAnimation.Name = animationName;
       newAnimation.Device = device;
       newAnimation.DeviceType = deviceType;
       newAnimation.Frames = frames;
       this.LoadedAnimations[animationName] = newAnimation;
+      return newAnimation;
     } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
       var maxRow = ChromaAnimation.getMaxRow(device);
       var maxColumn = ChromaAnimation.getMaxColumn(device);
@@ -3779,10 +3781,12 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation2D();
+      newAnimation.Name = animationName;
       newAnimation.Device = device;
       newAnimation.DeviceType = deviceType;
       newAnimation.Frames = frames;
       this.LoadedAnimations[animationName] = newAnimation;
+      return newAnimation;
     }
   },
   reduceFrames: function(animationName, n) {
