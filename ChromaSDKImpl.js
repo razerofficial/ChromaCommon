@@ -1658,6 +1658,38 @@ var ChromaAnimation = {
       }
     }
   },
+  addColor(color1, color2) {
+    var red1 = color1 & 0xFF;
+    var green1 = (color1 & 0xFF00) >> 8;
+    var blue1 = (color1 & 0xFF0000) >> 16;
+
+    var red2 = color2 & 0xFF;
+    var green2 = (color2 & 0xFF00) >> 8;
+    var blue2 = (color2 & 0xFF0000) >> 16;
+
+    var red = Math.min(255, Math.max(0, Number(red1) + Number(red2))) & 0xFF;
+    var green = Math.min(255, Math.max(0, Number(green1) + Number(green2))) & 0xFF;
+    var blue = Math.min(255, Math.max(0, Number(blue1) + Number(blue2))) & 0xFF;
+
+    var newColor = red | (green << 8) | (blue << 16);
+    return newColor;
+  },
+  subtractColor(color1, color2) {
+    var red1 = color1 & 0xFF;
+    var green1 = (color1 & 0xFF00) >> 8;
+    var blue1 = (color1 & 0xFF0000) >> 16;
+
+    var red2 = color2 & 0xFF;
+    var green2 = (color2 & 0xFF00) >> 8;
+    var blue2 = (color2 & 0xFF0000) >> 16;
+
+    var red = Math.min(255, Math.max(0, Number(red1) - Number(red2))) & 0xFF;
+    var green = Math.min(255, Math.max(0, Number(green1) - Number(green2))) & 0xFF;
+    var blue = Math.min(255, Math.max(0, Number(blue1) - Number(blue2))) & 0xFF;
+
+    var newColor = red | (green << 8) | (blue << 16);
+    return newColor;
+  },
   addNonZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
@@ -3103,6 +3135,148 @@ var ChromaAnimation = {
                 green >= maxThreshold ||
                 blue >= maxThreshold) {
                 row[j] = maxColor;
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  addThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var frames = animation.Frames;
+    if (frames.length == 0) {
+      return;
+    }
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var oldColor = colors[i];
+          var red = oldColor & 0xFF;
+          var green = (oldColor & 0xFF00) >> 8;
+          var blue = (oldColor & 0xFF0000) >> 16;
+          if (red != 0 ||
+            green != 0 ||
+            blue != 0) {
+            if (red <= minThreshold &&
+              green <= minThreshold &&
+              blue <= minThreshold) {
+              colors[i] = ChromaAnimation.addColor(oldColor, minColor);
+            } else if (red >= maxThreshold ||
+              green >= maxThreshold ||
+              blue >= maxThreshold) {
+              colors[i] = ChromaAnimation.addColor(oldColor, maxColor);
+            }
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var oldColor = row[j];
+            var red = oldColor & 0xFF;
+            var green = (oldColor & 0xFF00) >> 8;
+            var blue = (oldColor & 0xFF0000) >> 16;
+            if (red != 0 ||
+              green != 0 ||
+              blue != 0) {
+              if (red <= minThreshold &&
+                green <= minThreshold &&
+                blue <= minThreshold) {
+                row[j] = ChromaAnimation.addColor(oldColor, minColor);
+              } else if (red >= maxThreshold ||
+                green >= maxThreshold ||
+                blue >= maxThreshold) {
+                row[j] = ChromaAnimation.addColor(oldColor, maxColor);
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  subtractThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var frames = animation.Frames;
+    if (frames.length == 0) {
+      return;
+    }
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var oldColor = colors[i];
+          var red = oldColor & 0xFF;
+          var green = (oldColor & 0xFF00) >> 8;
+          var blue = (oldColor & 0xFF0000) >> 16;
+          if (red != 0 ||
+            green != 0 ||
+            blue != 0) {
+            if (red <= minThreshold &&
+              green <= minThreshold &&
+              blue <= minThreshold) {
+              colors[i] = ChromaAnimation.subtractColor(oldColor, minColor);
+            } else if (red >= maxThreshold ||
+              green >= maxThreshold ||
+              blue >= maxThreshold) {
+              colors[i] = ChromaAnimation.subtractColor(oldColor, maxColor);
+            }
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var oldColor = row[j];
+            var red = oldColor & 0xFF;
+            var green = (oldColor & 0xFF00) >> 8;
+            var blue = (oldColor & 0xFF0000) >> 16;
+            if (red != 0 ||
+              green != 0 ||
+              blue != 0) {
+              if (red <= minThreshold &&
+                green <= minThreshold &&
+                blue <= minThreshold) {
+                row[j] = ChromaAnimation.subtractColor(oldColor, minColor);
+              } else if (red >= maxThreshold ||
+                green >= maxThreshold ||
+                blue >= maxThreshold) {
+                row[j] = ChromaAnimation.subtractColor(oldColor, maxColor);
               }
             }
           }

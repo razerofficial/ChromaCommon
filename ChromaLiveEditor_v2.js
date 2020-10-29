@@ -502,6 +502,10 @@ vue = new Vue({
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 2); //first
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 6); //second
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 2); //first
+        colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 6); //second
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillNonZeroColorAllFramesRGB(', 1);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.fillZeroColorAllFramesRGB(', 1);
         colorIndex = this.modifyEditColor(lines, i, colorIndex, 'ChromaAnimation.setKeysColorAllFramesRGB(', 2);
@@ -529,6 +533,10 @@ vue = new Vue({
         thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 1);
         thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 1); //first
         thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 5); //second
+        thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 1); //first
+        thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 5); //second
+        thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 1); //first
+        thresholdIndex = this.modifyEditThreshold(lines, i, thresholdIndex, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 5); //second
         thresholdIndex = this.modifyEditThresholdF(lines, i, thresholdIndex, 'ChromaAnimation.multiplyIntensityAllFrames(', 1);
       }
       editText = lines.join("\n");
@@ -798,6 +806,10 @@ displayEditComponents = function() {
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 2);
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 2); //first
     parseEditColor(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 6); //second
+    parseEditColor(line, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 2); //first
+    parseEditColor(line, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 6); //second
+    parseEditColor(line, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 2); //first
+    parseEditColor(line, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 6); //second
     parseEditColor(line, 'ChromaAnimation.fillNonZeroColorAllFramesRGB(', 1);
     parseEditColor(line, 'ChromaAnimation.fillZeroColorAllFramesRGB(', 1);
     parseEditColor(line, 'ChromaAnimation.setKeysColorAllFramesRGB(', 2);
@@ -807,6 +819,10 @@ displayEditComponents = function() {
     parseEditThreshold(line, 'ChromaAnimation.fillThresholdColorsAllFramesRGB(', 1);
     parseEditThreshold(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 1); //second
     parseEditThreshold(line, 'ChromaAnimation.fillThresholdColorsMinMaxAllFramesRGB(', 5); //second
+    parseEditThreshold(line, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 1); //second
+    parseEditThreshold(line, 'ChromaAnimation.addThresholdColorsMinMaxAllFramesRGB(', 5); //second
+    parseEditThreshold(line, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 1); //second
+    parseEditThreshold(line, 'ChromaAnimation.subtractThresholdColorsMinMaxAllFramesRGB(', 5); //second
     parseEditThresholdF(line, 'ChromaAnimation.multiplyIntensityAllFrames(', 1);
   }
 }
