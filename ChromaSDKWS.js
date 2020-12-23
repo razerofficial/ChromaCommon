@@ -52,12 +52,15 @@ ChromaSDK.prototype = {
       this.socket.onclose = function (event) {
         console.log('Connection closed...');
         //return; // _DEBUG_ don't reconnect
-        this.initialized = false;
         this.socket = undefined;
-        setTimeout(function() {
-          console.log('Reconnecting...');
-          refThis.init();
-        }, 1000);
+        if (this.initialized) {
+          this.initialized = false;
+          setTimeout(function() {
+            console.log('Reconnecting...');
+            refThis.init();
+          }, 1000);
+        }
+
       };
 
       this.socket.onerror = function (event) {
