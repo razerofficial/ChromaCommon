@@ -420,6 +420,12 @@ loadCanvases = function() {
     }
   }, 100);
 }
+
+var captureCanvas = document.createElement('canvas');
+captureCanvas.setAttribute('id', 'captureCanvas');
+captureCanvas.setAttribute('style', 'display: none; width: 645px; height: 430px;');
+document.body.appendChild(captureCanvas);
+
 onPageLoad = function () {
   //handle header linking to footer
   if (window.frames.length > 0) {

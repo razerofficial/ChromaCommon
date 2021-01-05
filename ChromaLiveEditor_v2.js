@@ -32,6 +32,62 @@ Vue.component('div-chroma-set', {
     },
     componentConvertZipAnimation: function() {
       convertZipAnimation(this.index);
+    },
+    renderFrames: function(canvas, videoCache, incrementer) {
+      let ctx = canvas.getContext('2d');
+      let imgData = videoCache[incrementer.index];
+      if (imgData != undefined) {
+        ctx.putImageData(imgData, 0, 0);
+      }
+      incrementer.index = (incrementer.index + 1) % videoCache.length;
+    },
+    videoToCanvas: function(video, canvas) {
+      var refThis = this;
+      video.addEventListener('play', function () {
+        var $this = this;
+        var videoCache = [];
+        (function loop() {
+            if (!$this.ended && !$this.paused) {
+                var captureCanvas = document.getElementById('captureCanvas');
+                var ctx = captureCanvas.getContext('2d');
+                ctx.drawImage($this, 0, 0, captureCanvas.width, captureCanvas.height);
+                if (video.currentTime == 0) {
+                  setTimeout(loop, 1000 / 24); // drawing at 24fps
+                  return;
+                }
+                var imgData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
+                videoCache.push(imgData);
+                setTimeout(loop, 1000 / 24); // drawing at 24fps
+            } else {
+              console.log('capture complete', videoCache.length, 'frames');
+              var incrementer = { index: 0 };
+              setInterval(function() {
+                refThis.renderFrames(canvas, videoCache, incrementer);
+              }, 1000/24)
+              video.pause();
+            }
+        })();
+      });
+      video.muted = true;
+      var ctx = canvas.getContext("2d");
+      ctx.font = "30px Arial";
+      ctx.fillText("Buffering...", 10, 50);
+    },
+    videoLoaded: function(index) {
+      var refThis = this;
+      setTimeout(function() {
+        var captureCanvas = document.getElementById('captureCanvas');
+        if (captureCanvas == undefined) {
+          refThis.videoLoaded(index);
+          return;
+        }
+        var video = document.getElementById('video' + index);
+        //console.log(index, video);
+        var canvas = document.getElementById('canvas' + index);
+        //console.log(index, canvas);
+        refThis.videoToCanvas(video, canvas);
+        video.play();
+      }, 100);
     }
   },
   template: `
@@ -67,7 +123,10 @@ Vue.component('div-chroma-set', {
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
       </section>
       <section v-show="video != undefined && video != ''">
-        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><video class="imgThumbnail" autoplay muted loop><source :src="video"/></video></div>
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+        <video :id="'video'+index" style="display: none; width: 645px; height: 430px;" :src="video" :onloadeddata="videoLoaded(index)"></video>
+        <canvas :id="'canvas'+index" style="width: 645px; height: 430px;"></canvas>
+        </div>
       </section>
       <section v-show="index != undefined && index != ''">
         <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
