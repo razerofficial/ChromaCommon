@@ -57,13 +57,13 @@ Vue.component('div-chroma-set', {
                 }
                 var imgData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
                 videoCache.push(imgData);
-                setTimeout(loop, 1000 / 24); // drawing at 24fps
+                setTimeout(loop, 1000 / 10); // capture speed
             } else {
               console.log('capture complete', videoCache.length, 'frames');
               var incrementer = { index: 0 };
               setInterval(function() {
                 refThis.renderFrames(canvas, videoCache, incrementer);
-              }, 1000/24)
+              }, 1000 / 10); // playback speed
               video.pause();
             }
         })();
