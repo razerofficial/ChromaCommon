@@ -899,6 +899,46 @@ var ChromaAnimation = {
       return undefined;
     }
   },
+  openAnimationFromMemory : function (buffer, animationName, callback) {
+    var arrayBuffer = (new Uint8Array(buffer)).buffer;
+
+    var readIndex = 0;
+    var readSize = 4;
+    var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    readIndex += readSize;
+    //console.log('version:', version);
+
+    if (version != 1) {
+      console.log('openAnimationFromMemory: Unsupported version!');
+      return undefined;
+    }
+
+    readSize = 1;
+    var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    readIndex += readSize;
+    //console.log('deviceType:', deviceType);
+
+    if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var animation = new ChromaAnimation1D();
+      animation.openAnimation(arrayBuffer, readIndex);
+      animation.Name = animationName;
+      this.LoadedAnimations[animationName] = animation;
+      callback(animation);
+    } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var animation = new ChromaAnimation2D();
+      animation.openAnimation(arrayBuffer, readIndex);
+      animation.Name = animationName;
+      this.LoadedAnimations[animationName] = animation;
+      if (callback != undefined) {
+        callback(animation);
+      }
+    } else {
+      if (callback != undefined) {
+        callback(undefined);
+      }
+    }
+
+  },
   openAnimation : function (animationName, callback, useCache) {
     var refThis = this;
     var xhr = new XMLHttpRequest();
