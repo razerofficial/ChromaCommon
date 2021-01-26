@@ -52,12 +52,12 @@ Vue.component('div-chroma-set', {
                 var ctx = captureCanvas.getContext('2d');
                 ctx.drawImage($this, 0, 0, captureCanvas.width, captureCanvas.height);
                 if (video.currentTime == 0) {
-                  setTimeout(loop, 1000 / 24); // drawing at 24fps
+                  setTimeout(loop, 250); // wait for video to load
                   return;
                 }
                 var imgData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
                 videoCache.push(imgData);
-                setTimeout(loop, 1000 / 10); // capture speed
+                setTimeout(loop, 1000 / 30); // render speed
             } else {
               console.log('capture complete', videoCache.length, 'frames');
               var incrementer = { index: 0 };
@@ -87,7 +87,7 @@ Vue.component('div-chroma-set', {
         //console.log(index, canvas);
         refThis.videoToCanvas(video, canvas);
         video.play();
-      }, 100);
+      }, 250); //delay to start playing video
     }
   },
   template: `
