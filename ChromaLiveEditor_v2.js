@@ -46,7 +46,7 @@ Vue.component('div-chroma-set', {
       video.addEventListener('play', function () {
         var $this = this;
         var videoCache = [];
-        (function loop() {
+        let loop = function loop() {
             if (!$this.ended && !$this.paused) {
                 var captureCanvas = document.getElementById('captureCanvas');
                 var ctx = captureCanvas.getContext('2d');
@@ -57,16 +57,17 @@ Vue.component('div-chroma-set', {
                 }
                 var imgData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
                 videoCache.push(imgData);
-                setTimeout(loop, 1000 / 30); // render speed
+                setTimeout(loop, 50); // capture frames to cache speed
             } else {
-              console.log('capture complete', videoCache.length, 'frames');
+              //console.log('capture complete', videoCache.length, 'frames');
               var incrementer = { index: 0 };
               setInterval(function() {
                 refThis.renderFrames(canvas, videoCache, incrementer);
-              }, 1000 / 10); // playback speed
+              }, 1000 / 24); // playback speed
               video.pause();
             }
-        })();
+        };
+        loop();
       });
       video.muted = true;
       var ctx = canvas.getContext("2d");
@@ -86,6 +87,7 @@ Vue.component('div-chroma-set', {
         var canvas = document.getElementById('canvas' + index);
         //console.log(index, canvas);
         refThis.videoToCanvas(video, canvas);
+        video.playbackRate = 0.2; //video playback speed for capturing frames
         video.play();
       }, 250); //delay to start playing video
     }
