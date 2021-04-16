@@ -909,7 +909,7 @@ var ChromaAnimation = {
     //console.log('version:', version);
 
     if (version != 1) {
-      console.log('openAnimationFromMemory: Unsupported version!');
+      console.log('openAnimationFromMemory: Unsupported version!', animationName);
       return undefined;
     }
 
@@ -962,7 +962,7 @@ var ChromaAnimation = {
         //console.log('version:', version);
 
         if (version != 1) {
-          console.log('openAnimation: Unsupported version!');
+          console.log('openAnimation: Unsupported version!', animationName);
           return undefined;
         }
 
