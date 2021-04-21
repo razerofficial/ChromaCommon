@@ -3822,7 +3822,7 @@ var ChromaAnimation = {
       return;
     }
     if (animation.Frames.length == 0) {
-      console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
+      console.error('copyAnimation', 'Frame length is zero!', animationName)
       return;
     }
     var frames = [];
@@ -3877,7 +3877,7 @@ var ChromaAnimation = {
       return;
     }
     if (animation.Frames.length == 0) {
-      console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
+      console.error('convertAnimation', 'Frame length is zero!', animationName)
       return;
     }
     ChromaAnimation.closeAnimation(newAnimationName);
@@ -4010,7 +4010,7 @@ var ChromaAnimation = {
     }
     this.stopAnimation(animationName);
     if (animation.Frames.length == 0) {
-      console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
+      console.error('reduceFrames', 'Frame length is zero!', animationName)
       return;
     }
     var frames = [];
@@ -4061,7 +4061,7 @@ var ChromaAnimation = {
     }
     this.stopAnimation(animationName);
     if (animation.Frames.length == 0) {
-      console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
+      console.error('trimFrame', 'Frame length is zero!', animationName)
       return;
     }
     var frames = [];
