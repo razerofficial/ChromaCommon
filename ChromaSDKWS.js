@@ -1043,6 +1043,35 @@ var ChromaAnimation = {
       }
     }
   },
+  getKeyColor: function(animationName, frameId, key) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return 0;
+    }
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+      return 0;
+    }
+    var frames = animation.Frames;
+    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    //console.log(animation.Frames);
+    if (frameId >= 0 && frameId < frames.length) {
+      var frame = frames[frameId];
+      //console.log(frame);
+      var colors = frame.Colors;
+      for (var i = 0; i < maxRow; ++i) {
+        var row = colors[i];
+        for (var j = 0; j < maxColumn; ++j) {
+          if (getHighByte(key) == i &&
+            getLowByte(key) == j) {
+            return row[j];
+          }
+        }
+      }
+    }
+    return 0;
+  },
   setKeyColor: function(animationName, frameId, key, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -1070,6 +1099,10 @@ var ChromaAnimation = {
         }
       }
     }
+  },
+  copyKeyColorToKey: function(animationName, frameId, sourceKey, targetKey) {
+    let color = ChromaAnimation.getKeyColor(animationName, frameId, sourceKey);
+    ChromaAnimation.setKeyColor(animationName, frameId, targetKey, color);
   },
   setKeyColorAllFrames: function(animationName, key, color) {
     var animation = this.LoadedAnimations[animationName];
