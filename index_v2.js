@@ -118,7 +118,7 @@ function getMouseColor(colors, led) {
   var i = getHighByte(led);
   var row = colors[i];
   var j = getLowByte(led);
-  return getHexColor(applyTint(row[j]));
+  return getHexColor(row[j]);
 }
 
 setupMapChromaLink = function(canvasName, svgObject) {
@@ -568,7 +568,7 @@ function drawKeyboard(canvasName, animationName, loop) {
             var color = row[j];
             var keyDesc = eval('RZKEY.'+key);
             if (mapKeyboard[keyDesc] != undefined) {
-              mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(applyTint(color)));
+              mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(color));
             }
           }
         }
@@ -657,26 +657,26 @@ function drawKeypad(canvasName, animationName, loop) {
       if (maps[canvasName] != undefined) {
         var mapKeypad = maps[canvasName].mapKeypad;
         if (mapKeypad != undefined) {
-          mapKeypad[0].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][0])));
-          mapKeypad[1].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][1])));
-          mapKeypad[2].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][2])));
-          mapKeypad[3].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][3])));
-          mapKeypad[4].setAttribute("style", "fill: "+getHexColor(applyTint(colors[0][4])));
-          mapKeypad[5].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][0])));
-          mapKeypad[6].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][1])));
-          mapKeypad[7].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][2])));
-          mapKeypad[8].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][3])));
-          mapKeypad[9].setAttribute("style", "fill: "+getHexColor(applyTint(colors[1][4])));
-          mapKeypad[10].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][0])));
-          mapKeypad[11].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][1])));
-          mapKeypad[12].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][2])));
-          mapKeypad[13].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][3])));
-          mapKeypad[14].setAttribute("style", "fill: "+getHexColor(applyTint(colors[2][4])));
-          mapKeypad[15].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][0])));
-          mapKeypad[16].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][1])));
-          mapKeypad[17].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][2])));
-          mapKeypad[18].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][3])));
-          mapKeypad[20].setAttribute("style", "fill: "+getHexColor(applyTint(colors[3][4])));
+          mapKeypad[0].setAttribute("style", "fill: "+getHexColor(colors[0][0]));
+          mapKeypad[1].setAttribute("style", "fill: "+getHexColor(colors[0][1]));
+          mapKeypad[2].setAttribute("style", "fill: "+getHexColor(colors[0][2]));
+          mapKeypad[3].setAttribute("style", "fill: "+getHexColor(colors[0][3]));
+          mapKeypad[4].setAttribute("style", "fill: "+getHexColor(colors[0][4]));
+          mapKeypad[5].setAttribute("style", "fill: "+getHexColor(colors[1][0]));
+          mapKeypad[6].setAttribute("style", "fill: "+getHexColor(colors[1][1]));
+          mapKeypad[7].setAttribute("style", "fill: "+getHexColor(colors[1][2]));
+          mapKeypad[8].setAttribute("style", "fill: "+getHexColor(colors[1][3]));
+          mapKeypad[9].setAttribute("style", "fill: "+getHexColor(colors[1][4]));
+          mapKeypad[10].setAttribute("style", "fill: "+getHexColor(colors[2][0]));
+          mapKeypad[11].setAttribute("style", "fill: "+getHexColor(colors[2][1]));
+          mapKeypad[12].setAttribute("style", "fill: "+getHexColor(colors[2][2]));
+          mapKeypad[13].setAttribute("style", "fill: "+getHexColor(colors[2][3]));
+          mapKeypad[14].setAttribute("style", "fill: "+getHexColor(colors[2][4]));
+          mapKeypad[15].setAttribute("style", "fill: "+getHexColor(colors[3][0]));
+          mapKeypad[16].setAttribute("style", "fill: "+getHexColor(colors[3][1]));
+          mapKeypad[17].setAttribute("style", "fill: "+getHexColor(colors[3][2]));
+          mapKeypad[18].setAttribute("style", "fill: "+getHexColor(colors[3][3]));
+          mapKeypad[20].setAttribute("style", "fill: "+getHexColor(colors[3][4]));
         }
       }
     }
@@ -758,7 +758,7 @@ function drawChromaLink(canvasName, animationName, loop) {
           var frame = animation.Frames[state.FrameId];
           var colors = frame.Colors;
           for (var led = 0; led < 5; ++led) {
-            mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+            mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
           }
         }
       }
@@ -843,7 +843,7 @@ function drawHeadset(canvasName, animationName, loop) {
 
           if (mapHeadset != undefined) {
             for (var led = 0; led < 2; ++led) {
-              mapHeadset[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+              mapHeadset[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
             }
           }
         }
@@ -1031,7 +1031,7 @@ function drawMousepad(canvasName, animationName, loop)  {
 
           if (mapMousepad != undefined) {
             for (var led = 0; led < 15; ++led) {
-              mapMousepad[led].setAttribute("style", "fill: "+getHexColor(applyTint(colors[led])));
+              mapMousepad[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
             }
           }
         }
@@ -1061,7 +1061,6 @@ displayKeyboardCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasKeyboard' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawKeyboard(canvasName, canvasName, loop);
   }
   drawInProgress = false;
@@ -1070,7 +1069,6 @@ displayKeypadCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasKeypad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawKeypad(canvasName, canvasName, loop);
   }
   drawInProgress = false;
@@ -1079,7 +1077,6 @@ displayChromaLinkCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasChromaLink' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawChromaLink(canvasName, canvasName, loop);
   }
   drawInProgress = false;
@@ -1088,7 +1085,6 @@ displayHeadsetCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasHeadset' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawHeadset(canvasName, canvasName, loop);
   }
   drawInProgress = false;
@@ -1097,7 +1093,6 @@ displayMouseCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasMouse' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawMouse(canvasName, canvasName, loop);
   }
   drawInProgress = false;
@@ -1106,7 +1101,6 @@ displayMousepadCanvas = function(baseLayer, effectName, loop) {
   var canvasName = 'canvasMousepad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    ChromaAnimation.multiplyIntensityAllFrames(canvasName, 1.5); //slightly brighter
     drawMousepad(canvasName, canvasName, loop);
   }
   drawInProgress = false;
