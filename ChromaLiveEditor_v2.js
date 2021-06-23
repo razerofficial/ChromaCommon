@@ -57,6 +57,11 @@ Vue.component('div-chroma-set', {
                 }
                 var imgData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
                 videoCache.push(imgData);
+                let canvasCTX = canvas.getContext("2d");
+                canvasCTX.clearRect(0, 0, captureCanvas.width, captureCanvas.height);
+                canvasCTX.font = "30px Arial";
+                canvasCTX.fillStyle = "#AAA";
+                canvasCTX.fillText('Buffering... '+parseInt(video.currentTime / video.duration * 100)+'%', 10, 50);
                 setTimeout(loop, 50); // capture frames to cache speed
             } else {
               //console.log('capture complete', videoCache.length, 'frames');
@@ -70,9 +75,11 @@ Vue.component('div-chroma-set', {
         loop();
       });
       video.muted = true;
-      var ctx = canvas.getContext("2d");
-      ctx.font = "30px Arial";
-      ctx.fillText("Buffering...", 10, 50);
+      let canvasCTX = canvas.getContext("2d");
+      canvasCTX.clearRect(0, 0, canvasCTX.width, canvasCTX.height);
+      canvasCTX.font = "30px Arial";
+      canvasCTX.fillStyle = "#AAA";
+      canvasCTX.fillText("Buffering...", 10, 50);
     },
     videoLoaded: function(index) {
       var refThis = this;
