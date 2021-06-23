@@ -493,10 +493,11 @@ var stateDisplay = {
   mousepad: []
 };
 function checkVisible(elm) {
-  var rect = elm.getBoundingClientRect();
-  var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-  var tolerance = 800;
-  return !((rect.bottom-tolerance) <= 0 || rect.top - (viewHeight+tolerance) >= 0);
+  return true;
+  //var rect = elm.getBoundingClientRect();
+  //var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+  //var tolerance = 800;
+  //return !((rect.bottom-tolerance) <= 0 || rect.top - (viewHeight+tolerance) >= 0);
 }
 function drawKeyboard(canvasName, animationName, loop) {
 
