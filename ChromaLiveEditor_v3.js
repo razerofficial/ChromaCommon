@@ -18,6 +18,45 @@ var vue = undefined;
 var editCanvas = undefined;
 var editButton = undefined;
 
+Vue.component('div-chroma-keyboard', {
+  props: [ 'index', 'header', 'image', 'video' ],
+  methods: {
+    keyboardClick: function() {
+      console.log('function not set');
+    },
+    keyboardCanvasClick: function(event) {
+      //console.log('keyboardCanvasClick');
+    }
+  },
+  template: `
+  <div style="padding-bottom: 50px; display: inline-table">
+    <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table; vertical-align: top;">
+      <div style="background: hsl(0, 0%, 20%); width: 650px;">
+        <button class="buttonChroma" :onclick="keyboardClick" style="font-size: 1.2em; display: inline-table; padding: 4px; max-width: 65px" :id="'showEffect'+index">{{ index }}</button>
+        <div style="width: 550px; display: inline-table">{{ header }}</div>
+      </div>
+      <section v-show="image != undefined && image != ''">
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table"><img :src="image"/></div>
+      </section>
+      <section v-show="video != undefined && video != ''">
+        <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
+        <video :id="'video'+index" style="width: 645px; height: 430px;" :src="video" muted autoplay loop></video>
+        </div>
+      </section>
+      <section v-show="index != undefined && index != ''">
+        <button class="buttonChromaLink" style="display: none" :id="'showEffect'+index+'ChromaLink'">1</button>
+        <button class="buttonHeadset" style="display: none" :id="'showEffect'+index+'Headset'">1</button>
+        <button class="buttonKeypad" style="display: none" :id="'showEffect'+index+'Keypad'">1</button>
+        <button class="buttonMouse" style="display: none" :id="'showEffect'+index+'Mouse'">1</button>
+        <button class="buttonMousepad" style="display: none" :id="'showEffect'+index+'Mousepad'">1</button>
+      </section>
+      <section v-show="index != undefined && index != ''">
+        <div v-on:click="keyboardCanvasClick" style="display: inline-table;"><object :id="'canvasKeyboardShowEffect'+index" class="canvasKeyboard" style="pointer-events:none;" type="image/svg+xml" data="/ChromaCommon/emulator/EmulatorKeyboard.svg" width="620" height="332"></object></div>
+      </section>
+    </div>
+  </div>
+  `});
+
 Vue.component('div-chroma-set', {
   props: [ 'index', 'header', 'image', 'video' ],
   methods: {
