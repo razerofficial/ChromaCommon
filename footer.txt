@@ -1,15 +1,20 @@
-<h1>Videos of Chroma Authoring Tools and Plugins:</h1>
+<h1>Chroma Authoring Tools and Integration:</h1>
 
 <div>
   <ol>
-    <li>Layers can be created from particle systems. <a target="_blank" href="https://www.youtube.com/watch?v=DgGvPcQaSIo">https://www.youtube.com/watch?v=DgGvPcQaSIo</a></li>
-    <li>Layers can be created from sprites. <a target="_blank" href="https://www.youtube.com/watch?v=MmUJ5fIAmDE">https://www.youtube.com/watch?v=MmUJ5fIAmDE</a></li>
-    <li>Chroma plays on web pages and layer colors can be set dynamically. <a target="_blank" href="https://www.youtube.com/watch?v=4-k_dnE3yJU">https://www.youtube.com/watch?v=4-k_dnE3yJU</a></li>
+    <li>Documentation: Razer Developer Portal (Chroma RGB) - <a target="_blank" href="https://developer.razer.com/chroma/">https://developer.razer.com/chroma/</a></li>
+    <li>Documentation: Razer Developer Portal (Chroma Plugins) - <a target="_blank" href="https://developer.razer.com/works-with-chroma/download/">https://developer.razer.com/works-with-chroma/download/</a></li>
+    <li>Documentation: Chroma Design Guide - <a target="_blank" href="https://chroma.razer.com/ChromaGuide">https://chroma.razer.com/ChromaGuide</a></li>
+    <li>Web App: Web Chroma Editor - <a target="_blank" href="https://chroma.razer.com/ChromaEditor/">https://chroma.razer.com/ChromaEditor/</a></li>
+    <li>Windows App: Standalone Chroma Editor - <a target="_blank" href="https://github.com/razerofficial/CChromaEditor/releases/tag/1.0">https://github.com/razerofficial/CChromaEditor/releases/tag/1.0</a></li>
+    <li>Windows App: Razer Chroma Emulator - <a target="_blank" href="https://github.com/razerofficial/ChromaEmulator">https://github.com/razerofficial/ChromaEmulator</a></li>
+    <li>Video: Razer Chroma RGB Effects Creation &amp; Integration - <a target="_blank" href="https://youtu.be/iBdk-T72JoM?t=0">https://youtu.be/iBdk-T72JoM?t=0</a></li>
+    <li>Video: Razer Chroma RGB for Video &amp; Web - <a target="_blank" href="https://youtu.be/iBdk-T72JoM?t=2867">https://youtu.be/iBdk-T72JoM?t=2867</a></li>
   </ol>
 </div>
 
 <br/>
 
-1. <iframe width="560" height="315" src="https://www.youtube.com/embed/DgGvPcQaSIo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-2. <iframe width="560" height="315" src="https://www.youtube.com/embed/MmUJ5fIAmDE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-3. <iframe width="560" height="315" src="https://www.youtube.com/embed/4-k_dnE3yJU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+1. <iframe width="560" height="315" src="https://www.youtube.com/embed/ZVX3DNW2gIM" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+2. <iframe width="560" height="315" src="https://www.youtube.com/embed/xNasIKNyXmk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+3. <iframe width="560" height="315" src="https://www.youtube.com/embed/Xy_Ph_Cy9Lk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
