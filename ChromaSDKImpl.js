@@ -1,738 +1,738 @@
 // JavaScript source code
 
 function ChromaSDK() {
-    var uri = undefined;
-    var timerId = undefined;
-    var initialized = false;
+  var uri = undefined;
+  var timerId = undefined;
+  var initialized = false;
 }
 
 ChromaSDK.prototype = {
-	uri: undefined,
-    onTimer: function () {
-      var refThis = chromaSDK; // used on interval so this is out of scope
-      if (refThis.uri == undefined) {
-        return;
-      }
+  uri: undefined,
+  onTimer: function () {
+    var refThis = chromaSDK; // used on interval so this is out of scope
+    if (refThis.uri == undefined) {
+      return;
+    }
 
-      if (!refThis.initialized) {
-        return;
+    if (!refThis.initialized) {
+      return;
+    }
+
+    var request = new XMLHttpRequest();
+
+    request.open("PUT", refThis.uri + "/heartbeat", true);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.onerror = function () {
+      console.log('Heartbeat onerror', request.status);
+    };
+
+    request.onreadystatechange = function () {
+      if (request.readyState == 4 && request.status != 200) {
+        console.log('Heartbeat error', request.status);
+        /*
+        setTimeout(function() {
+          chromaSDK.uninit();
+        }, 0);
+        setTimeout(function() {
+          chromaSDK.init();
+        }, 100);
+        */
+      }
+    }
+
+    request.send(null);
+  },
+  init: function () {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.timerId != undefined) {
+        clearInterval(refThis.timerId);
+        refThis.timerId = undefined;
       }
 
       var request = new XMLHttpRequest();
 
-      request.open("PUT", refThis.uri + "/heartbeat", true);
+      request.open("POST", "https://chromasdk.io:54236/razer/chromasdk", true);
 
       request.setRequestHeader("content-type", "application/json");
 
-      request.onerror = function () {
-        console.log('Heartbeat onerror', request.status);
-      };
+      var data = JSON.stringify({
+        "title": "HTML5ChromaSDK",
+        "description": "JS Library for playing Chroma animations",
+        "author": {
+          "name": "Razer, Inc.",
+          "contact": "https://github.com/RazerOfficial/HTML5ChromaSDK"
+        },
+        "device_supported": [
+          "keyboard",
+          "mouse",
+          "headset",
+          "mousepad",
+          "keypad",
+          "chromalink"],
+        "category": "application"
+      });
+
+      request.send(data);
 
       request.onreadystatechange = function () {
-          if (request.readyState == 4 && request.status != 200){
-              console.log('Heartbeat error', request.status);
-              /*
-              setTimeout(function() {
-                chromaSDK.uninit();
-              }, 0);
-              setTimeout(function() {
-                chromaSDK.init();
-              }, 100);
-              */
-          }
+        if (request.readyState == 4 && request.responseText != undefined && request.responseText != "") {
+          refThis.uri = JSON.parse(request.responseText)["uri"];
+          refThis.timerId = setInterval(refThis.onTimer, 1000);
+          refThis.initialized = true;
+          console.log('Chroma is initialized!');
+        }
       }
+    }, 0);
+  },
+  uninit: function () {
+    var refThis = this;
+    setTimeout(function () {
+
+      refThis.initialized = false;
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      console.log('Uninitializing Chroma...');
+      var request = new XMLHttpRequest();
+
+      request.open("DELETE", refThis.uri, true);
+
+      request.setRequestHeader("content-type", "application/json");
 
       request.send(null);
-    },
-    init: function () {
-      var refThis = this;
-  		setTimeout(function() {
 
-        if (refThis.timerId != undefined) {
-          clearInterval(refThis.timerId);
-          refThis.timerId = undefined;
+      request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+          //console.log(request.responseText);
+          console.log('Chroma uninitialized!');
         }
+      }
+      refThis.uri = undefined;
+    }, 0);
+  },
+  createKeyboardEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
 
-        var request = new XMLHttpRequest();
-
-        request.open("POST", "https://chromasdk.io:54236/razer/chromasdk", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        var data = JSON.stringify({
-            "title": "HTML5ChromaSDK",
-            "description": "JS Library for playing Chroma animations",
-            "author": {
-                "name": "Razer, Inc.",
-                "contact": "https://github.com/RazerOfficial/HTML5ChromaSDK"
-            },
-            "device_supported": [
-                "keyboard",
-                "mouse",
-                "headset",
-                "mousepad",
-                "keypad",
-                "chromalink"],
-            "category": "application"
-        });
-
-        request.send(data);
-
-        request.onreadystatechange = function () {
-            if (request.readyState == 4 && request.responseText != undefined && request.responseText != "") {
-                refThis.uri = JSON.parse(request.responseText)["uri"];
-                refThis.timerId = setInterval(refThis.onTimer, 1000);
-                refThis.initialized = true;
-                console.log('Chroma is initialized!');
-            }
-        }
-  		}, 0);
-    },
-    uninit: function () {
-      var refThis = this;
-      setTimeout(function() {
-
-        refThis.initialized = false;
-
-        if (refThis.uri == undefined) {
-          return;
-        }
-
-        console.log('Uninitializing Chroma...');
-        var request = new XMLHttpRequest();
-
-        request.open("DELETE", refThis.uri, true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(null);
-
-        request.onreadystatechange = function () {
-            if (request.readyState == 4) {
-                //console.log(request.responseText);
-                console.log('Chroma uninitialized!');
-            }
-        }
-        refThis.uri = undefined;
-		  }, 0);
-    },
-    createKeyboardEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        } else if (effect == "CHROMA_CUSTOM_KEY") {
-            var color = { "color": data, "key": data };
-            jsonObj = JSON.stringify({ effect: effect, param: color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/keyboard", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-  		}, 0);
-    },
-    preCreateKeyboardEffect: function (effect, data) {
-      var refThis = this;
       if (refThis.uri == undefined) {
         return;
       }
+
       var jsonObj;
 
       if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
+        jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
       } else if (effect == "CHROMA_CUSTOM_KEY") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
+        var color = { "color": data, "key": data };
+        jsonObj = JSON.stringify({ effect: effect, param: color });
       }
 
       //console.log(jsonObj);
 
       var request = new XMLHttpRequest();
 
-      request.open("POST", refThis.uri + "/keyboard", false);
+      request.open("PUT", refThis.uri + "/keyboard", true);
 
       request.setRequestHeader("content-type", "application/json");
 
       request.send(jsonObj);
 
-      //console.log(request.responseText);
-
-      //console.log('preCreateKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    createMousematEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/mousepad", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    preCreateMousematEffect: function (effect, data) {
-      var refThis = this;
-      if (refThis.uri == undefined) {
-        return;
-      }
-      var jsonObj;
-
-      if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
-      } else if (effect == "CHROMA_CUSTOM") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
-      } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
-      }
-
-      //console.log(jsonObj);
-
-      var request = new XMLHttpRequest();
-
-      request.open("POST", refThis.uri + "/mousepad", false);
-
-      request.setRequestHeader("content-type", "application/json");
-
-      request.send(jsonObj);
-
-      //console.log('preCreateMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    createMouseEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM2") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/mouse", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    preCreateMouseEffect: function (effect, data) {
-      var refThis = this;
-      if (refThis.uri == undefined) {
-        return;
-      }
-      var jsonObj;
-
-      if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
-      } else if (effect == "CHROMA_CUSTOM2") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
-      } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
-      }
-
-      //console.log(jsonObj);
-
-      var request = new XMLHttpRequest();
-
-      request.open("POST", refThis.uri + "/mouse", false);
-
-      request.setRequestHeader("content-type", "application/json");
-
-      request.send(jsonObj);
-
-      //console.log('preCreateMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    createHeadsetEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/headset", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    preCreateHeadsetEffect: function (effect, data) {
-      var refThis = this;
-      if (refThis.uri == undefined) {
-        return;
-      }
-
-      var jsonObj;
-
-      if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
-      } else if (effect == "CHROMA_CUSTOM") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
-      } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
-      }
-
-      //console.log(jsonObj);
-
-      var request = new XMLHttpRequest();
-
-      request.open("POST", refThis.uri + "/headset", false);
-
-      request.setRequestHeader("content-type", "application/json");
-
-      request.send(jsonObj);
-
-      //console.log('preCreateHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    createKeypadEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/keypad", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    preCreateKeypadEffect: function (effect, data) {
-      var refThis = this;
-      if (refThis.uri == undefined) {
-        return;
-      }
-      var jsonObj;
-
-      if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
-      } else if (effect == "CHROMA_CUSTOM") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
-      } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
-      }
-
-      //console.log(jsonObj);
-
-      var request = new XMLHttpRequest();
-
-      request.open("POST", refThis.uri + "/keypad", false);
-
-      request.setRequestHeader("content-type", "application/json");
-
-      request.send(jsonObj);
-
-      //console.log('preCreateKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    createChromaLinkEffect: function (effect, data) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj;
-
-        if (effect == "CHROMA_NONE") {
-            jsonObj = JSON.stringify({ "effect": effect });
-        } else if (effect == "CHROMA_CUSTOM") {
-            jsonObj = JSON.stringify({ "effect": effect, "param": data });
-        } else if (effect == "CHROMA_STATIC") {
-            var color = { "color": data };
-            jsonObj = JSON.stringify({ "effect": effect, "param": color });
-        }
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/chromalink", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('createChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    preCreateChromaLinkEffect: function (effect, data) {
-      var refThis = this;
-      if (refThis.uri == undefined) {
-        return;
-      }
-      var jsonObj;
-
-      if (effect == "CHROMA_NONE") {
-          jsonObj = JSON.stringify({ "effect": effect });
-      } else if (effect == "CHROMA_CUSTOM") {
-          jsonObj = JSON.stringify({ "effect": effect, "param": data });
-      } else if (effect == "CHROMA_STATIC") {
-          var color = { "color": data };
-          jsonObj = JSON.stringify({ "effect": effect, "param": color });
-      }
-
-      //console.log(jsonObj);
-
-      var request = new XMLHttpRequest();
-
-      request.open("POST", refThis.uri + "/chromalink", false);
-
-      request.setRequestHeader("content-type", "application/json");
-
-      request.send(jsonObj);
-
-      //console.log('preCreateChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
-
-      return JSON.parse(request.responseText)['id'];
-    },
-    setEffect: function (id) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj = JSON.stringify({ "id": id });
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("PUT", refThis.uri + "/effect", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('setEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    deleteEffect: function (id) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj = JSON.stringify({ "id": id });
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("DELETE", refThis.uri + "/effect", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('deleteEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
-		  }, 0);
-    },
-    deleteEffectGroup: function (ids) {
-      var refThis = this;
-  		setTimeout(function() {
-
-    		if (refThis.uri == undefined) {
-    			return;
-    		}
-
-        var jsonObj = ids;
-
-        //console.log(jsonObj);
-
-        var request = new XMLHttpRequest();
-
-        request.open("DELETE", refThis.uri + "/effect", true);
-
-        request.setRequestHeader("content-type", "application/json");
-
-        request.send(jsonObj);
-
-        //console.log('deleteEffectGroup() returns ' + JSON.parse(request.responseText));
-		  }, 0);
+      //console.log('createKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateKeyboardEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
     }
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    } else if (effect == "CHROMA_CUSTOM_KEY") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/keyboard", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log(request.responseText);
+
+    //console.log('preCreateKeyboardEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  createMousematEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj;
+
+      if (effect == "CHROMA_NONE") {
+        jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/mousepad", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('createMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateMousematEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
+    }
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/mousepad", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log('preCreateMousematEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  createMouseEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj;
+
+      if (effect == "CHROMA_NONE") {
+        jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM2") {
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/mouse", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('createMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateMouseEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
+    }
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM2") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/mouse", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log('preCreateMouseEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  createHeadsetEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj;
+
+      if (effect == "CHROMA_NONE") {
+        jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/headset", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('createHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateHeadsetEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
+    }
+
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/headset", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log('preCreateHeadsetEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  createKeypadEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj;
+
+      if (effect == "CHROMA_NONE") {
+        jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/keypad", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('createKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateKeypadEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
+    }
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/keypad", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log('preCreateKeypadEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  createChromaLinkEffect: function (effect, data) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj;
+
+      if (effect == "CHROMA_NONE") {
+        jsonObj = JSON.stringify({ "effect": effect });
+      } else if (effect == "CHROMA_CUSTOM") {
+        jsonObj = JSON.stringify({ "effect": effect, "param": data });
+      } else if (effect == "CHROMA_STATIC") {
+        var color = { "color": data };
+        jsonObj = JSON.stringify({ "effect": effect, "param": color });
+      }
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/chromalink", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('createChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  preCreateChromaLinkEffect: function (effect, data) {
+    var refThis = this;
+    if (refThis.uri == undefined) {
+      return;
+    }
+    var jsonObj;
+
+    if (effect == "CHROMA_NONE") {
+      jsonObj = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM") {
+      jsonObj = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      jsonObj = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //console.log(jsonObj);
+
+    var request = new XMLHttpRequest();
+
+    request.open("POST", refThis.uri + "/chromalink", false);
+
+    request.setRequestHeader("content-type", "application/json");
+
+    request.send(jsonObj);
+
+    //console.log('preCreateChromaLinkEffect(' + effect + ', ' + data + ') returns ' + JSON.parse(request.responseText)['result']);
+
+    return JSON.parse(request.responseText)['id'];
+  },
+  setEffect: function (id) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj = JSON.stringify({ "id": id });
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("PUT", refThis.uri + "/effect", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('setEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  deleteEffect: function (id) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj = JSON.stringify({ "id": id });
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("DELETE", refThis.uri + "/effect", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('deleteEffect(' + id + ') returns ' + JSON.parse(request.responseText)['result']);
+    }, 0);
+  },
+  deleteEffectGroup: function (ids) {
+    var refThis = this;
+    setTimeout(function () {
+
+      if (refThis.uri == undefined) {
+        return;
+      }
+
+      var jsonObj = ids;
+
+      //console.log(jsonObj);
+
+      var request = new XMLHttpRequest();
+
+      request.open("DELETE", refThis.uri + "/effect", true);
+
+      request.setRequestHeader("content-type", "application/json");
+
+      request.send(jsonObj);
+
+      //console.log('deleteEffectGroup() returns ' + JSON.parse(request.responseText));
+    }, 0);
+  }
 }
 
 // keyboard keys
 var RZKEY = {
-	RZKEY_ESC: 0x0001,                 /*!< Esc (VK_ESCAPE) */
-	RZKEY_F1: 0x0003,                  /*!< F1 (VK_F1) */
-	RZKEY_F2: 0x0004,                  /*!< F2 (VK_F2) */
-	RZKEY_F3: 0x0005,                  /*!< F3 (VK_F3) */
-	RZKEY_F4: 0x0006,                  /*!< F4 (VK_F4) */
-	RZKEY_F5: 0x0007,                  /*!< F5 (VK_F5) */
-	RZKEY_F6: 0x0008,                  /*!< F6 (VK_F6) */
-	RZKEY_F7: 0x0009,                  /*!< F7 (VK_F7) */
-	RZKEY_F8: 0x000A,                  /*!< F8 (VK_F8) */
-	RZKEY_F9: 0x000B,                  /*!< F9 (VK_F9) */
-	RZKEY_F10: 0x000C,                 /*!< F10 (VK_F10) */
-	RZKEY_F11: 0x000D,                 /*!< F11 (VK_F11) */
-	RZKEY_F12: 0x000E,                 /*!< F12 (VK_F12) */
-	RZKEY_1: 0x0102,                   /*!< 1 (VK_1) */
-	RZKEY_2: 0x0103,                   /*!< 2 (VK_2) */
-	RZKEY_3: 0x0104,                   /*!< 3 (VK_3) */
-	RZKEY_4: 0x0105,                   /*!< 4 (VK_4) */
-	RZKEY_5: 0x0106,                   /*!< 5 (VK_5) */
-	RZKEY_6: 0x0107,                   /*!< 6 (VK_6) */
-	RZKEY_7: 0x0108,                   /*!< 7 (VK_7) */
-	RZKEY_8: 0x0109,                   /*!< 8 (VK_8) */
-	RZKEY_9: 0x010A,                   /*!< 9 (VK_9) */
-	RZKEY_0: 0x010B,                   /*!< 0 (VK_0) */
-	RZKEY_A: 0x0302,                   /*!< A (VK_A) */
-	RZKEY_B: 0x0407,                   /*!< B (VK_B) */
-	RZKEY_C: 0x0405,                   /*!< C (VK_C) */
-	RZKEY_D: 0x0304,                   /*!< D (VK_D) */
-	RZKEY_E: 0x0204,                   /*!< E (VK_E) */
-	RZKEY_F: 0x0305,                   /*!< F (VK_F) */
-	RZKEY_G: 0x0306,                   /*!< G (VK_G) */
-	RZKEY_H: 0x0307,                   /*!< H (VK_H) */
-	RZKEY_I: 0x0209,                   /*!< I (VK_I) */
-	RZKEY_J: 0x0308,                   /*!< J (VK_J) */
-	RZKEY_K: 0x0309,                   /*!< K (VK_K) */
-	RZKEY_L: 0x030A,                   /*!< L (VK_L) */
-	RZKEY_M: 0x0409,                   /*!< M (VK_M) */
-	RZKEY_N: 0x0408,                   /*!< N (VK_N) */
-	RZKEY_O: 0x020A,                   /*!< O (VK_O) */
-	RZKEY_P: 0x020B,                   /*!< P (VK_P) */
-	RZKEY_Q: 0x0202,                   /*!< Q (VK_Q) */
-	RZKEY_R: 0x0205,                   /*!< R (VK_R) */
-	RZKEY_S: 0x0303,                   /*!< S (VK_S) */
-	RZKEY_T: 0x0206,                   /*!< T (VK_T) */
-	RZKEY_U: 0x0208,                   /*!< U (VK_U) */
-	RZKEY_V: 0x0406,                   /*!< V (VK_V) */
-	RZKEY_W: 0x0203,                   /*!< W (VK_W) */
-	RZKEY_X: 0x0404,                   /*!< X (VK_X) */
-	RZKEY_Y: 0x0207,                   /*!< Y (VK_Y) */
-	RZKEY_Z: 0x0403,                   /*!< Z (VK_Z) */
-	RZKEY_NUMLOCK: 0x0112,             /*!< Numlock (VK_NUMLOCK) */
-	RZKEY_NUMPAD0: 0x0513,             /*!< Numpad 0 (VK_NUMPAD0) */
-	RZKEY_NUMPAD1: 0x0412,             /*!< Numpad 1 (VK_NUMPAD1) */
-	RZKEY_NUMPAD2: 0x0413,             /*!< Numpad 2 (VK_NUMPAD2) */
-	RZKEY_NUMPAD3: 0x0414,             /*!< Numpad 3 (VK_NUMPAD3) */
-	RZKEY_NUMPAD4: 0x0312,             /*!< Numpad 4 (VK_NUMPAD4) */
-	RZKEY_NUMPAD5: 0x0313,             /*!< Numpad 5 (VK_NUMPAD5) */
-	RZKEY_NUMPAD6: 0x0314,             /*!< Numpad 6 (VK_NUMPAD6) */
-	RZKEY_NUMPAD7: 0x0212,             /*!< Numpad 7 (VK_NUMPAD7) */
-	RZKEY_NUMPAD8: 0x0213,             /*!< Numpad 8 (VK_NUMPAD8) */
-	RZKEY_NUMPAD9: 0x0214,             /*!< Numpad 9 (VK_ NUMPAD9*/
-	RZKEY_NUMPAD_DIVIDE: 0x0113,       /*!< Divide (VK_DIVIDE) */
-	RZKEY_NUMPAD_MULTIPLY: 0x0114,     /*!< Multiply (VK_MULTIPLY) */
-	RZKEY_NUMPAD_SUBTRACT: 0x0115,     /*!< Subtract (VK_SUBTRACT) */
-	RZKEY_NUMPAD_ADD: 0x0215,          /*!< Add (VK_ADD) */
-	RZKEY_NUMPAD_ENTER: 0x0415,        /*!< Enter (VK_RETURN - Extended) */
-	RZKEY_NUMPAD_DECIMAL: 0x0514,      /*!< Decimal (VK_DECIMAL) */
-	RZKEY_PRINTSCREEN: 0x000F,         /*!< Print Screen (VK_PRINT) */
-	RZKEY_SCROLL: 0x0010,              /*!< Scroll Lock (VK_SCROLL) */
-	RZKEY_PAUSE: 0x0011,               /*!< Pause (VK_PAUSE) */
-	RZKEY_INSERT: 0x010F,              /*!< Insert (VK_INSERT) */
-	RZKEY_HOME: 0x0110,                /*!< Home (VK_HOME) */
-	RZKEY_PAGEUP: 0x0111,              /*!< Page Up (VK_PRIOR) */
-	RZKEY_DELETE: 0x020f,              /*!< Delete (VK_DELETE) */
-	RZKEY_END: 0x0210,                 /*!< End (VK_END) */
-	RZKEY_PAGEDOWN: 0x0211,            /*!< Page Down (VK_NEXT) */
-	RZKEY_UP: 0x0410,                  /*!< Up (VK_UP) */
-	RZKEY_LEFT: 0x050F,                /*!< Left (VK_LEFT) */
-	RZKEY_DOWN: 0x0510,                /*!< Down (VK_DOWN) */
-	RZKEY_RIGHT: 0x0511,               /*!< Right (VK_RIGHT) */
-	RZKEY_TAB: 0x0201,                 /*!< Tab (VK_TAB) */
-	RZKEY_CAPSLOCK: 0x0301,            /*!< Caps Lock(VK_CAPITAL) */
-	RZKEY_BACKSPACE: 0x010E,           /*!< Backspace (VK_BACK) */
-	RZKEY_ENTER: 0x030E,               /*!< Enter (VK_RETURN) */
-	RZKEY_LCTRL: 0x0501,               /*!< Left Control(VK_LCONTROL) */
-	RZKEY_LWIN: 0x0502,                /*!< Left Window (VK_LWIN) */
-	RZKEY_LALT: 0x0503,                /*!< Left Alt (VK_LMENU) */
-	RZKEY_SPACE: 0x0507,               /*!< Spacebar (VK_SPACE) */
-	RZKEY_RALT: 0x050B,                /*!< Right Alt (VK_RMENU) */
-	RZKEY_FN: 0x050C,                  /*!< Function key. */
-	RZKEY_RMENU: 0x050D,               /*!< Right Menu (VK_APPS) */
-	RZKEY_RCTRL: 0x050E,               /*!< Right Control (VK_RCONTROL) */
-	RZKEY_LSHIFT: 0x0401,              /*!< Left Shift (VK_LSHIFT) */
-	RZKEY_RSHIFT: 0x040E,              /*!< Right Shift (VK_RSHIFT) */
-	RZKEY_MACRO1: 0x0100,              /*!< Macro Key 1 */
-	RZKEY_MACRO2: 0x0200,              /*!< Macro Key 2 */
-	RZKEY_MACRO3: 0x0300,              /*!< Macro Key 3 */
-	RZKEY_MACRO4: 0x0400,              /*!< Macro Key 4 */
-	RZKEY_MACRO5: 0x0500,              /*!< Macro Key 5 */
-	RZKEY_OEM_1: 0x0101,               /*!< ~ (tilde/半角/全角) (VK_OEM_3) */
-	RZKEY_OEM_2: 0x010C,               /*!< -- (minus) (VK_OEM_MINUS) */
-	RZKEY_OEM_3: 0x010D,               /*!< = (equal) (VK_OEM_PLUS) */
-	RZKEY_OEM_4: 0x020C,               /*!< [ (left sqaure bracket) (VK_OEM_4) */
-	RZKEY_OEM_5: 0x020D,               /*!< ] (right square bracket) (VK_OEM_6) */
-	RZKEY_OEM_6: 0x020E,               /*!< \ (backslash) (VK_OEM_5) */
-	RZKEY_OEM_7: 0x030B,               /*!< ; (semi-colon) (VK_OEM_1) */
-	RZKEY_OEM_8: 0x030C,               /*!< ' (apostrophe) (VK_OEM_7) */
-	RZKEY_OEM_9: 0x040A,               /*!< , (comma) (VK_OEM_COMMA) */
-	RZKEY_OEM_10: 0x040B,              /*!< . (period) (VK_OEM_PERIOD) */
-	RZKEY_OEM_11: 0x040C,              /*!< / (forward slash) (VK_OEM_2) */
-	RZKEY_EUR_1: 0x030D,               /*!< "#" (VK_OEM_5) */
-	RZKEY_EUR_2: 0x0402,               /*!< \ (VK_OEM_102) */
-	RZKEY_JPN_1: 0x0015,               /*!< ¥ (0xFF) */
-	RZKEY_JPN_2: 0x040D,               /*!< \ (0xC1) */
-	RZKEY_JPN_3: 0x0504,               /*!< 無変換 (VK_OEM_PA1) */
-	RZKEY_JPN_4: 0x0509,               /*!< 変換 (0xFF) */
-	RZKEY_JPN_5: 0x050A,               /*!< ひらがな/カタカナ (0xFF) */
-	RZKEY_KOR_1: 0x0015,               /*!< | (0xFF) */
-	RZKEY_KOR_2: 0x030D,               /*!< (VK_OEM_5) */
-	RZKEY_KOR_3: 0x0402,               /*!< (VK_OEM_102) */
-	RZKEY_KOR_4: 0x040D,               /*!< (0xC1) */
-	RZKEY_KOR_5: 0x0504,               /*!< (VK_OEM_PA1) */
-	RZKEY_KOR_6: 0x0509,               /*!< 한/영 (0xFF) */
-	RZKEY_KOR_7: 0x050A,               /*!< (0xFF) */
-	RZKEY_INVALID: 0xFFFF              /*!< Invalid keys. */
+  RZKEY_ESC: 0x0001,                 /*!< Esc (VK_ESCAPE) */
+  RZKEY_F1: 0x0003,                  /*!< F1 (VK_F1) */
+  RZKEY_F2: 0x0004,                  /*!< F2 (VK_F2) */
+  RZKEY_F3: 0x0005,                  /*!< F3 (VK_F3) */
+  RZKEY_F4: 0x0006,                  /*!< F4 (VK_F4) */
+  RZKEY_F5: 0x0007,                  /*!< F5 (VK_F5) */
+  RZKEY_F6: 0x0008,                  /*!< F6 (VK_F6) */
+  RZKEY_F7: 0x0009,                  /*!< F7 (VK_F7) */
+  RZKEY_F8: 0x000A,                  /*!< F8 (VK_F8) */
+  RZKEY_F9: 0x000B,                  /*!< F9 (VK_F9) */
+  RZKEY_F10: 0x000C,                 /*!< F10 (VK_F10) */
+  RZKEY_F11: 0x000D,                 /*!< F11 (VK_F11) */
+  RZKEY_F12: 0x000E,                 /*!< F12 (VK_F12) */
+  RZKEY_1: 0x0102,                   /*!< 1 (VK_1) */
+  RZKEY_2: 0x0103,                   /*!< 2 (VK_2) */
+  RZKEY_3: 0x0104,                   /*!< 3 (VK_3) */
+  RZKEY_4: 0x0105,                   /*!< 4 (VK_4) */
+  RZKEY_5: 0x0106,                   /*!< 5 (VK_5) */
+  RZKEY_6: 0x0107,                   /*!< 6 (VK_6) */
+  RZKEY_7: 0x0108,                   /*!< 7 (VK_7) */
+  RZKEY_8: 0x0109,                   /*!< 8 (VK_8) */
+  RZKEY_9: 0x010A,                   /*!< 9 (VK_9) */
+  RZKEY_0: 0x010B,                   /*!< 0 (VK_0) */
+  RZKEY_A: 0x0302,                   /*!< A (VK_A) */
+  RZKEY_B: 0x0407,                   /*!< B (VK_B) */
+  RZKEY_C: 0x0405,                   /*!< C (VK_C) */
+  RZKEY_D: 0x0304,                   /*!< D (VK_D) */
+  RZKEY_E: 0x0204,                   /*!< E (VK_E) */
+  RZKEY_F: 0x0305,                   /*!< F (VK_F) */
+  RZKEY_G: 0x0306,                   /*!< G (VK_G) */
+  RZKEY_H: 0x0307,                   /*!< H (VK_H) */
+  RZKEY_I: 0x0209,                   /*!< I (VK_I) */
+  RZKEY_J: 0x0308,                   /*!< J (VK_J) */
+  RZKEY_K: 0x0309,                   /*!< K (VK_K) */
+  RZKEY_L: 0x030A,                   /*!< L (VK_L) */
+  RZKEY_M: 0x0409,                   /*!< M (VK_M) */
+  RZKEY_N: 0x0408,                   /*!< N (VK_N) */
+  RZKEY_O: 0x020A,                   /*!< O (VK_O) */
+  RZKEY_P: 0x020B,                   /*!< P (VK_P) */
+  RZKEY_Q: 0x0202,                   /*!< Q (VK_Q) */
+  RZKEY_R: 0x0205,                   /*!< R (VK_R) */
+  RZKEY_S: 0x0303,                   /*!< S (VK_S) */
+  RZKEY_T: 0x0206,                   /*!< T (VK_T) */
+  RZKEY_U: 0x0208,                   /*!< U (VK_U) */
+  RZKEY_V: 0x0406,                   /*!< V (VK_V) */
+  RZKEY_W: 0x0203,                   /*!< W (VK_W) */
+  RZKEY_X: 0x0404,                   /*!< X (VK_X) */
+  RZKEY_Y: 0x0207,                   /*!< Y (VK_Y) */
+  RZKEY_Z: 0x0403,                   /*!< Z (VK_Z) */
+  RZKEY_NUMLOCK: 0x0112,             /*!< Numlock (VK_NUMLOCK) */
+  RZKEY_NUMPAD0: 0x0513,             /*!< Numpad 0 (VK_NUMPAD0) */
+  RZKEY_NUMPAD1: 0x0412,             /*!< Numpad 1 (VK_NUMPAD1) */
+  RZKEY_NUMPAD2: 0x0413,             /*!< Numpad 2 (VK_NUMPAD2) */
+  RZKEY_NUMPAD3: 0x0414,             /*!< Numpad 3 (VK_NUMPAD3) */
+  RZKEY_NUMPAD4: 0x0312,             /*!< Numpad 4 (VK_NUMPAD4) */
+  RZKEY_NUMPAD5: 0x0313,             /*!< Numpad 5 (VK_NUMPAD5) */
+  RZKEY_NUMPAD6: 0x0314,             /*!< Numpad 6 (VK_NUMPAD6) */
+  RZKEY_NUMPAD7: 0x0212,             /*!< Numpad 7 (VK_NUMPAD7) */
+  RZKEY_NUMPAD8: 0x0213,             /*!< Numpad 8 (VK_NUMPAD8) */
+  RZKEY_NUMPAD9: 0x0214,             /*!< Numpad 9 (VK_ NUMPAD9*/
+  RZKEY_NUMPAD_DIVIDE: 0x0113,       /*!< Divide (VK_DIVIDE) */
+  RZKEY_NUMPAD_MULTIPLY: 0x0114,     /*!< Multiply (VK_MULTIPLY) */
+  RZKEY_NUMPAD_SUBTRACT: 0x0115,     /*!< Subtract (VK_SUBTRACT) */
+  RZKEY_NUMPAD_ADD: 0x0215,          /*!< Add (VK_ADD) */
+  RZKEY_NUMPAD_ENTER: 0x0415,        /*!< Enter (VK_RETURN - Extended) */
+  RZKEY_NUMPAD_DECIMAL: 0x0514,      /*!< Decimal (VK_DECIMAL) */
+  RZKEY_PRINTSCREEN: 0x000F,         /*!< Print Screen (VK_PRINT) */
+  RZKEY_SCROLL: 0x0010,              /*!< Scroll Lock (VK_SCROLL) */
+  RZKEY_PAUSE: 0x0011,               /*!< Pause (VK_PAUSE) */
+  RZKEY_INSERT: 0x010F,              /*!< Insert (VK_INSERT) */
+  RZKEY_HOME: 0x0110,                /*!< Home (VK_HOME) */
+  RZKEY_PAGEUP: 0x0111,              /*!< Page Up (VK_PRIOR) */
+  RZKEY_DELETE: 0x020f,              /*!< Delete (VK_DELETE) */
+  RZKEY_END: 0x0210,                 /*!< End (VK_END) */
+  RZKEY_PAGEDOWN: 0x0211,            /*!< Page Down (VK_NEXT) */
+  RZKEY_UP: 0x0410,                  /*!< Up (VK_UP) */
+  RZKEY_LEFT: 0x050F,                /*!< Left (VK_LEFT) */
+  RZKEY_DOWN: 0x0510,                /*!< Down (VK_DOWN) */
+  RZKEY_RIGHT: 0x0511,               /*!< Right (VK_RIGHT) */
+  RZKEY_TAB: 0x0201,                 /*!< Tab (VK_TAB) */
+  RZKEY_CAPSLOCK: 0x0301,            /*!< Caps Lock(VK_CAPITAL) */
+  RZKEY_BACKSPACE: 0x010E,           /*!< Backspace (VK_BACK) */
+  RZKEY_ENTER: 0x030E,               /*!< Enter (VK_RETURN) */
+  RZKEY_LCTRL: 0x0501,               /*!< Left Control(VK_LCONTROL) */
+  RZKEY_LWIN: 0x0502,                /*!< Left Window (VK_LWIN) */
+  RZKEY_LALT: 0x0503,                /*!< Left Alt (VK_LMENU) */
+  RZKEY_SPACE: 0x0507,               /*!< Spacebar (VK_SPACE) */
+  RZKEY_RALT: 0x050B,                /*!< Right Alt (VK_RMENU) */
+  RZKEY_FN: 0x050C,                  /*!< Function key. */
+  RZKEY_RMENU: 0x050D,               /*!< Right Menu (VK_APPS) */
+  RZKEY_RCTRL: 0x050E,               /*!< Right Control (VK_RCONTROL) */
+  RZKEY_LSHIFT: 0x0401,              /*!< Left Shift (VK_LSHIFT) */
+  RZKEY_RSHIFT: 0x040E,              /*!< Right Shift (VK_RSHIFT) */
+  RZKEY_MACRO1: 0x0100,              /*!< Macro Key 1 */
+  RZKEY_MACRO2: 0x0200,              /*!< Macro Key 2 */
+  RZKEY_MACRO3: 0x0300,              /*!< Macro Key 3 */
+  RZKEY_MACRO4: 0x0400,              /*!< Macro Key 4 */
+  RZKEY_MACRO5: 0x0500,              /*!< Macro Key 5 */
+  RZKEY_OEM_1: 0x0101,               /*!< ~ (tilde/半角/全角) (VK_OEM_3) */
+  RZKEY_OEM_2: 0x010C,               /*!< -- (minus) (VK_OEM_MINUS) */
+  RZKEY_OEM_3: 0x010D,               /*!< = (equal) (VK_OEM_PLUS) */
+  RZKEY_OEM_4: 0x020C,               /*!< [ (left sqaure bracket) (VK_OEM_4) */
+  RZKEY_OEM_5: 0x020D,               /*!< ] (right square bracket) (VK_OEM_6) */
+  RZKEY_OEM_6: 0x020E,               /*!< \ (backslash) (VK_OEM_5) */
+  RZKEY_OEM_7: 0x030B,               /*!< ; (semi-colon) (VK_OEM_1) */
+  RZKEY_OEM_8: 0x030C,               /*!< ' (apostrophe) (VK_OEM_7) */
+  RZKEY_OEM_9: 0x040A,               /*!< , (comma) (VK_OEM_COMMA) */
+  RZKEY_OEM_10: 0x040B,              /*!< . (period) (VK_OEM_PERIOD) */
+  RZKEY_OEM_11: 0x040C,              /*!< / (forward slash) (VK_OEM_2) */
+  RZKEY_EUR_1: 0x030D,               /*!< "#" (VK_OEM_5) */
+  RZKEY_EUR_2: 0x0402,               /*!< \ (VK_OEM_102) */
+  RZKEY_JPN_1: 0x0015,               /*!< ¥ (0xFF) */
+  RZKEY_JPN_2: 0x040D,               /*!< \ (0xC1) */
+  RZKEY_JPN_3: 0x0504,               /*!< 無変換 (VK_OEM_PA1) */
+  RZKEY_JPN_4: 0x0509,               /*!< 変換 (0xFF) */
+  RZKEY_JPN_5: 0x050A,               /*!< ひらがな/カタカナ (0xFF) */
+  RZKEY_KOR_1: 0x0015,               /*!< | (0xFF) */
+  RZKEY_KOR_2: 0x030D,               /*!< (VK_OEM_5) */
+  RZKEY_KOR_3: 0x0402,               /*!< (VK_OEM_102) */
+  RZKEY_KOR_4: 0x040D,               /*!< (0xC1) */
+  RZKEY_KOR_5: 0x0504,               /*!< (VK_OEM_PA1) */
+  RZKEY_KOR_6: 0x0509,               /*!< 한/영 (0xFF) */
+  RZKEY_KOR_7: 0x050A,               /*!< (0xFF) */
+  RZKEY_INVALID: 0xFFFF              /*!< Invalid keys. */
 };
 
 // keyboard leds
 var RZLED = {
-	RZLED_LOGO: 0x0014                 /*!< Razer logo */
+  RZLED_LOGO: 0x0014                 /*!< Razer logo */
 };
 
 // mouse leds
 var Mouse = {};
 Mouse.RZLED2 = {
-  RZLED2_SCROLLWHEEL:   0x0203,  //!< Scroll Wheel LED.
-  RZLED2_LOGO:          0x0703,  //!< Logo LED.
-  RZLED2_BACKLIGHT:     0x0403,  //!< Backlight LED.
-  RZLED2_LEFT_SIDE1:    0x0100,  //!< Left LED 1.
-  RZLED2_LEFT_SIDE2:    0x0200,  //!< Left LED 2.
-  RZLED2_LEFT_SIDE3:    0x0300,  //!< Left LED 3.
-  RZLED2_LEFT_SIDE4:    0x0400,  //!< Left LED 4.
-  RZLED2_LEFT_SIDE5:    0x0500,  //!< Left LED 5.
-  RZLED2_LEFT_SIDE6:    0x0600,  //!< Left LED 6.
-  RZLED2_LEFT_SIDE7:    0x0700,  //!< Left LED 7.
-  RZLED2_BOTTOM1:       0x0801,  //!< Bottom LED 1.
-  RZLED2_BOTTOM2:       0x0802,  //!< Bottom LED 2.
-  RZLED2_BOTTOM3:       0x0803,  //!< Bottom LED 3.
-  RZLED2_BOTTOM4:       0x0804,  //!< Bottom LED 4.
-  RZLED2_BOTTOM5:       0x0805,  //!< Bottom LED 5.
-  RZLED2_RIGHT_SIDE1:   0x0106,  //!< Right LED 1.
-  RZLED2_RIGHT_SIDE2:   0x0206,  //!< Right LED 2.
-  RZLED2_RIGHT_SIDE3:   0x0306,  //!< Right LED 3.
-  RZLED2_RIGHT_SIDE4:   0x0406,  //!< Right LED 4.
-  RZLED2_RIGHT_SIDE5:   0x0506,  //!< Right LED 5.
-  RZLED2_RIGHT_SIDE6:   0x0606,  //!< Right LED 6.
-  RZLED2_RIGHT_SIDE7:   0x0706   //!< Right LED 7.
+  RZLED2_SCROLLWHEEL: 0x0203,  //!< Scroll Wheel LED.
+  RZLED2_LOGO: 0x0703,  //!< Logo LED.
+  RZLED2_BACKLIGHT: 0x0403,  //!< Backlight LED.
+  RZLED2_LEFT_SIDE1: 0x0100,  //!< Left LED 1.
+  RZLED2_LEFT_SIDE2: 0x0200,  //!< Left LED 2.
+  RZLED2_LEFT_SIDE3: 0x0300,  //!< Left LED 3.
+  RZLED2_LEFT_SIDE4: 0x0400,  //!< Left LED 4.
+  RZLED2_LEFT_SIDE5: 0x0500,  //!< Left LED 5.
+  RZLED2_LEFT_SIDE6: 0x0600,  //!< Left LED 6.
+  RZLED2_LEFT_SIDE7: 0x0700,  //!< Left LED 7.
+  RZLED2_BOTTOM1: 0x0801,  //!< Bottom LED 1.
+  RZLED2_BOTTOM2: 0x0802,  //!< Bottom LED 2.
+  RZLED2_BOTTOM3: 0x0803,  //!< Bottom LED 3.
+  RZLED2_BOTTOM4: 0x0804,  //!< Bottom LED 4.
+  RZLED2_BOTTOM5: 0x0805,  //!< Bottom LED 5.
+  RZLED2_RIGHT_SIDE1: 0x0106,  //!< Right LED 1.
+  RZLED2_RIGHT_SIDE2: 0x0206,  //!< Right LED 2.
+  RZLED2_RIGHT_SIDE3: 0x0306,  //!< Right LED 3.
+  RZLED2_RIGHT_SIDE4: 0x0406,  //!< Right LED 4.
+  RZLED2_RIGHT_SIDE5: 0x0506,  //!< Right LED 5.
+  RZLED2_RIGHT_SIDE6: 0x0606,  //!< Right LED 6.
+  RZLED2_RIGHT_SIDE7: 0x0706   //!< Right LED 7.
 };
 
 function getHighByte(key) {
-	return (key & 0xFF00) >> 8;
+  return (key & 0xFF00) >> 8;
 }
 
 function getLowByte(key) {
-	return (key & 0xFF);
+  return (key & 0xFF);
 }
 
 var EChromaSDKDeviceTypeEnum = {
@@ -765,13 +765,13 @@ var EChromaSDKDeviceEnum = {
 };
 
 function ChromaAnimationFrame1D() {
-    var Duration = 0.1;
-    var Colors = undefined;
+  var Duration = 0.1;
+  var Colors = undefined;
 }
 
 function ChromaAnimationFrame2D() {
-    var Duration = 0.1;
-    var Colors = [];
+  var Duration = 0.1;
+  var Colors = [];
 }
 
 var ChromaAnimation = {
@@ -785,7 +785,7 @@ var ChromaAnimation = {
   IdleAnimation1D: {},
   IdleAnimation2D: {},
   IntervalUpdateFrame: undefined,
-  updateFrame: function() {
+  updateFrame: function () {
     if (ChromaAnimation.IntervalUpdateFrame == undefined) {
 
       ChromaAnimation.useIdleAnimations(false);
@@ -818,9 +818,9 @@ var ChromaAnimation = {
           if (idleAnimation != animation) {
             useIdleAnimation = false;
 
-      			if (idleAnimation != undefined) {
-      			  idleAnimation.FrameTime = animation.FrameTime;
-      			}
+            if (idleAnimation != undefined) {
+              idleAnimation.FrameTime = animation.FrameTime;
+            }
           }
         }
       }
@@ -846,9 +846,9 @@ var ChromaAnimation = {
           if (idleAnimation != animation) {
             useIdleAnimation = false;
 
-          	if (idleAnimation != undefined) {
-          	  idleAnimation.FrameTime = animation.FrameTime;
-          	}
+            if (idleAnimation != undefined) {
+              idleAnimation.FrameTime = animation.FrameTime;
+            }
           }
         }
       }
@@ -857,13 +857,13 @@ var ChromaAnimation = {
       if (ChromaAnimation.UseIdleAnimation2D[device] &&
         idleAnimation != undefined) {
         if (useIdleAnimation) {
-              idleAnimation.playFrame();
+          idleAnimation.playFrame();
         }
       }
     }
 
   },
-  getMaxLeds : function(device) {
+  getMaxLeds: function (device) {
     if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
       return 5;
     } else if (device == EChromaSDKDevice1DEnum.DE_Headset) {
@@ -875,7 +875,7 @@ var ChromaAnimation = {
       return undefined;
     }
   },
-  getMaxRow : function(device) {
+  getMaxRow: function (device) {
     if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
       return 6;
     } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
@@ -887,24 +887,24 @@ var ChromaAnimation = {
       return undefined;
     }
   },
-  getMaxColumn : function(device) {
+  getMaxColumn: function (device) {
     if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
       return 22;
- 	    } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
+    } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
       return 5;
-     	} else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
+    } else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
       return 7;
     } else {
       console.log('getMaxColumn: Invalid device!');
       return undefined;
     }
   },
-  openAnimationFromMemory : function (buffer, animationName, callback) {
+  openAnimationFromMemory: function (buffer, animationName, callback) {
     var arrayBuffer = (new Uint8Array(buffer)).buffer;
 
     var readIndex = 0;
     var readSize = 4;
-    var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('version:', version);
 
@@ -914,7 +914,7 @@ var ChromaAnimation = {
     }
 
     readSize = 1;
-    var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('deviceType:', deviceType);
 
@@ -939,11 +939,11 @@ var ChromaAnimation = {
     }
 
   },
-  openAnimation : function (animationName, callback, useCache) {
+  openAnimation: function (animationName, callback, useCache) {
     var refThis = this;
     var xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status != 200) {
           console.error('Animation is missing!', animationName);
@@ -957,7 +957,7 @@ var ChromaAnimation = {
 
         var readIndex = 0;
         var readSize = 4;
-        var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+        var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
         readIndex += readSize;
         //console.log('version:', version);
 
@@ -967,7 +967,7 @@ var ChromaAnimation = {
         }
 
         readSize = 1;
-        var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+        var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
         readIndex += readSize;
         //console.log('deviceType:', deviceType);
 
@@ -996,82 +996,82 @@ var ChromaAnimation = {
     if (useCache == undefined || useCache == true) {
       xhr.open('GET', animationName, true);
     } else {
-      xhr.open('GET', animationName+'?cache=' + Date.now(), true);
+      xhr.open('GET', animationName + '?cache=' + Date.now(), true);
     }
     xhr.responseType = "arraybuffer";
     xhr.send('');
   },
   getDeviceType(device) {
-	  if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-		  return EChromaSDKDeviceTypeEnum.DE_1D;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-		  return EChromaSDKDeviceTypeEnum.DE_1D;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-		  return EChromaSDKDeviceTypeEnum.DE_2D;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-		  return EChromaSDKDeviceTypeEnum.DE_2D;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-		  return EChromaSDKDeviceTypeEnum.DE_2D;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-		  return EChromaSDKDeviceTypeEnum.DE_1D;
-	  } else {
-		  return undefined;
-	  }
+    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
+      return EChromaSDKDeviceTypeEnum.DE_1D;
+    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
+      return EChromaSDKDeviceTypeEnum.DE_1D;
+    } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
+      return EChromaSDKDeviceTypeEnum.DE_2D;
+    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
+      return EChromaSDKDeviceTypeEnum.DE_2D;
+    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
+      return EChromaSDKDeviceTypeEnum.DE_2D;
+    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
+      return EChromaSDKDeviceTypeEnum.DE_1D;
+    } else {
+      return undefined;
+    }
   },
   getDevice1D(device) {
-	  if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-		  return EChromaSDKDevice1DEnum.DE_ChromaLink;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-		  return EChromaSDKDevice1DEnum.DE_Headset;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-		  return EChromaSDKDevice1DEnum.DE_Mousepad;
-	  } else {
-		  return undefined;
-	  }
+    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
+      return EChromaSDKDevice1DEnum.DE_ChromaLink;
+    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
+      return EChromaSDKDevice1DEnum.DE_Headset;
+    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
+      return EChromaSDKDevice1DEnum.DE_Mousepad;
+    } else {
+      return undefined;
+    }
   },
   getDevice2D(device) {
-	  if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-		  return EChromaSDKDevice2DEnum.DE_Keyboard;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-		  return EChromaSDKDevice2DEnum.DE_Keypad;
-	  } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-		  return EChromaSDKDevice2DEnum.DE_Mouse;
-	  } else {
-		  return undefined;
-	  }
+    if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
+      return EChromaSDKDevice2DEnum.DE_Keyboard;
+    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
+      return EChromaSDKDevice2DEnum.DE_Keypad;
+    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
+      return EChromaSDKDevice2DEnum.DE_Mouse;
+    } else {
+      return undefined;
+    }
   },
   getDeviceEnum(deviceType, device) {
-	  if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-        if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
-		  return EChromaSDKDeviceEnum.DE_ChromaLink;
-		} else if (device == EChromaSDKDevice1DEnum.DE_Headset) {
-		  return EChromaSDKDeviceEnum.DE_Headset;
-		} else if (device == EChromaSDKDevice1DEnum.DE_Mousepad) {
-		  return EChromaSDKDeviceEnum.DE_Mousepad;
-		}
-	  } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-        if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-		  return EChromaSDKDeviceEnum.DE_Keyboard;
-		} else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
-		  return EChromaSDKDeviceEnum.DE_Keypad;
-		} else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
-		  return EChromaSDKDeviceEnum.DE_Mouse;
-		}
-	  } else {
-	    return undefined;
-	  }
+    if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
+        return EChromaSDKDeviceEnum.DE_ChromaLink;
+      } else if (device == EChromaSDKDevice1DEnum.DE_Headset) {
+        return EChromaSDKDeviceEnum.DE_Headset;
+      } else if (device == EChromaSDKDevice1DEnum.DE_Mousepad) {
+        return EChromaSDKDeviceEnum.DE_Mousepad;
+      }
+    } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
+        return EChromaSDKDeviceEnum.DE_Keyboard;
+      } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
+        return EChromaSDKDeviceEnum.DE_Keypad;
+      } else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
+        return EChromaSDKDeviceEnum.DE_Mouse;
+      }
+    } else {
+      return undefined;
+    }
   },
-  lerp: function(start, end, amt) {
-    return (1-amt)*start+amt*end;
+  lerp: function (start, end, amt) {
+    return (1 - amt) * start + amt * end;
   },
-  lerpColor: function(from, to, t) {
+  lerpColor: function (from, to, t) {
     var red = Math.floor(this.lerp((from & 0xFF), (to & 0xFF), t));
     var green = Math.floor(this.lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
     var blue = Math.floor(this.lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
     var color = red | (green << 8) | (blue << 16);
     return color;
   },
-  getAnimation: function(animationName) {
+  getAnimation: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return undefined;
@@ -1079,7 +1079,7 @@ var ChromaAnimation = {
       return animation;
     }
   },
-  getFrameCount: function(animationName) {
+  getFrameCount: function (animationName) {
     var animation = this.getAnimation(animationName);
     if (animation == undefined) {
       return 0;
@@ -1087,38 +1087,38 @@ var ChromaAnimation = {
       return animation.getFrameCount();
     }
   },
-  stopByAnimationType: function(device) {
+  stopByAnimationType: function (device) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.stopByAnimationType(device); }, 100);
+      setTimeout(function () { ChromaAnimation.stopByAnimationType(device); }, 100);
       return;
     }
     //1D
     if (this.getDeviceType(device) == EChromaSDKDeviceTypeEnum.DE_1D) {
-	  var device1D = this.getDevice1D(device);
-	  var animation = ChromaAnimation.LoadedAnimations1D[device1D];
+      var device1D = this.getDevice1D(device);
+      var animation = ChromaAnimation.LoadedAnimations1D[device1D];
       if (animation != undefined) {
         animation.stop();
       }
       ChromaAnimation.LoadedAnimations1D[device1D] = undefined;
-    //2D
+      //2D
     } else if (this.getDeviceType(device) == EChromaSDKDeviceTypeEnum.DE_2D) {
-	  var device2D = this.getDevice2D(device);
-	  var animation = this.LoadedAnimations2D[device2D];
+      var device2D = this.getDevice2D(device);
+      var animation = this.LoadedAnimations2D[device2D];
       if (animation != undefined) {
         animation.stop();
       }
       this.LoadedAnimations2D[device2D] = undefined;
     }
   },
-  stopAll: function() {
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_ChromaLink);
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Headset);
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keyboard);
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keypad);
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mouse);
-	this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mousepad);
+  stopAll: function () {
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_ChromaLink);
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Headset);
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keyboard);
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keypad);
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mouse);
+    this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mousepad);
   },
-  isPlaying: function(animationName) {
+  isPlaying: function (animationName) {
     if (chromaSDK == undefined) {
       return false;
     }
@@ -1127,9 +1127,9 @@ var ChromaAnimation = {
     }
     return false;
   },
-  playAnimation: function(animationName, loop, frameCallback) {
+  playAnimation: function (animationName, loop, frameCallback) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.playAnimation(animationName, loop, frameCallback); }, 100);
+      setTimeout(function () { ChromaAnimation.playAnimation(animationName, loop, frameCallback); }, 100);
       return;
     }
     if (this.LoadedAnimations[animationName] == undefined) {
@@ -1165,7 +1165,7 @@ var ChromaAnimation = {
       animation.play(loop);
     }
   },
-  stopAnimation: function(animationName) {
+  stopAnimation: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation != undefined) {
       this.LoadedAnimations[animationName].stop();
@@ -1179,13 +1179,13 @@ var ChromaAnimation = {
       }
     }
   },
-  closeAnimation: function(animationName) {
+  closeAnimation: function (animationName) {
     if (this.LoadedAnimations[animationName] != undefined) {
       this.LoadedAnimations[animationName].stop();
       this.LoadedAnimations[animationName] = undefined;
     }
   },
-  useIdleAnimation: function(device, flag) {
+  useIdleAnimation: function (device, flag) {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
         ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = flag;
@@ -1207,7 +1207,7 @@ var ChromaAnimation = {
         break;
     }
   },
-  useIdleAnimations: function(flag) {
+  useIdleAnimations: function (flag) {
     ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = flag;
     ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = flag;
     ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Mousepad] = flag;
@@ -1215,7 +1215,7 @@ var ChromaAnimation = {
     ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = flag;
     ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = flag;
   },
-  setIdleAnimation: function(animationName) {
+  setIdleAnimation: function (animationName) {
     var animation = ChromaAnimation.LoadedAnimations[animationName];
     if (animation == undefined) {
       ChromaAnimation.openAnimation(animationName, function (animation) {
@@ -1246,7 +1246,7 @@ var ChromaAnimation = {
     }
     animation.Frames = animation.Frames.reverse();
   },
-  setKeysColor: function(animationName, frameId, keys, color) {
+  setKeysColor: function (animationName, frameId, keys, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1277,7 +1277,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setKeysColorRGB: function(animationName, frameId, keys, red, green, blue) {
+  setKeysColorRGB: function (animationName, frameId, keys, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1309,7 +1309,7 @@ var ChromaAnimation = {
       }
     }
   },
-  getKeyColor: function(animationName, frameId, key) {
+  getKeyColor: function (animationName, frameId, key) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return 0;
@@ -1338,7 +1338,7 @@ var ChromaAnimation = {
     }
     return 0;
   },
-  setKeyColor: function(animationName, frameId, key, color) {
+  setKeyColor: function (animationName, frameId, key, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1366,11 +1366,11 @@ var ChromaAnimation = {
       }
     }
   },
-  copyKeyColorToKey: function(animationName, frameId, sourceKey, targetKey) {
+  copyKeyColorToKey: function (animationName, frameId, sourceKey, targetKey) {
     let color = ChromaAnimation.getKeyColor(animationName, frameId, sourceKey);
     ChromaAnimation.setKeyColor(animationName, frameId, targetKey, color);
   },
-  setKeyColorAllFrames: function(animationName, key, color) {
+  setKeyColorAllFrames: function (animationName, key, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1398,7 +1398,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setKeyColorAllFramesRGB: function(animationName, key, red, green, blue) {
+  setKeyColorAllFramesRGB: function (animationName, key, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1427,7 +1427,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setKeysColorAllFrames: function(animationName, keys, color) {
+  setKeysColorAllFrames: function (animationName, keys, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1458,7 +1458,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setKeysColorAllFramesRGB: function(animationName, keys, red, green, blue) {
+  setKeysColorAllFramesRGB: function (animationName, keys, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -1490,7 +1490,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyKeyColorAllFrames: function(sourceAnimationName, targetAnimationName, key) {
+  copyKeyColorAllFrames: function (sourceAnimationName, targetAnimationName, key) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1535,7 +1535,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyKeyColorAllFramesOffset: function(sourceAnimationName, targetAnimationName, key, offset) {
+  copyKeyColorAllFramesOffset: function (sourceAnimationName, targetAnimationName, key, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1563,9 +1563,9 @@ var ChromaAnimation = {
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < sourceFrames.length && (frameId+offset) < targetFrames.length; ++frameId) {
+    for (var frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -1580,7 +1580,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyKeysColorAllFrames: function(sourceAnimationName, targetAnimationName, keys) {
+  copyKeysColorAllFrames: function (sourceAnimationName, targetAnimationName, keys) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1628,7 +1628,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroAllKeys: function(sourceAnimationName, targetAnimationName, frameId) {
+  copyNonZeroAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1673,7 +1673,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  copyNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1763,7 +1763,7 @@ var ChromaAnimation = {
     var newColor = red | (green << 8) | (blue << 16);
     return newColor;
   },
-  addNonZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  addNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1848,7 +1848,7 @@ var ChromaAnimation = {
       }
     }
   },
-  subtractNonZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  subtractNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1934,7 +1934,7 @@ var ChromaAnimation = {
       }
     }
   },
-  addNonZeroAllKeysAllFramesOffset: function(sourceAnimationName, targetAnimationName, offset) {
+  addNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -1962,9 +1962,9 @@ var ChromaAnimation = {
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = sourceFrames.length-1; frameId >= 0; --frameId) {
+    for (var frameId = sourceFrames.length - 1; frameId >= 0; --frameId) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -1993,7 +1993,7 @@ var ChromaAnimation = {
       }
     }
   },
-  subtractNonZeroAllKeysAllFramesOffset: function(sourceAnimationName, targetAnimationName, offset) {
+  subtractNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2023,7 +2023,7 @@ var ChromaAnimation = {
     //console.log(animation.Frames);
     for (var frameId = 0; frameId < sourceFrames.length && frameId < targetFrames.length; ++frameId) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -2052,7 +2052,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroAllKeysOffset: function(sourceAnimationName, targetAnimationName, frameId, offset) {
+  copyNonZeroAllKeysOffset: function (sourceAnimationName, targetAnimationName, frameId, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2082,7 +2082,7 @@ var ChromaAnimation = {
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < sourceFrames.length) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -2097,7 +2097,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroAllKeysAllFramesOffset: function(sourceAnimationName, targetAnimationName, offset) {
+  copyNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2125,9 +2125,9 @@ var ChromaAnimation = {
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < sourceFrames.length && (frameId+offset) < targetFrames.length; ++frameId) {
+    for (var frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -2142,7 +2142,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroTargetAllKeys: function(sourceAnimationName, targetAnimationName, frameId) {
+  copyNonZeroTargetAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2151,12 +2151,10 @@ var ChromaAnimation = {
     if (targetAnimation == undefined) {
       return;
     }
-    if (sourceAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      sourceAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    if (targetAnimation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
       return;
     }
     var sourceFrames = sourceAnimation.Frames;
@@ -2167,28 +2165,48 @@ var ChromaAnimation = {
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    if (frameId >= 0 && frameId < targetFrames.length) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
-          if (color != 0 &&
-            targetRow[j] != 0) {
-            targetRow[j] = color;
+
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var sourceColor = sourceColors[i];
+          var targetColor = targetColors[i];
+          if (sourceColor != 0 &&
+            targetColor != 0) {
+            targetColors[i] = sourceColor;
+          }
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = sourceRow[j];
+            if (color != 0 &&
+              targetRow[j] != 0) {
+              targetRow[j] = color;
+            }
           }
         }
       }
     }
   },
-  copyNonZeroTargetAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  copyNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2245,7 +2263,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroTargetZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  copyNonZeroTargetZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2291,7 +2309,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyNonZeroTargetAllKeysAllFramesOffset: function(sourceAnimationName, targetAnimationName, offset) {
+  copyNonZeroTargetAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2321,7 +2339,7 @@ var ChromaAnimation = {
     //console.log(animation.Frames);
     for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
       var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId+offset) % targetFrames.length];
+      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
       var sourceColors = sourceFrame.Colors;
       var targetColors = targetFrame.Colors;
       for (var i = 0; i < maxRow; ++i) {
@@ -2337,7 +2355,7 @@ var ChromaAnimation = {
       }
     }
   },
-  addNonZeroTargetAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  addNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2397,7 +2415,7 @@ var ChromaAnimation = {
       }
     }
   },
-  subtractNonZeroTargetAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  subtractNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2457,7 +2475,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyZeroTargetAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  copyZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2503,7 +2521,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyZeroTargetZeroAllKeysAllFrames: function(sourceAnimationName, targetAnimationName) {
+  copyZeroTargetZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -2549,7 +2567,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillColor: function(animationName, frameId, newColor) {
+  fillColor: function (animationName, frameId, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2586,7 +2604,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillColorRGB: function(animationName, frameId, red, green, blue) {
+  fillColorRGB: function (animationName, frameId, red, green, blue) {
     var newColor = this.getRGB(red, green, blue);
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -2624,7 +2642,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillNonZeroColor: function(animationName, frameId, newColor) {
+  fillNonZeroColor: function (animationName, frameId, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2650,7 +2668,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillNonZeroColorRGB: function(animationName, frameId, red, green, blue) {
+  fillNonZeroColorRGB: function (animationName, frameId, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2677,7 +2695,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillNonZeroColorAllFrames: function(animationName, newColor) {
+  fillNonZeroColorAllFrames: function (animationName, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2703,7 +2721,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillNonZeroColorAllFramesRGB: function(animationName, red, green, blue) {
+  fillNonZeroColorAllFramesRGB: function (animationName, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2744,7 +2762,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillZeroColor: function(animationName, frameId, newColor) {
+  fillZeroColor: function (animationName, frameId, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2785,7 +2803,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillZeroColorAllFrames: function(animationName, newColor) {
+  fillZeroColorAllFrames: function (animationName, newColor) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2826,7 +2844,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillZeroColorAllFramesRGB: function(animationName, red, green, blue) {
+  fillZeroColorAllFramesRGB: function (animationName, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2867,7 +2885,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColors: function(animationName, frameId, threshold, color) {
+  fillThresholdColors: function (animationName, frameId, threshold, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2901,7 +2919,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColorsAllFrames: function(animationName, threshold, color) {
+  fillThresholdColorsAllFrames: function (animationName, threshold, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -2958,7 +2976,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColorsRGB: function(animationName, frameId, threshold, red, green, blue) {
+  fillThresholdColorsRGB: function (animationName, frameId, threshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3017,7 +3035,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColorsAllFramesRGB: function(animationName, threshold, red, green, blue) {
+  fillThresholdColorsAllFramesRGB: function (animationName, threshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3076,7 +3094,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColorsMinMaxRGB: function(animationName, frameId, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  fillThresholdColorsMinMaxRGB: function (animationName, frameId, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3144,7 +3162,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  fillThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3215,7 +3233,7 @@ var ChromaAnimation = {
       }
     }
   },
-  addThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  addThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3286,7 +3304,7 @@ var ChromaAnimation = {
       }
     }
   },
-  subtractThresholdColorsMinMaxAllFramesRGB: function(animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
+  subtractThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3357,7 +3375,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillThresholdRGBColorsAllFramesRGB: function(animationName, redThreshold, greenThreshold, blueThreshold, red, green, blue) {
+  fillThresholdRGBColorsAllFramesRGB: function (animationName, redThreshold, greenThreshold, blueThreshold, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3392,7 +3410,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillRandomColors: function(animationName, frameId) {
+  fillRandomColors: function (animationName, frameId) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3419,7 +3437,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillRandomColorsAllFrames: function(animationName) {
+  fillRandomColorsAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3461,7 +3479,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillRandomColorsBlackAndWhite: function(animationName, frameId) {
+  fillRandomColorsBlackAndWhite: function (animationName, frameId) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3489,7 +3507,7 @@ var ChromaAnimation = {
       }
     }
   },
-  fillRandomColorsBlackAndWhiteAllFrames: function(animationName) {
+  fillRandomColorsBlackAndWhiteAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3534,7 +3552,7 @@ var ChromaAnimation = {
       }
     }
   },
-  invertColorsAllFrames: function(animationName) {
+  invertColorsAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3579,7 +3597,7 @@ var ChromaAnimation = {
       }
     }
   },
-  insertFrame: function(animationName, sourceFrame, targetFrame) {
+  insertFrame: function (animationName, sourceFrame, targetFrame) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3634,12 +3652,12 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  insertDelay: function(animationName, frameId, delay) {
+  insertDelay: function (animationName, frameId, delay) {
     for (var i = 0; i < delay; ++i) {
       this.insertFrame(animationName, frameId, frameId);
     }
   },
-  appendAllFrames: function(sourceAnimationName, targetAnimationName) {
+  appendAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
@@ -3686,7 +3704,7 @@ var ChromaAnimation = {
       }
     }
   },
-  duplicateFirstFrame: function(animationName, frameCount) {
+  duplicateFirstFrame: function (animationName, frameCount) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3729,7 +3747,7 @@ var ChromaAnimation = {
       animation.Frames = frames;
     }
   },
-  duplicateFrames: function(animationName) {
+  duplicateFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3779,7 +3797,7 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  duplicateMirrorFrames: function(animationName) {
+  duplicateMirrorFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3849,7 +3867,7 @@ var ChromaAnimation = {
       animation.Frames = frames;
     }
   },
-  copyAnimation: function(animationName, newAnimationName) {
+  copyAnimation: function (animationName, newAnimationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3874,7 +3892,7 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation1D();
-	  newAnimation.Name = newAnimationName;
+      newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
       newAnimation.Frames = frames;
@@ -3897,14 +3915,14 @@ var ChromaAnimation = {
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation2D();
-	  newAnimation.Name = newAnimationName;
+      newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
       newAnimation.Frames = frames;
       this.LoadedAnimations[newAnimationName] = newAnimation;
     }
   },
-  convertAnimation: function(animationName, newAnimationName, newDeviceType, newDevice) {
+  convertAnimation: function (animationName, newAnimationName, newDeviceType, newDevice) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -3988,7 +4006,7 @@ var ChromaAnimation = {
       return newAnimation;
     }
   },
-  createAnimation: function(animationName, deviceType, device) {
+  createAnimation: function (animationName, deviceType, device) {
     this.closeAnimation(animationName);
     var frames = [];
     var frameCount = 1;
@@ -4036,7 +4054,7 @@ var ChromaAnimation = {
       return newAnimation;
     }
   },
-  reduceFrames: function(animationName, n) {
+  reduceFrames: function (animationName, n) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4087,7 +4105,7 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  trimFrame: function(animationName, removeFrameId) {
+  trimFrame: function (animationName, removeFrameId) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4111,7 +4129,7 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  trimStartFrames: function(animationName, numberOfFrames) {
+  trimStartFrames: function (animationName, numberOfFrames) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4126,7 +4144,7 @@ var ChromaAnimation = {
       this.trimFrame(animationName, 0);
     }
   },
-  trimEndFrames: function(animationName, lastFrameId) {
+  trimEndFrames: function (animationName, lastFrameId) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4138,11 +4156,11 @@ var ChromaAnimation = {
     }
     //console.log(animation.Frames);
     while (lastFrameId >= 0 &&
-      (lastFrameId+1) < animation.Frames.length) {
-        this.trimFrame(animationName, animation.Frames.length - 1);
+      (lastFrameId + 1) < animation.Frames.length) {
+      this.trimFrame(animationName, animation.Frames.length - 1);
     }
   },
-  fadeStartFrames: function(animationName, fade) {
+  fadeStartFrames: function (animationName, fade) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4157,11 +4175,11 @@ var ChromaAnimation = {
     }
     //console.log(animation.Frames);
     for (var frameId = 0; frameId < fade; ++frameId) {
-      var t = (frameId+1) / fade;
+      var t = (frameId + 1) / fade;
       this.multiplyIntensity(animationName, frameId, t);
     }
   },
-  fadeEndFrames: function(animationName, fade) {
+  fadeEndFrames: function (animationName, fade) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4177,11 +4195,11 @@ var ChromaAnimation = {
     //console.log(animation.Frames);
     for (var offset = 0; offset < fade; ++offset) {
       var frameId = animation.Frames.length - 1 - offset;
-      var t = (offset+1) / fade;
+      var t = (offset + 1) / fade;
       this.multiplyIntensity(animationName, frameId, t);
     }
   },
-  makeBlankFrames: function(animationName, frameCount, duration, color) {
+  makeBlankFrames: function (animationName, frameCount, duration, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4219,7 +4237,7 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  makeBlankFramesRGB: function(animationName, frameCount, duration, red, green, blue) {
+  makeBlankFramesRGB: function (animationName, frameCount, duration, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4258,7 +4276,7 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
-  offsetColors: function(animationName, frameId, redOffset, greenOffset, blueOffset) {
+  offsetColors: function (animationName, frameId, redOffset, greenOffset, blueOffset) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4309,7 +4327,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetColorsWithColor: function(animationName, frameId, color) {
+  offsetColorsWithColor: function (animationName, frameId, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4346,7 +4364,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetColorsWithColorAllFrames: function(animationName, color) {
+  offsetColorsWithColorAllFrames: function (animationName, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4399,7 +4417,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetNonZeroColorsWithColorAllFrames: function(animationName, color) {
+  offsetNonZeroColorsWithColorAllFrames: function (animationName, color) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4438,7 +4456,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetColorsAllFrames: function(animationName, redOffset, greenOffset, blueOffset) {
+  offsetColorsAllFrames: function (animationName, redOffset, greenOffset, blueOffset) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4489,7 +4507,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetNonZeroColors: function(animationName, frameId, redOffset, greenOffset, blueOffset) {
+  offsetNonZeroColors: function (animationName, frameId, redOffset, greenOffset, blueOffset) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4525,7 +4543,7 @@ var ChromaAnimation = {
       }
     }
   },
-  offsetNonZeroColorsAllFrames: function(animationName, redOffset, greenOffset, blueOffset) {
+  offsetNonZeroColorsAllFrames: function (animationName, redOffset, greenOffset, blueOffset) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4561,7 +4579,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensity: function(animationName, frameId, intensity) {
+  multiplyIntensity: function (animationName, frameId, intensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4634,7 +4652,7 @@ var ChromaAnimation = {
     var blue = (color & 0xFF0000) >> 16;
     console.log('Red', red, 'Green', green, 'Blue', blue);
   },
-  multiplyIntensityColor: function(animationName, frameId, colorTint) {
+  multiplyIntensityColor: function (animationName, frameId, colorTint) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4698,7 +4716,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityColorAllFrames: function(animationName, colorTint) {
+  multiplyIntensityColorAllFrames: function (animationName, colorTint) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4762,7 +4780,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityRGB: function(animationName, frameId, red, green, blue) {
+  multiplyIntensityRGB: function (animationName, frameId, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4821,7 +4839,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityAllFrames: function(animationName, intensity) {
+  multiplyIntensityAllFrames: function (animationName, intensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4873,7 +4891,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityAllFramesRGB: function(animationName, red, green, blue) {
+  multiplyIntensityAllFramesRGB: function (animationName, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4928,7 +4946,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyColorLerpAllFrames: function(animationName, color1, color2) {
+  multiplyColorLerpAllFrames: function (animationName, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4936,12 +4954,12 @@ var ChromaAnimation = {
     var frames = animation.Frames;
     var frameCount = frames.length;
     for (var frameId = 0; frameId < frameCount; ++frameId) {
-      var t = (frameId+1) / frameCount;
+      var t = (frameId + 1) / frameCount;
       var color = this.lerpColor(color1, color2, t);
       this.multiplyIntensityColor(animationName, frameId, color);
     }
   },
-  multiplyTargetColorLerp: function(animationName, frameId, color1, color2) {
+  multiplyTargetColorLerp: function (animationName, frameId, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -4960,7 +4978,7 @@ var ChromaAnimation = {
           var red = (color & 0xFF) / 255.0;
           var green = ((color & 0xFF00) >> 8) / 255.0;
           var blue = ((color & 0xFF0000) >> 16) / 255.0;
-          var t = (red+green+blue) / 3.0;
+          var t = (red + green + blue) / 3.0;
           colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
         }
       }
@@ -4980,14 +4998,14 @@ var ChromaAnimation = {
             var red = (color & 0xFF) / 255.0;
             var green = ((color & 0xFF00) >> 8) / 255.0;
             var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red+green+blue) / 3.0;
+            var t = (red + green + blue) / 3.0;
             row[j] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
       }
     }
   },
-  multiplyTargetColorLerpAllFrames: function(animationName, color1, color2) {
+  multiplyTargetColorLerpAllFrames: function (animationName, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5006,7 +5024,7 @@ var ChromaAnimation = {
           var red = (color & 0xFF) / 255.0;
           var green = ((color & 0xFF00) >> 8) / 255.0;
           var blue = ((color & 0xFF0000) >> 16) / 255.0;
-          var t = (red+green+blue) / 3.0;
+          var t = (red + green + blue) / 3.0;
           colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
         }
       }
@@ -5026,14 +5044,14 @@ var ChromaAnimation = {
             var red = (color & 0xFF) / 255.0;
             var green = ((color & 0xFF00) >> 8) / 255.0;
             var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red+green+blue) / 3.0;
+            var t = (red + green + blue) / 3.0;
             row[j] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
       }
     }
   },
-  multiplyNonZeroTargetColorLerpAllFrames: function(animationName, color1, color2) {
+  multiplyNonZeroTargetColorLerpAllFrames: function (animationName, color1, color2) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5053,7 +5071,7 @@ var ChromaAnimation = {
             var red = (color & 0xFF) / 255.0;
             var green = ((color & 0xFF00) >> 8) / 255.0;
             var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red+green+blue) / 3.0;
+            var t = (red + green + blue) / 3.0;
             colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
@@ -5075,7 +5093,7 @@ var ChromaAnimation = {
               var red = (color & 0xFF) / 255.0;
               var green = ((color & 0xFF00) >> 8) / 255.0;
               var blue = ((color & 0xFF0000) >> 16) / 255.0;
-              var t = (red+green+blue) / 3.0;
+              var t = (red + green + blue) / 3.0;
               row[j] = ChromaAnimation.lerpColor(color1, color2, t);
             }
           }
@@ -5083,7 +5101,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyRedChannelAllFrames: function(animationName, greenIntensity, blueIntensity) {
+  copyRedChannelAllFrames: function (animationName, greenIntensity, blueIntensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5116,7 +5134,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyGreenChannelAllFrames: function(animationName, redIntensity, blueIntensity) {
+  copyGreenChannelAllFrames: function (animationName, redIntensity, blueIntensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5149,7 +5167,7 @@ var ChromaAnimation = {
       }
     }
   },
-  copyBlueChannelAllFrames: function(animationName, redIntensity, greenIntensity) {
+  copyBlueChannelAllFrames: function (animationName, redIntensity, greenIntensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5182,7 +5200,7 @@ var ChromaAnimation = {
       }
     }
   },
-  desaturateAllFrames: function(animationName) {
+  desaturateAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5207,14 +5225,14 @@ var ChromaAnimation = {
           var red = (color & 0xFF);
           var green = (color & 0xFF00) >> 8;
           var blue = (color & 0xFF0000) >> 16;
-          var gray = Math.sqrt(red*red + green*green + blue*blue);
+          var gray = Math.sqrt(red * red + green * green + blue * blue);
           color = gray | (gray << 8) | (gray << 16);
           row[j] = color;
         }
       }
     }
   },
-  multiplyIntensityKey: function(animationName, frameId, key, intensity) {
+  multiplyIntensityKey: function (animationName, frameId, key, intensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5252,7 +5270,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityKeyAllFrames: function(animationName, key, intensity) {
+  multiplyIntensityKeyAllFrames: function (animationName, key, intensity) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5290,7 +5308,7 @@ var ChromaAnimation = {
       }
     }
   },
-  multiplyIntensityKeyAllFramesRGB: function(animationName, key, red, green, blue) {
+  multiplyIntensityKeyAllFramesRGB: function (animationName, key, red, green, blue) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5331,7 +5349,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setChromaCustomColorAllFrames: function(animationName) {
+  setChromaCustomColorAllFrames: function (animationName) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5363,7 +5381,7 @@ var ChromaAnimation = {
       }
     }
   },
-  setChromaCustomFlag: function(animationName, flag) {
+  setChromaCustomFlag: function (animationName, flag) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5374,9 +5392,9 @@ var ChromaAnimation = {
     }
     animation.setChromaCustomFlag(flag);
   },
-  playComposite: function(animationName, loop, frameCallback) {
+  playComposite: function (animationName, loop, frameCallback) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.playComposite(animationName, loop); }, 100);
+      setTimeout(function () { ChromaAnimation.playComposite(animationName, loop); }, 100);
       return;
     }
     this.playAnimation(animationName + "_ChromaLink.chroma", loop, frameCallback);
@@ -5386,7 +5404,7 @@ var ChromaAnimation = {
     this.playAnimation(animationName + "_Mouse.chroma", loop, frameCallback);
     this.playAnimation(animationName + "_Mousepad.chroma", loop, frameCallback);
   },
-  overrideFrameDuration: function(animationName, duration) {
+  overrideFrameDuration: function (animationName, duration) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
@@ -5398,9 +5416,9 @@ var ChromaAnimation = {
       frame.Duration = duration;
     }
   },
-  stopComposite: function(animationName) {
+  stopComposite: function (animationName) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.stopComposite(animationName, loop); }, 100);
+      setTimeout(function () { ChromaAnimation.stopComposite(animationName, loop); }, 100);
       return;
     }
     this.stopAnimation(animationName + "_ChromaLink.chroma");
@@ -5412,7 +5430,7 @@ var ChromaAnimation = {
   },
   staticColor: function (device, color) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.staticColor(device, color); }, 100);
+      setTimeout(function () { ChromaAnimation.staticColor(device, color); }, 100);
       return;
     }
     this.stopByAnimationType(device);
@@ -5430,7 +5448,7 @@ var ChromaAnimation = {
       chromaSDK.createMousematEffect("CHROMA_STATIC", color);
     }
   },
-  staticColorAll: function(color) {
+  staticColorAll: function (color) {
     this.staticColor(EChromaSDKDeviceEnum.DE_ChromaLink, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Headset, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Keyboard, color);
@@ -5438,14 +5456,14 @@ var ChromaAnimation = {
     this.staticColor(EChromaSDKDeviceEnum.DE_Mouse, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Mousepad, color);
   },
-  custom: function(device, colors) {
+  custom: function (device, colors) {
     if (chromaSDK == undefined) {
-      setTimeout(function() {
+      setTimeout(function () {
         ChromaAnimation.custom(device, colors);
       }, 100);
       return;
     }
-	this.stopByAnimationType(device);
+    this.stopByAnimationType(device);
     if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
       chromaSDK.createChromaLinkEffect("CHROMA_CUSTOM", colors);
     } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
@@ -5460,9 +5478,9 @@ var ChromaAnimation = {
       chromaSDK.createMousematEffect("CHROMA_CUSTOM", colors);
     }
   },
-  customKey: function(colors) {
+  customKey: function (colors) {
     if (chromaSDK == undefined) {
-      setTimeout(function() {
+      setTimeout(function () {
         ChromaAnimation.customKey(colors);
       }, 100);
       return;
@@ -5472,10 +5490,10 @@ var ChromaAnimation = {
   },
   clear: function (device) {
     if (chromaSDK == undefined) {
-      setTimeout(function() { ChromaAnimation.clear(device); }, 100);
+      setTimeout(function () { ChromaAnimation.clear(device); }, 100);
       return;
     }
-	this.stopByAnimationType(device);
+    this.stopByAnimationType(device);
     if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
       chromaSDK.createChromaLinkEffect("CHROMA_NONE");
     } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
@@ -5517,7 +5535,7 @@ var ChromaAnimation = {
     // console.log('Start Row =', startRow);
 
     var radius = 0;
-    var speed = 25/ frameCount;
+    var speed = 25 / frameCount;
 
     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
       var stroke = radius;
@@ -5528,8 +5546,8 @@ var ChromaAnimation = {
           var c = Math.floor(startColumn + stroke * Math.cos(angle));
           if (r >= 0 && r < maxRow &&
             c >= 0 && c < maxColumn) {
-              var rkey = ChromaAnimation.getKey(r, c);
-              ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
+            var rkey = ChromaAnimation.getKey(r, c);
+            ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
           }
         }
         stroke += speed;
@@ -5553,7 +5571,7 @@ var ChromaAnimation = {
 
     var color = ChromaAnimation.getRGB(red, green, blue);
     var radius = 0;
-    var speed = 25/ frameCount;
+    var speed = 25 / frameCount;
 
     for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
       var stroke = radius;
@@ -5564,8 +5582,8 @@ var ChromaAnimation = {
           var c = Math.floor(startColumn + stroke * Math.cos(angle));
           if (r >= 0 && r < maxRow &&
             c >= 0 && c < maxColumn) {
-              var rkey = ChromaAnimation.getKey(r, c);
-              ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
+            var rkey = ChromaAnimation.getKey(r, c);
+            ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
           }
         }
         stroke += speed;
@@ -5593,16 +5611,16 @@ ChromaAnimation1D.prototype = {
 
   IsPlaying: false,
 
-  openAnimation: function(arrayBuffer, readIndex) {
+  openAnimation: function (arrayBuffer, readIndex) {
 
     readSize = 1;
-    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
     this.Device = device;
 
     readSize = 4;
-    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('frameCount:', frameCount);
 
@@ -5616,7 +5634,7 @@ ChromaAnimation1D.prototype = {
       var frame = new ChromaAnimationFrame1D();
 
       readSize = Float32Array.BYTES_PER_ELEMENT;
-      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
       readIndex += readSize;
 
       if (duration < 0.033) {
@@ -5628,7 +5646,7 @@ ChromaAnimation1D.prototype = {
       //console.log('Frame '+index+': duration='+duration);
 
       readSize = 4 * maxLeds;
-      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize));
+      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
       readIndex += readSize;
       //console.log(colors);
 
@@ -5643,7 +5661,7 @@ ChromaAnimation1D.prototype = {
 
     this.Frames = frames;
   },
-  saveAnimation: function() {
+  saveAnimation: function () {
 
     var device = this.Device;
     var maxLeds = ChromaAnimation.getMaxLeds(device);
@@ -5700,21 +5718,21 @@ ChromaAnimation1D.prototype = {
       writeArrays.push(writeArray.buffer);
     }
 
-    var blob = new Blob(writeArrays, {type: 'application/octet-stream'});
+    var blob = new Blob(writeArrays, { type: 'application/octet-stream' });
 
     return blob;
   },
-  getFrameCount: function() {
+  getFrameCount: function () {
     return this.Frames.length;
   },
-  getFrame: function() {
+  getFrame: function () {
     if (this.CurrentIndex < this.Frames.length) {
       return this.Frames[this.CurrentIndex];
     } else {
       return undefined;
     }
   },
-  getDuration: function() {
+  getDuration: function () {
     var frame = this.getFrame();
     if (frame != undefined) {
       return frame.Duration;
@@ -5722,7 +5740,7 @@ ChromaAnimation1D.prototype = {
       return 0;
     }
   },
-  playFrame: function() {
+  playFrame: function () {
     if (this.FrameTime > Date.now()) {
       return;
     }
@@ -5746,7 +5764,7 @@ ChromaAnimation1D.prototype = {
       var refThis = this;
       if (duration < 0.1) {
         duration = 0.1;
-	  }
+      }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
@@ -5762,12 +5780,12 @@ ChromaAnimation1D.prototype = {
     this.IsPlaying = false;
     this.CurrentIndex = 0;
     this.Loop = false;
-  	if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
-  	  ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
-  	}
+    if (ChromaAnimation.LoadedAnimations1D[this.Device] == this) {
+      ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
+    }
     ChromaAnimation.PlayingAnimations1D[this.Device][this.Name] = undefined;
   },
-  isPlaying: function() {
+  isPlaying: function () {
     return this.IsPlaying;
   },
   play: function (loop) {
@@ -5802,16 +5820,16 @@ ChromaAnimation2D.prototype = {
 
   IsPlaying: false,
 
-  openAnimation: function(arrayBuffer, readIndex) {
+  openAnimation: function (arrayBuffer, readIndex) {
 
     readSize = 1;
-    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
     this.Device = device;
 
     readSize = 4;
-    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('frameCount:', frameCount);
 
@@ -5828,7 +5846,7 @@ ChromaAnimation2D.prototype = {
       var frame = new ChromaAnimationFrame2D();
 
       readSize = Float32Array.BYTES_PER_ELEMENT;
-      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex+readSize))[0];
+      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
       readIndex += readSize;
 
       if (duration < 0.033) {
@@ -5840,7 +5858,7 @@ ChromaAnimation2D.prototype = {
       //console.log('Frame '+index+': duration='+duration);
 
       readSize = 4 * maxRow * maxColumn;
-      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex+readSize));
+      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
       readIndex += readSize;
       //console.log(colors);
 
@@ -5858,7 +5876,7 @@ ChromaAnimation2D.prototype = {
 
     this.Frames = frames;
   },
-  saveAnimation: function() {
+  saveAnimation: function () {
 
     var device = this.Device;
     var maxRow = ChromaAnimation.getMaxRow(device);
@@ -5918,21 +5936,21 @@ ChromaAnimation2D.prototype = {
       writeArrays.push(writeArray.buffer);
     }
 
-    var blob = new Blob(writeArrays, {type: 'application/octet-stream'});
+    var blob = new Blob(writeArrays, { type: 'application/octet-stream' });
 
     return blob;
   },
-  getFrameCount: function() {
+  getFrameCount: function () {
     return this.Frames.length;
   },
-  getFrame: function() {
+  getFrame: function () {
     if (this.CurrentIndex < this.Frames.length) {
       return this.Frames[this.CurrentIndex];
     } else {
       return undefined;
     }
   },
-  getDuration: function() {
+  getDuration: function () {
     var frame = this.getFrame();
     if (frame != undefined) {
       return frame.Duration;
@@ -5940,7 +5958,7 @@ ChromaAnimation2D.prototype = {
       return 0;
     }
   },
-  setChromaCustomFlag: function(flag) {
+  setChromaCustomFlag: function (flag) {
     if (this.Device == EChromaSDKDevice2DEnum.DE_Keyboard) {
       if (flag == true) {
         this.UseChromaCustom = flag;
@@ -5949,7 +5967,7 @@ ChromaAnimation2D.prototype = {
       }
     }
   },
-  playFrame: function() {
+  playFrame: function () {
     if (this.FrameTime > Date.now()) {
       return;
     }
@@ -5977,7 +5995,7 @@ ChromaAnimation2D.prototype = {
       var refThis = this;
       if (duration < 0.1) {
         duration = 0.1;
-	  }
+      }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
     } else {
@@ -5993,12 +6011,12 @@ ChromaAnimation2D.prototype = {
     this.IsPlaying = false;
     this.CurrentIndex = 0;
     this.Loop = false;
-  	if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
-  	  ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
-  	}
+    if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
+      ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
+    }
     ChromaAnimation.PlayingAnimations2D[this.Device][this.Name] = undefined;
   },
-  isPlaying: function() {
+  isPlaying: function () {
     return this.IsPlaying;
   },
   play: function (loop) {
