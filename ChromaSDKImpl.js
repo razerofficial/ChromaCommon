@@ -2206,6 +2206,77 @@ var ChromaAnimation = {
       }
     }
   },
+  copyNonZeroTargetMultiplyAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.Device != targetAnimation.Device) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var sourceColor = sourceColors[i];
+          if (sourceColor != 0) {
+            let oldColor = targetColors[i];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
+            let t = (oldRed + oldGreen + oldBlue) / 3.0 / 255.0;
+            targetColors[i] = ChromaAnimation.lerpColor(0, sourceColor, t);
+          }
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      if (frameId >= 0) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            let sourceColor = sourceRow[j];
+            if (sourceColor != 0) {
+              let oldColor = targetRow[j];
+              let oldRed = oldColor & 0xFF;
+              let oldGreen = (oldColor & 0xFF00) >> 8;
+              let oldBlue = (oldColor & 0xFF0000) >> 16;
+              let t = (oldRed + oldGreen + oldBlue) / 3.0 / 255.0;
+              targetRow[j] = ChromaAnimation.lerpColor(0, sourceColor, t);
+            }
+          }
+        }
+      }
+    }
+  },
   copyNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
