@@ -376,6 +376,8 @@ setupMapKeypad = function (canvasName, svgObject) {
 
 };
 
+var canvasAnimations = {};
+
 function displayCanvasesChromaLink() {
   Object.keys(canvasAnimations).forEach(key => {
     let val = canvasAnimations[key];
@@ -1258,7 +1260,6 @@ var displayAndPlayAnimationMousepad = function (baseLayer, canvasName, loop) {
   }
 };
 
-var canvasAnimations = {};
 var displayAndPlayAnimation = async function (baseLayer, canvasName, loop) {
   let data = {
     baseLayer: baseLayer,
