@@ -432,16 +432,6 @@ function displayCanvasesMousepad() {
   });
 }
 
-// debugging - disable drawing
-/*
-function displayCanvasesChromaLink() {}
-function displayCanvasesHeadset() {}
-function displayCanvasesKeyboard() {}
-function displayCanvasesKeypad() {}
-function displayCanvasesMouse() {}
-function displayCanvasesMousepad() {}
-*/
-
 function setupDisplayCanvases() {
 
   let frameRate = 1000 / 30; // frames per second
