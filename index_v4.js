@@ -533,7 +533,99 @@ captureCanvas.setAttribute('id', 'captureCanvas');
 captureCanvas.setAttribute('style', 'display: none; width: 645px; height: 430px;');
 document.body.appendChild(captureCanvas);
 
+var wrapCookies = {}; // handle blocked cookies
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  //console.log('setCookie', cname, cvalue);
+
+  // handle browsers blocking cookies
+  if (exdays == 0) {
+    wrapCookies[cname] = undefined;
+  } else {
+    wrapCookies[cname] = cvalue;
+  }
+}
+function getCookieImpl(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      var result = c.substring(name.length, c.length);
+      //console.log('getCookie', 'name='+cname, 'value='+result);
+      return result;
+    }
+  }
+  //console.log('getCookie', 'name='+cname, 'value=not set');
+  return "";
+}
+function getCookie(cname) {
+  var result = getCookieImpl(cname);
+  if (result == '') {
+    if (wrapCookies[cname] !== undefined) {
+      return wrapCookies[cname];
+    }
+  }
+  return result;
+}
+
 onPageLoad = function () {
+
+  if ($('#chkRenderChromaLink')) {
+    $('#chkRenderChromaLink').prop('checked', getCookie('ChromaDesignRenderChromaLink') != 'false');
+    $('#chkRenderChromaLink').click(function () {
+      let val = "" + $('#chkRenderChromaLink').is(":checked");
+      setCookie('ChromaDesignRenderChromaLink', val, 30);
+    });
+  }
+
+  if ($('#chkRenderHeadset')) {
+    $('#chkRenderHeadset').prop('checked', getCookie('ChromaDesignRenderHeadset') != 'false');
+    $('#chkRenderHeadset').click(function () {
+      let val = "" + $('#chkRenderHeadset').is(":checked");
+      setCookie('ChromaDesignRenderHeadset', val, 30);
+    });
+  }
+
+  if ($('#chkRenderKeyboard')) {
+    $('#chkRenderKeyboard').prop('checked', getCookie('ChromaDesignRenderKeyboard') != 'false');
+    $('#chkRenderKeyboard').click(function () {
+      let val = "" + $('#chkRenderKeyboard').is(":checked");
+      setCookie('ChromaDesignRenderKeyboard', val, 30);
+    });
+  }
+
+  if ($('#chkRenderKeypad')) {
+    $('#chkRenderKeypad').prop('checked', getCookie('ChromaDesignRenderKeypad') != 'false');
+    $('#chkRenderKeypad').click(function () {
+      let val = "" + $('#chkRenderKeypad').is(":checked");
+      setCookie('ChromaDesignRenderKeypad', val, 30);
+    });
+  }
+
+  if ($('#chkRenderMouse')) {
+    $('#chkRenderMouse').prop('checked', getCookie('ChromaDesignRenderMouse') != 'false');
+    $('#chkRenderMouse').click(function () {
+      let val = "" + $('#chkRenderMouse').is(":checked");
+      setCookie('ChromaDesignRenderMouse', val, 30);
+    });
+  }
+
+  if ($('#chkRenderMousepad')) {
+    $('#chkRenderMousepad').prop('checked', getCookie('ChromaDesignRenderMousepad') != 'false');
+    $('#chkRenderMousepad').click(function () {
+      let val = "" + $('#chkRenderMousepad').is(":checked");
+      setCookie('ChromaDesignRenderMousepad', val, 30);
+    });
+  }
+
   //handle header linking to footer
   if (window.frames.length > 0) {
     var linkVideos = window.frames[0].document.getElementById('linkVideos');
