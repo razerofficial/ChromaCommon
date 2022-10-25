@@ -12,7 +12,9 @@ ChromaSDK.prototype = {
       return;
     }
 
-    this.socket = new WebSocket("wss://chromasdk.io:13339/razer/chromasdk");
+    let url = "wss://chromasdk.io:13339/razer/chromasdk";
+    //let url = "ws://localhost:13337/razer/chromasdk";
+    this.socket = new WebSocket(url);
 
     let data = JSON.stringify({
       "title": "Chroma RGB WebSocket Client",
@@ -485,7 +487,8 @@ var EChromaSDKDevice2DEnum = {
   'DE_Keyboard': 0,
   'DE_Keypad': 1,
   'DE_Mouse': 2,
-  'DE_MAX': 3
+  'DE_KeyboardExtended': 3,
+  'DE_MAX': 4
 };
 
 var EChromaSDKDeviceEnum = {
@@ -495,16 +498,17 @@ var EChromaSDKDeviceEnum = {
   'DE_Keypad': 3,
   'DE_Mouse': 4,
   'DE_Mousepad': 5,
-  'DE_MAX': 6
+  'DE_KeyboardExtended': 6,
+  'DE_MAX': 7
 };
 
 function ChromaAnimationFrame1D() {
-  var Duration = 0.1;
+  var Duration = 0.033;
   var Colors = undefined;
 }
 
 function ChromaAnimationFrame2D() {
-  var Duration = 0.1;
+  var Duration = 0.033;
   var Colors = [];
 }
 
@@ -598,40 +602,44 @@ var ChromaAnimation = {
 
   },
   getMaxLeds: function (device) {
-    if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
-      return 5;
-    } else if (device == EChromaSDKDevice1DEnum.DE_Headset) {
-      return 5;
-    } else if (device == EChromaSDKDevice1DEnum.DE_Mousepad) {
-      return 15;
-    } else {
-      console.log('getMaxLeds: Invalid device!');
-      return undefined;
+    switch (device) {
+      case EChromaSDKDevice1DEnum.DE_ChromaLink:
+        return 5;
+      case EChromaSDKDevice1DEnum.DE_Headset:
+        return 5;
+      case EChromaSDKDevice1DEnum.DE_Mousepad:
+        return 15;
     }
+    console.log('getMaxLeds: Invalid device!');
+    return undefined;
   },
   getMaxRow: function (device) {
-    if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return 6;
-    } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
-      return 4;
-    } else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
-      return 9;
-    } else {
-      console.log('getMaxRow: Invalid device!');
-      return undefined;
+    switch (device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+        return 6;
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        return 8;
+      case EChromaSDKDevice2DEnum.DE_Keypad:
+        return 4;
+      case EChromaSDKDevice2DEnum.DE_Mouse:
+        return 9;
     }
+    console.log('getMaxRow: Invalid device!');
+    return undefined;
   },
   getMaxColumn: function (device) {
-    if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return 22;
-    } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
-      return 5;
-    } else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
-      return 7;
-    } else {
-      console.log('getMaxColumn: Invalid device!');
-      return undefined;
+    switch (device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+        return 22;
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        return 24;
+      case EChromaSDKDevice2DEnum.DE_Keypad:
+        return 5;
+      case EChromaSDKDevice2DEnum.DE_Mouse:
+        return 7;
     }
+    console.log('getMaxColumn: Invalid device!');
+    return undefined;
   },
   openAnimationFromMemory: function (buffer, animationName, callback) {
     var arrayBuffer = (new Uint8Array(buffer)).buffer;
@@ -736,64 +744,67 @@ var ChromaAnimation = {
     xhr.send('');
   },
   getDeviceType(device) {
-    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-      return EChromaSDKDeviceTypeEnum.DE_1D;
-    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-      return EChromaSDKDeviceTypeEnum.DE_1D;
-    } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-      return EChromaSDKDeviceTypeEnum.DE_2D;
-    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-      return EChromaSDKDeviceTypeEnum.DE_2D;
-    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-      return EChromaSDKDeviceTypeEnum.DE_2D;
-    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-      return EChromaSDKDeviceTypeEnum.DE_1D;
-    } else {
-      return undefined;
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+      case EChromaSDKDeviceEnum.DE_Headset:
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        return EChromaSDKDeviceTypeEnum.DE_1D;
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+      case EChromaSDKDeviceEnum.DE_Keypad:
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        return EChromaSDKDeviceTypeEnum.DE_2D;
     }
+    return undefined;
   },
   getDevice1D(device) {
-    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-      return EChromaSDKDevice1DEnum.DE_ChromaLink;
-    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-      return EChromaSDKDevice1DEnum.DE_Headset;
-    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-      return EChromaSDKDevice1DEnum.DE_Mousepad;
-    } else {
-      return undefined;
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        return EChromaSDKDevice1DEnum.DE_ChromaLink;
+      case EChromaSDKDeviceEnum.DE_Headset:
+        return EChromaSDKDevice1DEnum.DE_Headset;
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        return EChromaSDKDevice1DEnum.DE_Mousepad;
+
     }
+    return undefined;
   },
   getDevice2D(device) {
-    if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-      return EChromaSDKDevice2DEnum.DE_Keyboard;
-    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-      return EChromaSDKDevice2DEnum.DE_Keypad;
-    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-      return EChromaSDKDevice2DEnum.DE_Mouse;
-    } else {
-      return undefined;
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+        return EChromaSDKDevice2DEnum.DE_Keyboard;
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        return EChromaSDKDevice2DEnum.DE_Keypad;
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        return EChromaSDKDevice2DEnum.DE_Mouse;
     }
+    return undefined;
   },
   getDeviceEnum(deviceType, device) {
-    if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      if (device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
-        return EChromaSDKDeviceEnum.DE_ChromaLink;
-      } else if (device == EChromaSDKDevice1DEnum.DE_Headset) {
-        return EChromaSDKDeviceEnum.DE_Headset;
-      } else if (device == EChromaSDKDevice1DEnum.DE_Mousepad) {
-        return EChromaSDKDeviceEnum.DE_Mousepad;
-      }
-    } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      if (device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-        return EChromaSDKDeviceEnum.DE_Keyboard;
-      } else if (device == EChromaSDKDevice2DEnum.DE_Keypad) {
-        return EChromaSDKDeviceEnum.DE_Keypad;
-      } else if (device == EChromaSDKDevice2DEnum.DE_Mouse) {
-        return EChromaSDKDeviceEnum.DE_Mouse;
-      }
-    } else {
-      return undefined;
+    switch (deviceType) {
+      case EChromaSDKDeviceTypeEnum.DE_1D:
+        switch (device) {
+          case EChromaSDKDevice1DEnum.DE_ChromaLink:
+            return EChromaSDKDeviceEnum.DE_ChromaLink;
+          case EChromaSDKDevice1DEnum.DE_Headset:
+            return EChromaSDKDeviceEnum.DE_Headset;
+          case EChromaSDKDevice1DEnum.DE_Mousepad:
+            return EChromaSDKDeviceEnum.DE_Mousepad;
+        }
+        break;
+      case EChromaSDKDeviceTypeEnum.DE_2D:
+        switch (device) {
+          case EChromaSDKDevice2DEnum.DE_Keyboard:
+            return EChromaSDKDeviceEnum.DE_Keyboard;
+          case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+            return EChromaSDKDeviceEnum.DE_KeyboardExtended;
+          case EChromaSDKDevice2DEnum.DE_Keypad:
+            return EChromaSDKDeviceEnum.DE_Keypad;
+          case EChromaSDKDevice2DEnum.DE_Mouse:
+            return EChromaSDKDeviceEnum.DE_Mouse;
+        }
+        break;
     }
+    return undefined;
   },
   lerp: function (start, end, amt) {
     return (1 - amt) * start + amt * end;
@@ -874,12 +885,17 @@ var ChromaAnimation = {
           refThis.LoadedAnimations[animationName] = animation;
           //console.log('playAnimation:', animationName);
           animation.FrameCallback = frameCallback;
+          let device = animation.Device;
+          if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+            // Keyboard and KeyboardExtended share the same slot, only one can play at the same time
+            device = EChromaSDKDevice2DEnum.DE_Keyboard;
+          }
           switch (animation.DeviceType) {
             case EChromaSDKDeviceTypeEnum.DE_1D:
-              ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = animation;
+              ChromaAnimation.PlayingAnimations1D[device][animationName] = animation;
               break;
             case EChromaSDKDeviceTypeEnum.DE_2D:
-              ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = animation;
+              ChromaAnimation.PlayingAnimations2D[device][animationName] = animation;
               break;
           }
           animation.play(loop);
@@ -888,12 +904,17 @@ var ChromaAnimation = {
       var animation = this.LoadedAnimations[animationName];
       //console.log('playAnimation:', animationName);
       animation.FrameCallback = frameCallback;
+      let device = animation.Device;
+      if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+        // Keyboard and KeyboardExtended share the same slot, only one can play at the same time
+        device = EChromaSDKDevice2DEnum.DE_Keyboard;
+      }
       switch (animation.DeviceType) {
         case EChromaSDKDeviceTypeEnum.DE_1D:
-          ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = animation;
+          ChromaAnimation.PlayingAnimations1D[device][animationName] = animation;
           break;
         case EChromaSDKDeviceTypeEnum.DE_2D:
-          ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = animation;
+          ChromaAnimation.PlayingAnimations2D[device][animationName] = animation;
           break;
       }
       animation.play(loop);
@@ -903,12 +924,17 @@ var ChromaAnimation = {
     var animation = this.LoadedAnimations[animationName];
     if (animation != undefined) {
       this.LoadedAnimations[animationName].stop();
+      let device = animation.Device;
+      if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+        // Keyboard and KeyboardExtended share the same slot, only one can play at the same time
+        device = EChromaSDKDevice2DEnum.DE_Keyboard;
+      }
       switch (animation.DeviceType) {
         case EChromaSDKDeviceTypeEnum.DE_1D:
-          ChromaAnimation.PlayingAnimations1D[animation.Device][animationName] = undefined;
+          ChromaAnimation.PlayingAnimations1D[device][animationName] = undefined;
           break;
         case EChromaSDKDeviceTypeEnum.DE_2D:
-          ChromaAnimation.PlayingAnimations2D[animation.Device][animationName] = undefined;
+          ChromaAnimation.PlayingAnimations2D[device][animationName] = undefined;
           break;
       }
     }
@@ -3909,7 +3935,7 @@ var ChromaAnimation = {
         for (var i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = 0;
         }
-        frame.Duration = 0.1;
+        frame.Duration = 0.033;
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation1D();
@@ -3932,7 +3958,7 @@ var ChromaAnimation = {
             frame.Colors[i][j] = 0;
           }
         }
-        frame.Duration = 0.1;
+        frame.Duration = 0.033;
         frames.push(frame);
       }
       var newAnimation = new ChromaAnimation2D();
@@ -5652,8 +5678,8 @@ ChromaAnimation1D.prototype = {
 
       // schedule next frame
       var refThis = this;
-      if (duration < 0.1) {
-        duration = 0.1;
+      if (duration < 0.033) {
+        duration = 0.033;
       }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
@@ -5849,12 +5875,15 @@ ChromaAnimation2D.prototype = {
     }
   },
   setChromaCustomFlag: function (flag) {
-    if (this.Device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-      if (flag == true) {
-        this.UseChromaCustom = flag;
-      } else {
-        this.UseChromaCustom = false;
-      }
+    switch (this.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        if (flag == true) {
+          this.UseChromaCustom = flag;
+        } else {
+          this.UseChromaCustom = false;
+        }
+        break;
     }
   },
   playFrame: function () {
@@ -5865,16 +5894,27 @@ ChromaAnimation2D.prototype = {
       var duration = this.getDuration();
       //console.log('Play Frame: '+this.CurrentIndex+' of: '+this.Frames.length+' Duration: '+duration);
 
-      if (this.Device == EChromaSDKDevice2DEnum.DE_Keyboard) {
-        if (this.UseChromaCustom) {
-          chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors);
-        } else {
-          chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", this.getFrame().Colors);
-        }
-      } else if (this.Device == EChromaSDKDevice2DEnum.DE_Keypad) {
-        chromaSDK.createKeypadEffect("CHROMA_CUSTOM", this.getFrame().Colors);
-      } else if (this.Device == EChromaSDKDevice2DEnum.DE_Mouse) {
-        chromaSDK.createMouseEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
+      switch (this.Device) {
+        case EChromaSDKDevice2DEnum.DE_Keyboard:
+          if (this.UseChromaCustom) {
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors);
+          } else {
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", this.getFrame().Colors);
+          }
+          break;
+        case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+          if (this.UseChromaCustom) {
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors);
+          } else {
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", this.getFrame().Colors);
+          }
+          break;
+        case EChromaSDKDevice2DEnum.DE_Keypad:
+          chromaSDK.createKeypadEffect("CHROMA_CUSTOM", this.getFrame().Colors);
+          break;
+        case EChromaSDKDevice2DEnum.DE_Mouse:
+          chromaSDK.createMouseEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
+          break;
       }
 
       if (this.FrameCallback != undefined) {
@@ -5883,8 +5923,8 @@ ChromaAnimation2D.prototype = {
 
       // schedule next frame
       var refThis = this;
-      if (duration < 0.1) {
-        duration = 0.1;
+      if (duration < 0.033) {
+        duration = 0.033;
       }
       this.FrameTime = Date.now() + Math.floor(duration * 1000);
       ++this.CurrentIndex;
@@ -5901,10 +5941,15 @@ ChromaAnimation2D.prototype = {
     this.IsPlaying = false;
     this.CurrentIndex = 0;
     this.Loop = false;
-    if (ChromaAnimation.LoadedAnimations2D[this.Device] == this) {
-      ChromaAnimation.LoadedAnimations2D[this.Device] = undefined;
+    let device = this.Device;
+    if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+      // Keyboard and KeyboardExtended share the same slot, only one can play at the same time
+      device = EChromaSDKDevice2DEnum.DE_Keyboard;
     }
-    ChromaAnimation.PlayingAnimations2D[this.Device][this.Name] = undefined;
+    if (ChromaAnimation.LoadedAnimations2D[device] == this) {
+      ChromaAnimation.LoadedAnimations2D[device] = undefined;
+    }
+    ChromaAnimation.PlayingAnimations2D[device][this.Name] = undefined;
   },
   isPlaying: function () {
     return this.IsPlaying;
@@ -5912,9 +5957,14 @@ ChromaAnimation2D.prototype = {
   play: function (loop) {
     this.stop();
     this.IsPlaying = true;
-    ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
-    ChromaAnimation.LoadedAnimations2D[this.Device] = this;
-    ChromaAnimation.PlayingAnimations2D[this.Device][this.Name] = this;
+    let device = this.Device;
+    if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+      // Keyboard and KeyboardExtended share the same slot, only one can play at the same time
+      device = EChromaSDKDevice2DEnum.DE_Keyboard;
+    }
+    ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, device));
+    ChromaAnimation.LoadedAnimations2D[device] = this;
+    ChromaAnimation.PlayingAnimations2D[device][this.Name] = this;
     this.CurrentIndex = 0;
     this.Loop = loop;
     //console.log('play:', this.Name);
