@@ -101,15 +101,23 @@ ChromaSDK.prototype = {
 
       let jsonObj;
 
-      if (effect == "CHROMA_NONE") {
-        jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "token": token });
-      } else if (effect == "CHROMA_CUSTOM") {
-        jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": data, "token": token });
-      } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
-        jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": color, "token": token });
-      } else if (effect == "CHROMA_CUSTOM_KEY") {
-        jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+      switch (effect) {
+        case "CHROMA_NONE":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "token": token });
+          break;
+        case "CHROMA_CUSTOM":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": data, "token": token });
+          break;
+        case "CHROMA_STATIC":
+          let color = { "color": data };
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": color, "token": token });
+          break;
+        case "CHROMA_CUSTOM_KEY":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          break;
+        case "CHROMA_CUSTOM2":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          break;
       }
 
       //console.log('sending data: ' + jsonObj);
@@ -5350,18 +5358,26 @@ var ChromaAnimation = {
       return;
     }
     this.stopByAnimationType(device);
-    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-      chromaSDK.createChromaLinkEffect("CHROMA_STATIC", color);
-    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-      chromaSDK.createHeadsetEffect("CHROMA_STATIC", color);
-    } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-      chromaSDK.createKeyboardEffect("CHROMA_STATIC", color);
-    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-      chromaSDK.createKeypadEffect("CHROMA_STATIC", color);
-    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-      chromaSDK.createMouseEffect("CHROMA_STATIC", color);
-    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-      chromaSDK.createMousematEffect("CHROMA_STATIC", color);
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        chromaSDK.createChromaLinkEffect("CHROMA_STATIC", color);
+        break;
+      case EChromaSDKDeviceEnum.DE_Headset:
+        chromaSDK.createHeadsetEffect("CHROMA_STATIC", color);
+        break;
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
+        chromaSDK.createKeyboardEffect("CHROMA_STATIC", color);
+        break;
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        chromaSDK.createKeypadEffect("CHROMA_STATIC", color);
+        break;
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        chromaSDK.createMouseEffect("CHROMA_STATIC", color);
+        break;
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        chromaSDK.createMousematEffect("CHROMA_STATIC", color);
+        break;
     }
   },
   staticColorAll: function (color) {
@@ -5904,9 +5920,9 @@ ChromaAnimation2D.prototype = {
           break;
         case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
           if (this.UseChromaCustom) {
-            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
           } else {
-            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
           }
           break;
         case EChromaSDKDevice2DEnum.DE_Keypad:
