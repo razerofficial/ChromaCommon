@@ -131,6 +131,53 @@ ChromaSDK.prototype = {
       */
     }
   },
+  createKeyboardEffect2: function (effect, data) {
+    if (this.reconnectIfNeeded()) {
+    } else if (this.socket != undefined && this.socket.readyState == WebSocket.OPEN) {
+
+      var token = Date.now();
+
+      let jsonObj;
+
+      switch (effect) {
+        case "CHROMA_NONE":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "token": token });
+          break;
+        case "CHROMA_CUSTOM":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": data, "token": token });
+          break;
+        case "CHROMA_STATIC":
+          let color = { "color": data };
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": color, "token": token });
+          break;
+        case "CHROMA_CUSTOM_KEY":
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          break;
+        case "CHROMA_CUSTOM2":
+          const maxRow = 6;
+          const maxColumn = 22;
+          let keys = new Array(maxRow);
+          for (let i = 0; i < maxRow; ++i) {
+            keys[i] = new Array(maxColumn);
+            for (let j = 0; j < maxColumn; ++j) {
+              keys[i][j] = data[i][j];
+            }
+          }
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': keys }, "token": token });
+          break;
+      }
+
+      //console.log('sending data: ' + jsonObj);
+
+      this.socket.send(jsonObj);
+
+      /*
+      this.socket.onmessage = function(event) {
+          console.log(event.data);
+      }
+      */
+    }
+  },
   createMousematEffect: function (effect, data) {
     if (this.reconnectIfNeeded()) {
     } else if (this.socket != undefined && this.socket.readyState == WebSocket.OPEN) {
@@ -5920,9 +5967,9 @@ ChromaAnimation2D.prototype = {
           break;
         case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
           if (this.UseChromaCustom) {
-            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors);
           } else {
-            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM2", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors);
           }
           break;
         case EChromaSDKDevice2DEnum.DE_Keypad:
