@@ -1578,6 +1578,87 @@ var ChromaAnimation = {
     var newColor = red | (green << 8) | (blue << 16);
     return newColor;
   },
+  addAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType ||
+      sourceAnimation.Device != targetAnimation.Device) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = sourceColors[i];
+          var sourceRed = color & 0xFF;
+          var sourceGreen = (color & 0xFF00) >> 8;
+          var sourceBlue = (color & 0xFF0000) >> 16;
+
+          var oldColor = targetColors[i];
+          var oldRed = oldColor & 0xFF;
+          var oldGreen = (oldColor & 0xFF00) >> 8;
+          var oldBlue = (oldColor & 0xFF0000) >> 16;
+
+          var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+          var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+          var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+          var newColor = red | (green << 8) | (blue << 16);
+
+          targetColors[i] = newColor;
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = sourceRow[j];
+            var sourceRed = color & 0xFF;
+            var sourceGreen = (color & 0xFF00) >> 8;
+            var sourceBlue = (color & 0xFF0000) >> 16;
+
+            var oldColor = targetRow[j];
+            var oldRed = oldColor & 0xFF;
+            var oldGreen = (oldColor & 0xFF00) >> 8;
+            var oldBlue = (oldColor & 0xFF0000) >> 16;
+
+            var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+            var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+            var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+            var newColor = red | (green << 8) | (blue << 16);
+
+            targetRow[j] = newColor;
+          }
+        }
+      }
+    }
+  },
   addNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
@@ -1658,6 +1739,88 @@ var ChromaAnimation = {
 
               targetRow[j] = newColor;
             }
+          }
+        }
+      }
+    }
+  },
+  subtractAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType ||
+      sourceAnimation.Device != targetAnimation.Device) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = sourceColors[i];
+          var sourceRed = color & 0xFF;
+          var sourceGreen = (color & 0xFF00) >> 8;
+          var sourceBlue = (color & 0xFF0000) >> 16;
+
+          var oldColor = targetColors[i];
+          var oldRed = oldColor & 0xFF;
+          var oldGreen = (oldColor & 0xFF00) >> 8;
+          var oldBlue = (oldColor & 0xFF0000) >> 16;
+
+          var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+          var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+          var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+          var newColor = red | (green << 8) | (blue << 16);
+
+          targetColors[i] = newColor;
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = sourceRow[j];
+            var sourceRed = color & 0xFF;
+            var sourceGreen = (color & 0xFF00) >> 8;
+            var sourceBlue = (color & 0xFF0000) >> 16;
+
+            var oldColor = targetRow[j];
+            var oldRed = oldColor & 0xFF;
+            var oldGreen = (oldColor & 0xFF00) >> 8;
+            var oldBlue = (oldColor & 0xFF0000) >> 16;
+
+            var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+            var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+            var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+            var newColor = red | (green << 8) | (blue << 16);
+
+            targetRow[j] = newColor;
           }
         }
       }
@@ -2087,6 +2250,73 @@ var ChromaAnimation = {
               let t = (oldRed + oldGreen + oldBlue) / 3.0 / 255.0;
               targetRow[j] = ChromaAnimation.lerpColor(0, sourceColor, t);
             }
+          }
+        }
+      }
+    }
+  },
+  copyTargetMultiplyAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.Device != targetAnimation.Device) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var sourceColor = sourceColors[i];
+          let oldColor = targetColors[i];
+          let oldRed = oldColor & 0xFF;
+          let oldGreen = (oldColor & 0xFF00) >> 8;
+          let oldBlue = (oldColor & 0xFF0000) >> 16;
+          let t = (oldRed + oldGreen + oldBlue) / 3.0 / 255.0;
+          targetColors[i] = ChromaAnimation.lerpColor(0, sourceColor, t);
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId % targetFrames.length];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            let sourceColor = sourceRow[j];
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
+            let t = (oldRed + oldGreen + oldBlue) / 3.0 / 255.0;
+            targetRow[j] = ChromaAnimation.lerpColor(0, sourceColor, t);
           }
         }
       }
