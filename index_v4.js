@@ -291,6 +291,8 @@ setupMapKeyboard = function (canvasName, svgObject) {
   map[RZKEY.RZKEY_OEM_9] = 'keyComma';               /*!< , (comma) (VK_OEM_COMMA) */
   map[RZKEY.RZKEY_OEM_10] = 'keyDot';              /*!< . (period) (VK_OEM_PERIOD) */
   map[RZKEY.RZKEY_OEM_11] = 'keyForwardSlash';              /*!< / (forward slash) (VK_OEM_2) */
+  map[18] = 'led-2'; /* media keys */
+  map[21] = 'led-1'; /* media keys */
 
   var entries = Object.entries(map);
   for (let [key, value] of entries) {
@@ -755,8 +757,6 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
   //console.log('frameId', frameId);
   if (state.FrameId >= 0 && state.FrameId < frameCount) {
     var frame = animation.Frames[state.FrameId];
@@ -764,19 +764,21 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
     if (maps[canvasName] != undefined) {
       var mapKeyboard = maps[canvasName].mapKeyboard;
       if (mapKeyboard != undefined) {
-        for (var key in RZKEY) {
-          //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
-          var val = RZKEY[key];
-          if (val == RZKEY.RZKEY_INVALID) {
+        let keys = Object.keys(mapKeyboard);
+        for (let keyIndex = 0; keyIndex < keys.length; ++keyIndex) {
+          let key = parseInt(keys[keyIndex]);
+          if (key == RZKEY.RZKEY_INVALID) {
             continue;
           }
-          var i = getHighByte(val);
-          var row = colors[i];
-          var j = getLowByte(val);
-          var color = row[j];
-          var keyDesc = eval('RZKEY.' + key);
-          if (mapKeyboard[keyDesc] != undefined) {
-            mapKeyboard[keyDesc].setAttribute("style", "fill: " + getHexColor(color));
+          let val = mapKeyboard[key];
+          if (val) {
+            let i = getHighByte(key);
+            let row = colors[i];
+            let j = getLowByte(key);
+            let color = row[j];
+            if (mapKeyboard[key] != undefined) {
+              mapKeyboard[key].setAttribute("style", "fill: " + getHexColor(color));
+            }
           }
         }
       }
