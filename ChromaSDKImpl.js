@@ -55,7 +55,8 @@ ChromaSDK.prototype = {
 
       var request = new XMLHttpRequest();
 
-      request.open("POST", "https://chromasdk.io:54236/razer/chromasdk", true);
+      let url = "https://chromasdk.io:54236/razer/chromasdk";
+      request.open("POST", url, true);
 
       request.setRequestHeader("content-type", "application/json");
 
@@ -1006,6 +1007,23 @@ var ChromaAnimation = {
       if (xhr.readyState === 4) {
         if (xhr.status != 200) {
           console.error('Animation is missing!', animationName);
+          let animation = null;
+          if (animationName.indexOf("_KeyboardExtended") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_KeyboardExtended);
+          } else if (animationName.indexOf("_Keyboard") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Keyboard);
+          } else if (animationName.indexOf("_Keypad") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Keypad);
+          } else if (animationName.indexOf("_Mouse") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_Mouse);
+          } else if (animationName.indexOf("_ChromaLink") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_ChromaLink);
+          } else if (animationName.indexOf("_Headset") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_Headset);
+          } else if (animationName.indexOf("_Mousepad") > 0) {
+            animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_1D, EChromaSDKDevice1DEnum.DE_Mousepad);
+          }
+          callback(animation);
           return;
         }
         //console.log('Animation Name:', animationName);
