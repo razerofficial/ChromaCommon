@@ -686,10 +686,16 @@ var stateDisplay = {
   mousepad: []
 };
 function checkVisible(elem) {
+  let zoom = 1;
+  if (document.body.style.zoom) {
+    if (document.body.style.zoom.length > 1) {
+      zoom = Number(document.body.style.zoom.substring(0, document.body.style.zoom.length - 1)) / 100;
+    }
+  }
   try {
     let docViewTop = $(window).scrollTop();
     //let windowHeight = $(window).height();
-    let windowHeight = window.innerHeight;
+    let windowHeight = window.innerHeight / zoom;
 
     let docViewBottom = docViewTop + windowHeight;
 
