@@ -4756,6 +4756,64 @@ var ChromaAnimation = {
       }
     }
   },
+  subtractColorsWithColorAllFrames: function (animationName, color) {
+    var animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    var redOffset = (color & 0xFF);
+    var greenOffset = (color & 0xFF00) >> 8;
+    var blueOffset = (color & 0xFF0000) >> 16;
+    var frames = animation.Frames;
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var color = colors[i];
+          if (color != 0) {
+            //console.log('color', color);
+            var red = (color & 0xFF);
+            var green = (color & 0xFF00) >> 8;
+            var blue = (color & 0xFF0000) >> 16;
+            red = Math.min(255, Math.max(0, Number(red) - Number(redOffset))) & 0xFF;
+            green = Math.min(255, Math.max(0, Number(green) - Number(greenOffset))) & 0xFF;
+            blue = Math.min(255, Math.max(0, Number(blue) - Number(blueOffset))) & 0xFF;
+            color = red | (green << 8) | (blue << 16);
+            colors[i] = color;
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < frames.length; ++frameId) {
+        var frame = frames[frameId];
+        //console.log(frame);
+        var colors = frame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var row = colors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var color = row[j];
+            if (color != 0) {
+              //console.log('color', color);
+              var red = (color & 0xFF);
+              var green = (color & 0xFF00) >> 8;
+              var blue = (color & 0xFF0000) >> 16;
+              red = Math.min(255, Math.max(0, Number(red) - Number(redOffset))) & 0xFF;
+              green = Math.min(255, Math.max(0, Number(green) - Number(greenOffset))) & 0xFF;
+              blue = Math.min(255, Math.max(0, Number(blue) - Number(blueOffset))) & 0xFF;
+              color = red | (green << 8) | (blue << 16);
+              row[j] = color;
+            }
+          }
+        }
+      }
+    }
+  },
   offsetColorsAllFrames: function (animationName, redOffset, greenOffset, blueOffset) {
     var animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
