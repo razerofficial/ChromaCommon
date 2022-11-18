@@ -729,8 +729,16 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
     return;
   }
 
-  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-    animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+  if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
+    return;
+  }
+
+  let device = animation.Device;
+  if (device == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+    device = EChromaSDKDevice2DEnum.DE_Keyboard;
+  }
+
+  if (device != EChromaSDKDevice2DEnum.DE_Keyboard) {
     return;
   }
 
@@ -744,11 +752,11 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
   }
 
   // play idle animation for non-looping animations
-  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard]);
+  var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[device]);
   var usingIdle = false;
   if (state.Loop == false &&
     idleAnimation != undefined &&
-    ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keyboard] &&
+    ChromaAnimation.UseIdleAnimation2D[device] &&
     state.Delay != undefined) {
     if (state.Delay < Date.now()) {
       state.Delay = undefined;
@@ -1415,6 +1423,7 @@ var displayAndPlayAnimation = async function (baseLayer, canvasName, loop) {
   } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
     switch (animation.Device) {
       case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
         displayAndPlayAnimationKeyboard(baseLayer, canvasName, loop);
         break;
       case EChromaSDKDevice2DEnum.DE_Keypad:
