@@ -84,7 +84,7 @@ findLeds = function (children, collection, className) {
     if (child == undefined) {
       continue;
     }
-    //console.log('class', child.getAttribute("class"));
+    //console.log('class', child.getAttribute("class"), child);
     var childClassName = child.getAttribute("class");
     if (childClassName != undefined) {
       var classes = childClassName.split(" ");
@@ -106,21 +106,6 @@ function getHexColor(bgrColor) {
   return 'rgb(' + red + ',' + green + ',' + blue + ')';
 }
 
-function applyTint(bgrColor) {
-  if (useTint) {
-    var red = (bgrColor & 0xFF);
-    var green = (bgrColor & 0xFF00) >> 8;
-    var blue = (bgrColor & 0xFF0000) >> 16;
-    var v = Math.max(Math.max(red, green), blue);
-    red = 0xFF & Math.floor(v * tintRed / 255);
-    green = 0xFF & Math.floor(v * tintGreen / 255);
-    blue = 0xFF & Math.floor(v * tintBlue / 255);
-    return getRGB(red, green, blue);
-  } else {
-    return bgrColor;
-  }
-}
-
 function getMouseColor(colors, led) {
   var i = getHighByte(led);
   var row = colors[i];
@@ -130,7 +115,7 @@ function getMouseColor(colors, led) {
 
 setupMapChromaLink = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasChromaLink: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasChromaLink: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -154,7 +139,7 @@ setupMapChromaLink = function (canvasName, svgObject) {
 
 setupMapHeadset = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasHeadset: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasHeadset: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -175,7 +160,7 @@ setupMapHeadset = function (canvasName, svgObject) {
 
 setupMapKeyboard = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeyboard: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeyboard: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -186,130 +171,216 @@ setupMapKeyboard = function (canvasName, svgObject) {
   }
   maps[canvasName].mapKeyboard = undefined;
 
-  var map = {};
-  map[RZKEY.RZKEY_ESC] = 'keyEsc';
-  map[RZKEY.RZKEY_F1] = 'keyF1';
-  map[RZKEY.RZKEY_F2] = 'keyF2';
-  map[RZKEY.RZKEY_F3] = 'keyF3';
-  map[RZKEY.RZKEY_F4] = 'keyF4';
-  map[RZKEY.RZKEY_F5] = 'keyF5';
-  map[RZKEY.RZKEY_F6] = 'keyF6';
-  map[RZKEY.RZKEY_F7] = 'keyF7';
-  map[RZKEY.RZKEY_F8] = 'keyF8';
-  map[RZKEY.RZKEY_F9] = 'keyF9';
-  map[RZKEY.RZKEY_F10] = 'keyF10';
-  map[RZKEY.RZKEY_F11] = 'keyF11';
-  map[RZKEY.RZKEY_F12] = 'keyF12';
-  map[RZKEY.RZKEY_1] = 'key1';
-  map[RZKEY.RZKEY_2] = 'key2';
-  map[RZKEY.RZKEY_3] = 'key3';
-  map[RZKEY.RZKEY_4] = 'key4';
-  map[RZKEY.RZKEY_5] = 'key5';
-  map[RZKEY.RZKEY_6] = 'key6';
-  map[RZKEY.RZKEY_7] = 'key7';
-  map[RZKEY.RZKEY_8] = 'key8';
-  map[RZKEY.RZKEY_9] = 'key9';
-  map[RZKEY.RZKEY_0] = 'key0';
-  map[RZKEY.RZKEY_A] = 'keyA';
-  map[RZKEY.RZKEY_B] = 'keyB';
-  map[RZKEY.RZKEY_C] = 'keyC';
-  map[RZKEY.RZKEY_D] = 'keyD';
-  map[RZKEY.RZKEY_E] = 'keyE';
-  map[RZKEY.RZKEY_F] = 'keyF';
-  map[RZKEY.RZKEY_G] = 'keyG';
-  map[RZKEY.RZKEY_H] = 'keyH';
-  map[RZKEY.RZKEY_I] = 'keyI';
-  map[RZKEY.RZKEY_J] = 'keyJ';
-  map[RZKEY.RZKEY_K] = 'keyK';
-  map[RZKEY.RZKEY_L] = 'keyL';
-  map[RZKEY.RZKEY_M] = 'keyM';
-  map[RZKEY.RZKEY_N] = 'keyN';
-  map[RZKEY.RZKEY_O] = 'keyO';
-  map[RZKEY.RZKEY_P] = 'keyP';
-  map[RZKEY.RZKEY_Q] = 'keyQ';
-  map[RZKEY.RZKEY_R] = 'keyR';
-  map[RZKEY.RZKEY_S] = 'keyS';
-  map[RZKEY.RZKEY_T] = 'keyT';
-  map[RZKEY.RZKEY_U] = 'keyU';
-  map[RZKEY.RZKEY_V] = 'keyV';
-  map[RZKEY.RZKEY_W] = 'keyW';
-  map[RZKEY.RZKEY_X] = 'keyX';
-  map[RZKEY.RZKEY_Y] = 'keyY';
-  map[RZKEY.RZKEY_Z] = 'keyZ';
-  map[RZKEY.RZKEY_NUMLOCK] = 'keyNumPad';
-  map[RZKEY.RZKEY_NUMPAD0] = 'keyNumPad0';
-  map[RZKEY.RZKEY_NUMPAD1] = 'keyNumPad1';
-  map[RZKEY.RZKEY_NUMPAD2] = 'keyNumPad2';
-  map[RZKEY.RZKEY_NUMPAD3] = 'keyNumPad3';
-  map[RZKEY.RZKEY_NUMPAD4] = 'keyNumPad4';
-  map[RZKEY.RZKEY_NUMPAD5] = 'keyNumPad5';
-  map[RZKEY.RZKEY_NUMPAD6] = 'keyNumPad6';
-  map[RZKEY.RZKEY_NUMPAD7] = 'keyNumPad7';
-  map[RZKEY.RZKEY_NUMPAD8] = 'keyNumPad8';
-  map[RZKEY.RZKEY_NUMPAD9] = 'keyNumPad9';
-  map[RZKEY.RZKEY_NUMPAD_DIVIDE] = 'keyNumPadForwardSlash';
-  map[RZKEY.RZKEY_NUMPAD_MULTIPLY] = 'keyNumPadAsterisk';
-  map[RZKEY.RZKEY_NUMPAD_SUBTRACT] = 'keyNumPadMinus';
-  map[RZKEY.RZKEY_NUMPAD_ADD] = 'keyNumPadPlus';
-  map[RZKEY.RZKEY_NUMPAD_ENTER] = 'keyNumPadEnter';
-  map[RZKEY.RZKEY_NUMPAD_DECIMAL] = 'keyNumPadDot';
-  map[RZKEY.RZKEY_PRINTSCREEN] = 'keyPrintScreen';
-  map[RZKEY.RZKEY_SCROLL] = 'keyScrollLock';
-  map[RZKEY.RZKEY_PAUSE] = 'keyPauseBreak';
-  map[RZKEY.RZKEY_INSERT] = 'keyInsert';
-  map[RZKEY.RZKEY_HOME] = 'keyHome';
-  map[RZKEY.RZKEY_PAGEUP] = 'keyPageUp';
-  map[RZKEY.RZKEY_DELETE] = 'keyDelete';
-  map[RZKEY.RZKEY_END] = 'keyEnd';
-  map[RZKEY.RZKEY_PAGEDOWN] = 'keyPageDown';
-  map[RZKEY.RZKEY_UP] = 'keyUpArrow';
-  map[RZKEY.RZKEY_LEFT] = 'keyLeftArrow';
-  map[RZKEY.RZKEY_DOWN] = 'keyDownArrow';
-  map[RZKEY.RZKEY_RIGHT] = 'keyRightArrow';
-  map[RZKEY.RZKEY_TAB] = 'keyTab';
-  map[RZKEY.RZKEY_CAPSLOCK] = 'keyCaps';
-  map[RZKEY.RZKEY_BACKSPACE] = 'keyBackspace';
-  map[RZKEY.RZKEY_ENTER] = 'keyEnter';
-  map[RZKEY.RZKEY_LCTRL] = 'keyLeftCtrl';
-  map[RZKEY.RZKEY_LWIN] = 'keyWindow';
-  map[RZKEY.RZKEY_LALT] = 'keyLeftAlt';
-  map[RZKEY.RZKEY_SPACE] = 'keySpace';
-  map[RZKEY.RZKEY_RALT] = 'keyRightAlt';
-  map[RZKEY.RZKEY_FN] = 'keyFunction_1_';
-  map[RZKEY.RZKEY_RMENU] = 'keyMenu';
-  map[RZKEY.RZKEY_RCTRL] = 'keyRightCtrl';
-  map[RZKEY.RZKEY_LSHIFT] = 'keyLeftShift';
-  map[RZKEY.RZKEY_RSHIFT] = 'keyRightShift';
-  map[RZKEY.RZKEY_OEM_1] = 'keyTilde';               /*!< ~ (tilde/半角/全角) (VK_OEM_3) */
-  map[RZKEY.RZKEY_OEM_2] = 'keyDash';               /*!< -- (minus) (VK_OEM_MINUS) */
-  map[RZKEY.RZKEY_OEM_3] = 'keyEqual';               /*!< = (equal) (VK_OEM_PLUS) */
-  map[RZKEY.RZKEY_OEM_4] = 'keyStartSquareBracket';               /*!< [ (left sqaure bracket) (VK_OEM_4) */
-  map[RZKEY.RZKEY_OEM_5] = 'keyEndSquareBracket';               /*!< ] (right square bracket) (VK_OEM_6) */
-  map[RZKEY.RZKEY_OEM_6] = 'keyBackslash';               /*!< \ (backslash) (VK_OEM_5) */
-  map[RZKEY.RZKEY_OEM_7] = 'keySemiColon';               /*!< ; (semi-colon) (VK_OEM_1) */
-  map[RZKEY.RZKEY_OEM_8] = 'keyApostrophe';               /*!< ' (apostrophe) (VK_OEM_7) */
-  map[RZKEY.RZKEY_OEM_9] = 'keyComma';               /*!< , (comma) (VK_OEM_COMMA) */
-  map[RZKEY.RZKEY_OEM_10] = 'keyDot';              /*!< . (period) (VK_OEM_PERIOD) */
-  map[RZKEY.RZKEY_OEM_11] = 'keyForwardSlash';              /*!< / (forward slash) (VK_OEM_2) */
-  map[18] = 'led-2'; /* media keys */
-  map[21] = 'led-1'; /* media keys */
 
-  var entries = Object.entries(map);
+  let fnSetupMap = function () {
+    let map = {};
+    map[RZKEY.RZKEY_MACRO1] = ['keyM1'];
+    map[RZKEY.RZKEY_MACRO2] = ['keyM2'];
+    map[RZKEY.RZKEY_MACRO3] = ['keyM3'];
+    map[RZKEY.RZKEY_MACRO4] = ['keyM4'];
+    map[RZKEY.RZKEY_MACRO5] = ['keyM5'];
+    map[RZKEY.RZKEY_JPN_1] = ['keyExtra1'];
+    map[RZKEY.RZKEY_JPN_2] = ['keyExtra2'];
+    map[RZKEY.RZKEY_JPN_3] = ['keyExtra3'];
+    map[RZKEY.RZKEY_JPN_4] = ['keyExtra4'];
+    map[RZKEY.RZKEY_JPN_5] = ['keyExtra5'];
+    map[RZKEY.RZKEY_ESC] = ['keyEsc'];
+    map[RZKEY.RZKEY_F1] = ['keyF1'];
+    map[RZKEY.RZKEY_F2] = ['keyF2'];
+    map[RZKEY.RZKEY_F3] = ['keyF3'];
+    map[RZKEY.RZKEY_F4] = ['keyF4'];
+    map[RZKEY.RZKEY_F5] = ['keyF5'];
+    map[RZKEY.RZKEY_F6] = ['keyF6'];
+    map[RZKEY.RZKEY_F7] = ['keyF7'];
+    map[RZKEY.RZKEY_F8] = ['keyF8'];
+    map[RZKEY.RZKEY_F9] = ['keyF9'];
+    map[RZKEY.RZKEY_F10] = ['keyF10'];
+    map[RZKEY.RZKEY_F11] = ['keyF11'];
+    map[RZKEY.RZKEY_F12] = ['keyF12'];
+    map[RZKEY.RZKEY_1] = ['key1'];
+    map[RZKEY.RZKEY_2] = ['key2'];
+    map[RZKEY.RZKEY_3] = ['key3'];
+    map[RZKEY.RZKEY_4] = ['key4'];
+    map[RZKEY.RZKEY_5] = ['key5'];
+    map[RZKEY.RZKEY_6] = ['key6'];
+    map[RZKEY.RZKEY_7] = ['key7'];
+    map[RZKEY.RZKEY_8] = ['key8'];
+    map[RZKEY.RZKEY_9] = ['key9'];
+    map[RZKEY.RZKEY_0] = ['key0'];
+    map[RZKEY.RZKEY_A] = ['keyA'];
+    map[RZKEY.RZKEY_B] = ['keyB'];
+    map[RZKEY.RZKEY_C] = ['keyC'];
+    map[RZKEY.RZKEY_D] = ['keyD'];
+    map[RZKEY.RZKEY_E] = ['keyE'];
+    map[RZKEY.RZKEY_F] = ['keyF'];
+    map[RZKEY.RZKEY_G] = ['keyG'];
+    map[RZKEY.RZKEY_H] = ['keyH'];
+    map[RZKEY.RZKEY_I] = ['keyI'];
+    map[RZKEY.RZKEY_J] = ['keyJ'];
+    map[RZKEY.RZKEY_K] = ['keyK'];
+    map[RZKEY.RZKEY_L] = ['keyL'];
+    map[RZKEY.RZKEY_M] = ['keyM'];
+    map[RZKEY.RZKEY_N] = ['keyN'];
+    map[RZKEY.RZKEY_O] = ['keyO'];
+    map[RZKEY.RZKEY_P] = ['keyP'];
+    map[RZKEY.RZKEY_Q] = ['keyQ'];
+    map[RZKEY.RZKEY_R] = ['keyR'];
+    map[RZKEY.RZKEY_S] = ['keyS'];
+    map[RZKEY.RZKEY_T] = ['keyT'];
+    map[RZKEY.RZKEY_U] = ['keyU'];
+    map[RZKEY.RZKEY_V] = ['keyV'];
+    map[RZKEY.RZKEY_W] = ['keyW'];
+    map[RZKEY.RZKEY_X] = ['keyX'];
+    map[RZKEY.RZKEY_Y] = ['keyY'];
+    map[RZKEY.RZKEY_Z] = ['keyZ'];
+    map[RZKEY.RZKEY_NUMLOCK] = ['keyNumPad'];
+    map[RZKEY.RZKEY_NUMPAD0] = ['keyNumPad0'];
+    map[RZKEY.RZKEY_NUMPAD1] = ['keyNumPad1'];
+    map[RZKEY.RZKEY_NUMPAD2] = ['keyNumPad2'];
+    map[RZKEY.RZKEY_NUMPAD3] = ['keyNumPad3'];
+    map[RZKEY.RZKEY_NUMPAD4] = ['keyNumPad4'];
+    map[RZKEY.RZKEY_NUMPAD5] = ['keyNumPad5'];
+    map[RZKEY.RZKEY_NUMPAD6] = ['keyNumPad6'];
+    map[RZKEY.RZKEY_NUMPAD7] = ['keyNumPad7'];
+    map[RZKEY.RZKEY_NUMPAD8] = ['keyNumPad8'];
+    map[RZKEY.RZKEY_NUMPAD9] = ['keyNumPad9'];
+    map[RZKEY.RZKEY_NUMPAD_DIVIDE] = ['keyNumPadForwardSlash'];
+    map[RZKEY.RZKEY_NUMPAD_MULTIPLY] = ['keyNumPadAsterisk'];
+    map[RZKEY.RZKEY_NUMPAD_SUBTRACT] = ['keyNumPadMinus'];
+    map[RZKEY.RZKEY_NUMPAD_ADD] = ['keyNumPadPlus'];
+    map[RZKEY.RZKEY_NUMPAD_ENTER] = ['keyNumPadEnter'];
+    map[RZKEY.RZKEY_NUMPAD_DECIMAL] = ['keyNumPadDot'];
+    map[RZKEY.RZKEY_PRINTSCREEN] = ['keyPrintScreen'];
+    map[RZKEY.RZKEY_SCROLL] = ['keyScrollLock'];
+    map[RZKEY.RZKEY_PAUSE] = ['keyPauseBreak'];
+    map[RZKEY.RZKEY_INSERT] = ['keyInsert'];
+    map[RZKEY.RZKEY_HOME] = ['keyHome'];
+    map[RZKEY.RZKEY_PAGEUP] = ['keyPageUp'];
+    map[RZKEY.RZKEY_DELETE] = ['keyDelete'];
+    map[RZKEY.RZKEY_END] = ['keyEnd'];
+    map[RZKEY.RZKEY_PAGEDOWN] = ['keyPageDown'];
+    map[RZKEY.RZKEY_UP] = ['keyUpArrow'];
+    map[RZKEY.RZKEY_LEFT] = ['keyLeftArrow'];
+    map[RZKEY.RZKEY_DOWN] = ['keyDownArrow'];
+    map[RZKEY.RZKEY_RIGHT] = ['keyRightArrow'];
+    map[RZKEY.RZKEY_TAB] = ['keyTab'];
+    map[RZKEY.RZKEY_CAPSLOCK] = ['keyCaps'];
+    map[RZKEY.RZKEY_BACKSPACE] = ['keyBackspace'];
+    map[RZKEY.RZKEY_ENTER] = ['keyEnter'];
+    map[RZKEY.RZKEY_LCTRL] = ['keyLeftCtrl'];
+    map[RZKEY.RZKEY_LWIN] = ['keyWindow'];
+    map[RZKEY.RZKEY_LALT] = ['keyLeftAlt'];
+    map[RZKEY.RZKEY_SPACE] = ['keySpace'];
+    map[RZKEY.RZKEY_RALT] = ['keyRightAlt'];
+    map[RZKEY.RZKEY_FN] = ['keyFunction'];
+    map[RZKEY.RZKEY_RMENU] = ['keyMenu'];
+    map[RZKEY.RZKEY_RCTRL] = ['keyRightCtrl'];
+    map[RZKEY.RZKEY_LSHIFT] = ['keyLeftShift'];
+    map[RZKEY.RZKEY_RSHIFT] = ['keyRightShift'];
+    map[RZKEY.RZKEY_OEM_1] = ['keyTilde'];               /*!< ~ (tilde/半角/全角) (VK_OEM_3) */
+    map[RZKEY.RZKEY_OEM_2] = ['keyDash'];               /*!< -- (minus) (VK_OEM_MINUS) */
+    map[RZKEY.RZKEY_OEM_3] = ['keyEqual'];               /*!< = (equal) (VK_OEM_PLUS) */
+    map[RZKEY.RZKEY_OEM_4] = ['keyStartSquareBracket'];               /*!< [ (left sqaure bracket) (VK_OEM_4) */
+    map[RZKEY.RZKEY_OEM_5] = ['keyEndSquareBracket'];               /*!< ] (right square bracket) (VK_OEM_6) */
+    map[RZKEY.RZKEY_OEM_6] = ['keyBackslash'];               /*!< \ (backslash) (VK_OEM_5) */
+    map[RZKEY.RZKEY_OEM_7] = ['keySemiColon'];               /*!< ; (semi-colon) (VK_OEM_1) */
+    map[RZKEY.RZKEY_OEM_8] = ['keyApostrophe'];               /*!< ' (apostrophe) (VK_OEM_7) */
+    map[RZKEY.RZKEY_OEM_9] = ['keyComma'];               /*!< , (comma) (VK_OEM_COMMA) */
+    map[RZKEY.RZKEY_OEM_10] = ['keyDot'];              /*!< . (period) (VK_OEM_PERIOD) */
+    map[RZKEY.RZKEY_OEM_11] = ['keyForwardSlash'];              /*!< / (forward slash) (VK_OEM_2) */
+
+    map[0] = ['keyKnob'];
+    map[18] = ['keyPrev'];
+    map[19] = ['keyPlayPause'];
+    map[20] = ['keyNext'];
+    map[21] = ['keyMute'];
+
+    map[0 << 8].push('underglow1');
+    map[0 << 8].push('underglow2');
+    map[1 << 8].push('underglow3');
+    map[1 << 8].push('underglow4');
+    map[2 << 8].push('underglow5');
+    map[2 << 8].push('underglow6');
+    map[3 << 8].push('underglow7');
+    map[3 << 8].push('underglow8');
+    map[4 << 8].push('underglow9');
+    map[4 << 8].push('underglow10');
+    map[5 << 8].push('underglow11');
+    map[5 << 8].push('underglow12');
+    map[5 << 8].push('underglow13');
+    map[5 << 8].push('underglow14');
+    map[5 << 8].push('underglow15');
+    map[5 << 8].push('underglow16');
+    map[5 << 8].push('underglow17');
+    map[5 << 8].push('underglow18');
+    map[5 << 8].push('underglow19');
+    map[5 << 8].push('underglow20');
+    map[5 << 8].push('underglow21');
+    map[5 << 8].push('underglow22');
+    map[5 << 8].push('underglow23');
+    map[5 << 8].push('underglow24');
+    map[5 << 8].push('underglow25');
+    map[5 << 8].push('underglow26');
+    map[5 << 8].push('underglow27');
+
+    for (let r = 0; r < 6; ++r) {
+      if (!map[(r << 8) | 21]) {
+        map[(r << 8) | 21] = [];
+      }
+    }
+
+    map[(5 << 8) | 21].push('underglow28');
+    map[(5 << 8) | 21].push('underglow29');
+    map[(4 << 8) | 21].push('underglow30');
+    map[(4 << 8) | 21].push('underglow31');
+    map[(3 << 8) | 21].push('underglow32');
+    map[(3 << 8) | 21].push('underglow33');
+    map[(2 << 8) | 21].push('underglow34');
+    map[(2 << 8) | 21].push('underglow35');
+    map[(1 << 8) | 21].push('underglow36');
+    map[(1 << 8) | 21].push('underglow37');
+    map[(0 << 8) | 21].push('underglow38');
+
+    map[(5 << 8) | 21].push('underglow39');
+    map[(5 << 8) | 21].push('underglow40');
+    map[(5 << 8) | 21].push('underglow41');
+    map[(5 << 8) | 21].push('underglow42');
+    map[(5 << 8) | 21].push('underglow43');
+    map[(5 << 8) | 21].push('underglow44');
+    map[(5 << 8) | 21].push('underglow45');
+    map[(5 << 8) | 21].push('underglow46');
+    map[(5 << 8) | 21].push('underglow47');
+    map[(5 << 8) | 21].push('underglow48');
+    map[(5 << 8) | 21].push('underglow49');
+    map[(5 << 8) | 21].push('underglow50');
+
+    /*
+    for (let i = 1; i <= 50; ++i) {
+      map[100 + i] = 'underglow' + i;
+    }
+    */
+    return map;
+  };
+  let map = fnSetupMap();
+
+  let entries = Object.entries(map);
   for (let [key, value] of entries) {
-    //console.log(key, value);
-    var leds = [];
-    findLeds(svgObject.children, leds, value);
-    map[key] = leds[0];
-    //console.log(key, map[key]);
+    for (let i = 0; i < value.length; ++i) {
+      //console.log('findLeds', key, value[i]);
+      let leds = [];
+      findLeds(svgObject.children, leds, value[i], 'Keyboard');
+      map[key][i] = leds[0];
+      //console.log(key, map[key]);
+    }
   }
-
   //console.log('map', map);
+
   maps[canvasName].mapKeyboard = map;
 };
 
 setupMapMousepad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('setupMapMousepad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('setupMapMousepad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -331,7 +402,7 @@ setupMapMousepad = function (canvasName, svgObject) {
 
 setupMapMouse = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasMouse: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasMouse: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -354,7 +425,7 @@ setupMapMouse = function (canvasName, svgObject) {
 
 setupMapKeypad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeypad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeypad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -767,7 +838,7 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
     }
   }
 
-  setupMapKeyboard(canvasName, canvas.contentDocument);
+  setupMapKeyboard(canvasName, canvas);
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
@@ -784,14 +855,21 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
           if (key == RZKEY.RZKEY_INVALID) {
             continue;
           }
-          let val = mapKeyboard[key];
-          if (val) {
-            let i = getHighByte(key);
-            let row = colors[i];
-            let j = getLowByte(key);
-            let color = row[j];
-            if (mapKeyboard[key] != undefined) {
-              mapKeyboard[key].setAttribute("style", "fill: " + getHexColor(color));
+
+          let valArray = mapKeyboard[key];
+          if (!valArray) {
+            continue;
+          }
+          //console.log('valArray', valArray, valArray.length);
+
+          for (let valIndex in valArray) {
+            let val = valArray[valIndex];
+            if (val) {
+              let i = getHighByte(key);
+              let row = colors[i];
+              let j = getLowByte(key);
+              let color = row[j];
+              val.setAttribute("style", "fill: " + getHexColor(color));
             }
           }
         }
@@ -860,8 +938,6 @@ function drawKeypad(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keypad);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keypad);
   //console.log('frameId', frameId);
   if (state.FrameId >= 0 && state.FrameId < frameCount) {
     var frame = animation.Frames[state.FrameId];
@@ -955,7 +1031,6 @@ function drawChromaLink(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapChromaLink = maps[canvasName].mapChromaLink;
@@ -1031,7 +1106,6 @@ function drawHeadset(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapHeadset = maps[canvasName].mapHeadset;
@@ -1111,8 +1185,6 @@ function drawMouse(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapMouse = maps[canvasName].mapMouse;
@@ -1206,7 +1278,6 @@ function drawMousepad(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapMousepad = maps[canvasName].mapMousepad;

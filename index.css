@@ -90,3 +90,108 @@ td {
   display: inline-block;
   vertical-align: top;
 }
+
+.canvasChromaLink .productfill {
+  fill: #111111;
+}
+
+.canvasChromaLink .productoutline1 {
+  fill: #474747;
+}
+
+.canvasChromaLink .productoutline2 {
+  fill: #1F1F1F;
+}
+
+.canvasChromaLink .led {
+  fill: #000000;
+}
+
+.canvasChromaLink .selection {
+  stroke: #44d62c;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  fill: transparent;
+  position: relative;
+}
+
+.canvasChromaLink .producttext {
+  font-family: 'Roboto-Regular';
+  font-size: 14px;
+  fill: #222222;
+}
+
+.canvasKeyboard .productfill{fill:#111111;}
+.canvasKeyboard .productoutline1{fill:#474747;}
+.canvasKeyboard .productoutline2{fill:#1F1F1F;}
+.canvasKeyboard .characters{fill:#D2D2D2;}
+.canvasKeyboard .ledkeys{opacity:0.5;}
+.canvasKeyboard .led{fill:#020202;}
+.canvasKeyboard .selection{
+  stroke: #44d62c;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  fill: transparent;
+  position: relative;
+}
+
+.canvasKeypad .productfill {
+  fill: #111111;
+}
+
+.canvasKeypad .productoutline1 {
+  fill: #474747;
+}
+
+.canvasKeypad .productoutline2 {
+  fill: #1F1F1F;
+}
+
+.canvasKeypad .characters {
+  fill: #D2D2D2;
+}
+
+.canvasKeypad .ledkeys {
+  opacity: 0.5;
+  fill: #000;
+}
+
+.canvasKeypad .led {
+  fill: #000;
+}
+
+.canvasKeypad .selection {
+  stroke: #44d62c;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  fill: transparent;
+  position: relative;
+}
+
+.canvasMouse .productfill {
+  fill: #111111;
+}
+
+.canvasMouse .productoutline1 {
+  fill: #474747;
+}
+
+.canvasMouse .productoutline2 {
+  fill: #1F1F1F;
+}
+
+.canvasMouse .characters {
+  fill: #D2D2D2;
+}
+
+.canvasMouse .led {
+  fill: #000;
+}
+
+.canvasMouse .selection {
+  stroke: #44d62c;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  fill: transparent;
+  position: relative;
+}
