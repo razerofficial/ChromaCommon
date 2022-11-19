@@ -130,7 +130,7 @@ function getMouseColor(colors, led) {
 
 setupMapChromaLink = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasChromaLink: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasChromaLink: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -154,7 +154,7 @@ setupMapChromaLink = function (canvasName, svgObject) {
 
 setupMapHeadset = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasHeadset: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasHeadset: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -175,7 +175,7 @@ setupMapHeadset = function (canvasName, svgObject) {
 
 setupMapKeyboard = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeyboard: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeyboard: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -309,7 +309,7 @@ setupMapKeyboard = function (canvasName, svgObject) {
 
 setupMapMousepad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('setupMapMousepad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('setupMapMousepad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -331,7 +331,7 @@ setupMapMousepad = function (canvasName, svgObject) {
 
 setupMapMouse = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasMouse: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasMouse: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -354,7 +354,7 @@ setupMapMouse = function (canvasName, svgObject) {
 
 setupMapKeypad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeypad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeypad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
