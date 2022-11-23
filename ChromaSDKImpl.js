@@ -4620,7 +4620,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D(newAnimation.Device);
+        var frame = new ChromaAnimationFrame2D(device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
