@@ -93,7 +93,7 @@ ChromaSDK.prototype = {
       return false;
     }
   },
-  createKeyboardEffect: function (effect, data) {
+  createKeyboardEffect: function (effect, data, keys) {
     if (this.reconnectIfNeeded()) {
     } else if (this.socket != undefined && this.socket.readyState == WebSocket.OPEN) {
 
@@ -113,10 +113,10 @@ ChromaSDK.prototype = {
           jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": color, "token": token });
           break;
         case "CHROMA_CUSTOM_KEY":
-          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': keys }, "token": token });
           break;
         case "CHROMA_CUSTOM2":
-          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': keys }, "token": token });
           break;
       }
 
@@ -131,7 +131,7 @@ ChromaSDK.prototype = {
       */
     }
   },
-  createKeyboardEffect2: function (effect, data) {
+  createKeyboardEffect2: function (effect, data, keys) {
     if (this.reconnectIfNeeded()) {
     } else if (this.socket != undefined && this.socket.readyState == WebSocket.OPEN) {
 
@@ -151,18 +151,9 @@ ChromaSDK.prototype = {
           jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": color, "token": token });
           break;
         case "CHROMA_CUSTOM_KEY":
-          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': data }, "token": token });
+          jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': keys }, "token": token });
           break;
         case "CHROMA_CUSTOM2":
-          const maxRow = 6;
-          const maxColumn = 22;
-          let keys = new Array(maxRow);
-          for (let i = 0; i < maxRow; ++i) {
-            keys[i] = new Array(maxColumn);
-            for (let j = 0; j < maxColumn; ++j) {
-              keys[i][j] = data[i][j];
-            }
-          }
           jsonObj = JSON.stringify({ "endpoint": "keyboard", "effect": effect, "param": { 'color': data, 'key': keys }, "token": token });
           break;
       }
@@ -558,13 +549,29 @@ var EChromaSDKDeviceEnum = {
 };
 
 function ChromaAnimationFrame1D() {
-  var Duration = 0.033;
-  var Colors = undefined;
+  this.Duration = 0.033;
+  this.Colors = undefined;
 }
 
-function ChromaAnimationFrame2D() {
-  var Duration = 0.033;
-  var Colors = [];
+function ChromaAnimationFrame2D(device) {
+  this.Duration = 0.033;
+  this.Colors = [];
+  switch (device) {
+    case EChromaSDKDevice2DEnum.DE_Keyboard:
+    case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+      let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+      let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+      let keys = new Array(maxRow);
+      for (let i = 0; i < maxRow; ++i) {
+        let row = new Array(maxColumn);
+        keys[i] = row;
+        for (let j = 0; j < maxColumn; ++j) {
+          row[j] = 0;
+        }
+      }
+      this.Keys = keys; // For Keyboard and KeyboardExtended
+      break;
+  }
 }
 
 var ChromaAnimation = {
@@ -844,6 +851,8 @@ var ChromaAnimation = {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_Keyboard:
         return EChromaSDKDevice2DEnum.DE_Keyboard;
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
+        return EChromaSDKDevice2DEnum.DE_KeyboardExtended;
       case EChromaSDKDeviceEnum.DE_Keypad:
         return EChromaSDKDevice2DEnum.DE_Keypad;
       case EChromaSDKDeviceEnum.DE_Mouse:
@@ -911,16 +920,19 @@ var ChromaAnimation = {
     }
     //1D
     if (this.getDeviceType(device) == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var device1D = this.getDevice1D(device);
-      var animation = ChromaAnimation.LoadedAnimations1D[device1D];
+      let device1D = this.getDevice1D(device);
+      let animation = ChromaAnimation.LoadedAnimations1D[device1D];
       if (animation != undefined) {
         animation.stop();
       }
       ChromaAnimation.LoadedAnimations1D[device1D] = undefined;
       //2D
     } else if (this.getDeviceType(device) == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var device2D = this.getDevice2D(device);
-      var animation = this.LoadedAnimations2D[device2D];
+      let device2D = this.getDevice2D(device);
+      if (device2D == EChromaSDKDevice2DEnum.DE_KeyboardExtended) {
+        device2D = EChromaSDKDevice2DEnum.DE_Keyboard;
+      }
+      let animation = this.LoadedAnimations2D[device2D];
       if (animation != undefined) {
         animation.stop();
       }
@@ -1264,18 +1276,28 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
     }
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
+    }
+
+    let customFlag = 1 << 24;
+    let keyColor = color | customFlag;
     var frames = animation.Frames;
+    // both Keyboard and KeyboardExtended use 6x22
     var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
     var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     for (var frameId = 0; frameId < frames.length; ++frameId) {
       var frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
+      var colors = frame.Keys; // use Keys for custom layout
       for (var i = 0; i < maxRow; ++i) {
         var row = colors[i];
         for (var j = 0; j < maxColumn; ++j) {
@@ -1283,7 +1305,7 @@ var ChromaAnimation = {
             var key = keys[k];
             if (getHighByte(key) == i &&
               getLowByte(key) == j) {
-              row[j] = color;
+              row[j] = keyColor;
             }
           }
         }
@@ -3917,7 +3939,7 @@ var ChromaAnimation = {
       for (var frameId = 0; frameId < animation.Frames.length; ++frameId) {
         var oldFrame = animation.Frames[frameId];
         if (frameId == targetFrame) {
-          var frame = new ChromaAnimationFrame2D();
+          var frame = new ChromaAnimationFrame2D(animation.Device);
           frame.Colors = new Array(maxRow);
           for (var i = 0; i < maxRow; ++i) {
             frame.Colors[i] = new Array(maxColumn);
@@ -3972,7 +3994,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
         var sourceFrame = sourceFrames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(sourceAnimation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4014,7 +4036,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4063,7 +4085,7 @@ var ChromaAnimation = {
       for (var frameId = 0; frameId < frameCount; ++frameId) {
         for (var d = 0; d < 2; ++d) {
           var copyFrame = animation.Frames[frameId];
-          var frame = new ChromaAnimationFrame2D();
+          var frame = new ChromaAnimationFrame2D(animation.Device);
           frame.Colors = new Array(maxRow);
           for (var i = 0; i < maxRow; ++i) {
             frame.Colors[i] = new Array(maxColumn);
@@ -4121,7 +4143,7 @@ var ChromaAnimation = {
       var frameCount = animation.Frames.length;
       for (var frameId = 0; frameId < frameCount; ++frameId) {
         var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4134,7 +4156,7 @@ var ChromaAnimation = {
       }
       for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
         var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4179,27 +4201,42 @@ var ChromaAnimation = {
       newAnimation.Frames = frames;
       this.LoadedAnimations[newAnimationName] = newAnimation;
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = copyFrame.Colors[i][j];
           }
+        }
+        switch (animation.Device) {
+          case EChromaSDKDevice2DEnum.DE_Keyboard:
+          case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+            let keysMaxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+            let keysMaxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+            frame.Keys = new Array(keysMaxRow);
+            for (let i = 0; i < keysMaxRow; ++i) {
+              frame.Keys[i] = new Array(keysMaxColumn);
+              for (let j = 0; j < keysMaxColumn; ++j) {
+                frame.Keys[i][j] = copyFrame.Keys[i][j];
+              }
+            }
+            break;
         }
         frame.Duration = copyFrame.Duration;
         frames.push(frame);
       }
-      var newAnimation = new ChromaAnimation2D();
+      let newAnimation = new ChromaAnimation2D();
       newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
       newAnimation.Frames = frames;
+      newAnimation.UseChromaCustom = animation.UseChromaCustom;
       this.LoadedAnimations[newAnimationName] = newAnimation;
     }
   },
@@ -4253,7 +4290,7 @@ var ChromaAnimation = {
         var copyFrame = animation.Frames[frameId];
         var maxRow = ChromaAnimation.getMaxRow(newDevice);
         var maxColumn = ChromaAnimation.getMaxColumn(newDevice);
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(newAnimation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < keyboardMaxRow || i < maxRow; ++i) {
           if (i >= maxRow) {
@@ -4315,7 +4352,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(newAnimation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4372,7 +4409,7 @@ var ChromaAnimation = {
           continue;
         }
         var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4504,7 +4541,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -4543,7 +4580,7 @@ var ChromaAnimation = {
       var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D();
+        var frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
         for (var i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
@@ -5744,9 +5781,15 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
+    }
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
     }
     animation.setChromaCustomFlag(flag);
   },
@@ -5822,37 +5865,47 @@ var ChromaAnimation = {
     this.staticColor(EChromaSDKDeviceEnum.DE_Mouse, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Mousepad, color);
   },
-  custom: function (device, colors) {
+  custom: function (device, colors, keys) {
     if (chromaSDK == undefined) {
       setTimeout(function () {
-        ChromaAnimation.custom(device, colors);
+        ChromaAnimation.custom(device, colors, keys);
       }, 100);
       return;
     }
     this.stopByAnimationType(device);
-    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-      chromaSDK.createChromaLinkEffect("CHROMA_CUSTOM", colors);
-    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-      chromaSDK.createHeadsetEffect("CHROMA_CUSTOM", colors);
-    } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-      chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", colors);
-    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-      chromaSDK.createKeypadEffect("CHROMA_CUSTOM", colors);
-    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-      chromaSDK.createMouseEffect("CHROMA_CUSTOM2", colors);
-    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-      chromaSDK.createMousematEffect("CHROMA_CUSTOM", colors);
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        chromaSDK.createChromaLinkEffect("CHROMA_CUSTOM", colors);
+        break;
+      case EChromaSDKDeviceEnum.DE_Headset:
+        chromaSDK.createHeadsetEffect("CHROMA_CUSTOM", colors);
+        break;
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+        chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", colors, keys);
+        break;
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        chromaSDK.createKeypadEffect("CHROMA_CUSTOM", colors);
+        break;
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        chromaSDK.createMouseEffect("CHROMA_CUSTOM2", colors);
+        break;
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        chromaSDK.createMousematEffect("CHROMA_CUSTOM", colors);
+        break;
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
+        chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", colors, keys);
+        break;
     }
   },
-  customKey: function (colors) {
+  customKey: function (colors, keys) {
     if (chromaSDK == undefined) {
       setTimeout(function () {
-        ChromaAnimation.customKey(colors);
+        ChromaAnimation.customKey(colors, keys);
       }, 100);
       return;
     }
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keyboard);
-    chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", colors);
+    chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", colors, keys);
   },
   clear: function (device) {
     if (chromaSDK == undefined) {
@@ -5860,18 +5913,28 @@ var ChromaAnimation = {
       return;
     }
     this.stopByAnimationType(device);
-    if (device == EChromaSDKDeviceEnum.DE_ChromaLink) {
-      chromaSDK.createChromaLinkEffect("CHROMA_NONE");
-    } else if (device == EChromaSDKDeviceEnum.DE_Headset) {
-      chromaSDK.createHeadsetEffect("CHROMA_NONE");
-    } else if (device == EChromaSDKDeviceEnum.DE_Keyboard) {
-      chromaSDK.createKeyboardEffect("CHROMA_NONE");
-    } else if (device == EChromaSDKDeviceEnum.DE_Keypad) {
-      chromaSDK.createKeypadEffect("CHROMA_NONE");
-    } else if (device == EChromaSDKDeviceEnum.DE_Mouse) {
-      chromaSDK.createMouseEffect("CHROMA_NONE");
-    } else if (device == EChromaSDKDeviceEnum.DE_Mousepad) {
-      chromaSDK.createMousematEffect("CHROMA_NONE");
+    switch (device) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        chromaSDK.createChromaLinkEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_Headset:
+        chromaSDK.createHeadsetEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+        chromaSDK.createKeyboardEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        chromaSDK.createKeypadEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        chromaSDK.createMouseEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        chromaSDK.createMousematEffect("CHROMA_NONE");
+        break;
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
+        chromaSDK.createKeyboardEffect("CHROMA_NONE");
+        break;
     }
   },
   clearAll: function () {
@@ -5881,6 +5944,7 @@ var ChromaAnimation = {
     this.clear(EChromaSDKDeviceEnum.DE_Keypad);
     this.clear(EChromaSDKDeviceEnum.DE_Mouse);
     this.clear(EChromaSDKDeviceEnum.DE_Mousepad);
+    this.clear(EChromaSDKDeviceEnum.DE_KeyboardExtended);
   },
   getKey: function (row, col) {
     return (row << 8) | col;
@@ -6209,7 +6273,7 @@ ChromaAnimation2D.prototype = {
 
     for (var index = 0; index < frameCount; ++index) {
 
-      var frame = new ChromaAnimationFrame2D();
+      var frame = new ChromaAnimationFrame2D(device);
 
       readSize = Float32Array.BYTES_PER_ELEMENT;
       var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
@@ -6329,7 +6393,7 @@ ChromaAnimation2D.prototype = {
       case EChromaSDKDevice2DEnum.DE_Keyboard:
       case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
         if (flag == true) {
-          this.UseChromaCustom = flag;
+          this.UseChromaCustom = true;
         } else {
           this.UseChromaCustom = false;
         }
@@ -6347,14 +6411,14 @@ ChromaAnimation2D.prototype = {
       switch (this.Device) {
         case EChromaSDKDevice2DEnum.DE_Keyboard:
           if (this.UseChromaCustom) {
-            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", this.getFrame().Colors, this.getFrame().Keys);
           } else {
             chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", this.getFrame().Colors);
           }
           break;
         case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
           if (this.UseChromaCustom) {
-            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors, this.getFrame().Keys);
           } else {
             chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors);
           }

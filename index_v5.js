@@ -783,6 +783,147 @@ function checkVisible(elem) {
     return false;
   }
 }
+
+function addKeyboardMap8x24To6x22(map, row, column, rzkey) {
+  let key = getHashKeyRZKEY(row, column);
+  map[key] = rzkey;
+}
+
+var keyboardMap8x24To6x22 = null;
+function setupKeyboardMap8x24To6x22() {
+  if (!keyboardMap8x24To6x22) {
+    let map = {};
+    addKeyboardMap8x24To6x22(map, 2, 1, RZKEY.RZKEY_MACRO5);
+    addKeyboardMap8x24To6x22(map, 3, 1, RZKEY.RZKEY_MACRO4);
+    addKeyboardMap8x24To6x22(map, 4, 1, RZKEY.RZKEY_MACRO3);
+    addKeyboardMap8x24To6x22(map, 5, 1, RZKEY.RZKEY_MACRO2);
+    addKeyboardMap8x24To6x22(map, 6, 1, RZKEY.RZKEY_MACRO1);
+    addKeyboardMap8x24To6x22(map, 1, 2, RZKEY.RZKEY_ESC);
+    addKeyboardMap8x24To6x22(map, 1, 4, RZKEY.RZKEY_F1);
+    addKeyboardMap8x24To6x22(map, 1, 5, RZKEY.RZKEY_F2);
+    addKeyboardMap8x24To6x22(map, 1, 6, RZKEY.RZKEY_F3);
+    addKeyboardMap8x24To6x22(map, 1, 7, RZKEY.RZKEY_F4);
+    addKeyboardMap8x24To6x22(map, 1, 8, RZKEY.RZKEY_F5);
+    addKeyboardMap8x24To6x22(map, 1, 9, RZKEY.RZKEY_F6);
+    addKeyboardMap8x24To6x22(map, 1, 10, RZKEY.RZKEY_F7);
+    addKeyboardMap8x24To6x22(map, 1, 11, RZKEY.RZKEY_F8);
+    addKeyboardMap8x24To6x22(map, 1, 12, RZKEY.RZKEY_F9);
+    addKeyboardMap8x24To6x22(map, 1, 13, RZKEY.RZKEY_F10);
+    addKeyboardMap8x24To6x22(map, 1, 14, RZKEY.RZKEY_F11);
+    addKeyboardMap8x24To6x22(map, 1, 15, RZKEY.RZKEY_F12);
+    addKeyboardMap8x24To6x22(map, 1, 16, RZKEY.RZKEY_PRINTSCREEN);
+    addKeyboardMap8x24To6x22(map, 1, 17, RZKEY.RZKEY_SCROLL);
+    addKeyboardMap8x24To6x22(map, 1, 18, RZKEY.RZKEY_PAUSE);
+    addKeyboardMap8x24To6x22(map, 2, 2, RZKEY.RZKEY_OEM_1);
+    addKeyboardMap8x24To6x22(map, 2, 3, RZKEY.RZKEY_1);
+    addKeyboardMap8x24To6x22(map, 2, 4, RZKEY.RZKEY_2);
+    addKeyboardMap8x24To6x22(map, 2, 5, RZKEY.RZKEY_3);
+    addKeyboardMap8x24To6x22(map, 2, 6, RZKEY.RZKEY_4);
+    addKeyboardMap8x24To6x22(map, 2, 7, RZKEY.RZKEY_5);
+    addKeyboardMap8x24To6x22(map, 2, 8, RZKEY.RZKEY_6);
+    addKeyboardMap8x24To6x22(map, 2, 9, RZKEY.RZKEY_7);
+    addKeyboardMap8x24To6x22(map, 2, 10, RZKEY.RZKEY_8);
+    addKeyboardMap8x24To6x22(map, 2, 11, RZKEY.RZKEY_9);
+    addKeyboardMap8x24To6x22(map, 2, 12, RZKEY.RZKEY_0);
+    addKeyboardMap8x24To6x22(map, 2, 13, RZKEY.RZKEY_OEM_2);
+    addKeyboardMap8x24To6x22(map, 2, 14, RZKEY.RZKEY_OEM_3);
+    addKeyboardMap8x24To6x22(map, 2, 15, RZKEY.RZKEY_BACKSPACE);
+    addKeyboardMap8x24To6x22(map, 2, 16, RZKEY.RZKEY_INSERT);
+    addKeyboardMap8x24To6x22(map, 2, 17, RZKEY.RZKEY_HOME);
+    addKeyboardMap8x24To6x22(map, 2, 18, RZKEY.RZKEY_PAGEUP);
+    addKeyboardMap8x24To6x22(map, 2, 19, RZKEY.RZKEY_NUMLOCK);
+    addKeyboardMap8x24To6x22(map, 2, 20, RZKEY.RZKEY_NUMPAD_DIVIDE);
+    addKeyboardMap8x24To6x22(map, 2, 21, RZKEY.RZKEY_NUMPAD_MULTIPLY);
+    addKeyboardMap8x24To6x22(map, 2, 22, RZKEY.RZKEY_NUMPAD_SUBTRACT);
+    addKeyboardMap8x24To6x22(map, 3, 2, RZKEY.RZKEY_TAB);
+    addKeyboardMap8x24To6x22(map, 3, 3, RZKEY.RZKEY_Q);
+    addKeyboardMap8x24To6x22(map, 3, 4, RZKEY.RZKEY_W);
+    addKeyboardMap8x24To6x22(map, 3, 5, RZKEY.RZKEY_E);
+    addKeyboardMap8x24To6x22(map, 3, 6, RZKEY.RZKEY_R);
+    addKeyboardMap8x24To6x22(map, 3, 7, RZKEY.RZKEY_T);
+    addKeyboardMap8x24To6x22(map, 3, 8, RZKEY.RZKEY_Y);
+    addKeyboardMap8x24To6x22(map, 3, 9, RZKEY.RZKEY_U);
+    addKeyboardMap8x24To6x22(map, 3, 10, RZKEY.RZKEY_I);
+    addKeyboardMap8x24To6x22(map, 3, 11, RZKEY.RZKEY_O);
+    addKeyboardMap8x24To6x22(map, 3, 12, RZKEY.RZKEY_P);
+    addKeyboardMap8x24To6x22(map, 3, 13, RZKEY.RZKEY_OEM_4);
+    addKeyboardMap8x24To6x22(map, 3, 14, RZKEY.RZKEY_OEM_5);
+    addKeyboardMap8x24To6x22(map, 3, 15, RZKEY.RZKEY_OEM_6);
+    addKeyboardMap8x24To6x22(map, 3, 16, RZKEY.RZKEY_DELETE);
+    addKeyboardMap8x24To6x22(map, 3, 17, RZKEY.RZKEY_END);
+    addKeyboardMap8x24To6x22(map, 3, 18, RZKEY.RZKEY_PAGEDOWN);
+    addKeyboardMap8x24To6x22(map, 3, 19, RZKEY.RZKEY_NUMPAD7);
+    addKeyboardMap8x24To6x22(map, 3, 20, RZKEY.RZKEY_NUMPAD8);
+    addKeyboardMap8x24To6x22(map, 3, 21, RZKEY.RZKEY_NUMPAD9);
+    addKeyboardMap8x24To6x22(map, 3, 22, RZKEY.RZKEY_NUMPAD_ADD);
+    addKeyboardMap8x24To6x22(map, 4, 2, RZKEY.RZKEY_CAPSLOCK);
+    addKeyboardMap8x24To6x22(map, 4, 3, RZKEY.RZKEY_A);
+    addKeyboardMap8x24To6x22(map, 4, 4, RZKEY.RZKEY_S);
+    addKeyboardMap8x24To6x22(map, 4, 5, RZKEY.RZKEY_D);
+    addKeyboardMap8x24To6x22(map, 4, 6, RZKEY.RZKEY_F);
+    addKeyboardMap8x24To6x22(map, 4, 7, RZKEY.RZKEY_G);
+    addKeyboardMap8x24To6x22(map, 4, 8, RZKEY.RZKEY_H);
+    addKeyboardMap8x24To6x22(map, 4, 9, RZKEY.RZKEY_J);
+    addKeyboardMap8x24To6x22(map, 4, 10, RZKEY.RZKEY_K);
+    addKeyboardMap8x24To6x22(map, 4, 11, RZKEY.RZKEY_L);
+    addKeyboardMap8x24To6x22(map, 4, 12, RZKEY.RZKEY_OEM_7);
+    addKeyboardMap8x24To6x22(map, 4, 13, RZKEY.RZKEY_OEM_8);
+    addKeyboardMap8x24To6x22(map, 4, 15, RZKEY.RZKEY_ENTER);
+    addKeyboardMap8x24To6x22(map, 4, 19, RZKEY.RZKEY_NUMPAD4);
+    addKeyboardMap8x24To6x22(map, 4, 20, RZKEY.RZKEY_NUMPAD5);
+    addKeyboardMap8x24To6x22(map, 4, 21, RZKEY.RZKEY_NUMPAD6);
+    addKeyboardMap8x24To6x22(map, 5, 2, RZKEY.RZKEY_LSHIFT);
+    addKeyboardMap8x24To6x22(map, 5, 4, RZKEY.RZKEY_Z);
+    addKeyboardMap8x24To6x22(map, 5, 5, RZKEY.RZKEY_X);
+    addKeyboardMap8x24To6x22(map, 5, 6, RZKEY.RZKEY_C);
+    addKeyboardMap8x24To6x22(map, 5, 7, RZKEY.RZKEY_V);
+    addKeyboardMap8x24To6x22(map, 5, 8, RZKEY.RZKEY_B);
+    addKeyboardMap8x24To6x22(map, 5, 9, RZKEY.RZKEY_N);
+    addKeyboardMap8x24To6x22(map, 5, 10, RZKEY.RZKEY_M);
+    addKeyboardMap8x24To6x22(map, 5, 11, RZKEY.RZKEY_OEM_9);
+    addKeyboardMap8x24To6x22(map, 5, 12, RZKEY.RZKEY_OEM_10);
+    addKeyboardMap8x24To6x22(map, 5, 13, RZKEY.RZKEY_OEM_11);
+    addKeyboardMap8x24To6x22(map, 5, 15, RZKEY.RZKEY_RSHIFT);
+    addKeyboardMap8x24To6x22(map, 5, 17, RZKEY.RZKEY_UP);
+    addKeyboardMap8x24To6x22(map, 5, 19, RZKEY.RZKEY_NUMPAD1);
+    addKeyboardMap8x24To6x22(map, 5, 20, RZKEY.RZKEY_NUMPAD2);
+    addKeyboardMap8x24To6x22(map, 5, 21, RZKEY.RZKEY_NUMPAD3);
+    addKeyboardMap8x24To6x22(map, 5, 22, RZKEY.RZKEY_NUMPAD_ENTER);
+    addKeyboardMap8x24To6x22(map, 6, 2, RZKEY.RZKEY_LCTRL);
+    addKeyboardMap8x24To6x22(map, 6, 3, RZKEY.RZKEY_LWIN);
+    addKeyboardMap8x24To6x22(map, 6, 4, RZKEY.RZKEY_LALT);
+    addKeyboardMap8x24To6x22(map, 6, 8, RZKEY.RZKEY_SPACE);
+    addKeyboardMap8x24To6x22(map, 6, 12, RZKEY.RZKEY_RALT);
+    addKeyboardMap8x24To6x22(map, 6, 13, RZKEY.RZKEY_FN);
+    addKeyboardMap8x24To6x22(map, 6, 14, RZKEY.RZKEY_RMENU);
+    addKeyboardMap8x24To6x22(map, 6, 15, RZKEY.RZKEY_RCTRL);
+    addKeyboardMap8x24To6x22(map, 6, 16, RZKEY.RZKEY_LEFT);
+    addKeyboardMap8x24To6x22(map, 6, 17, RZKEY.RZKEY_DOWN);
+    addKeyboardMap8x24To6x22(map, 6, 18, RZKEY.RZKEY_RIGHT);
+    addKeyboardMap8x24To6x22(map, 6, 20, RZKEY.RZKEY_NUMPAD0);
+    addKeyboardMap8x24To6x22(map, 6, 21, RZKEY.RZKEY_NUMPAD_DECIMAL);
+    keyboardMap8x24To6x22 = map;
+  }
+  return keyboardMap8x24To6x22;
+}
+
+function getKeyboardCustomColor(frameKeys, key, color) {
+  let map = setupKeyboardMap8x24To6x22();
+  let rzkey = map[key];
+  if (rzkey == undefined) {
+    return color;
+  }
+  let i = getHighByte(rzkey);
+  let row = frameKeys[i];
+  let j = getLowByte(rzkey);
+  let keyColor = row[j];
+  const chromaFlag = 1 << 24;
+  if ((keyColor & chromaFlag) == chromaFlag) {
+    return keyColor;
+  }
+  return color;
+}
+
 function drawKeyboard(canvas, canvasName, animationName, loop) {
 
   if (!checkVisible(canvas)) {
@@ -834,14 +975,15 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
 
   setupMapKeyboard(canvasName, canvas);
 
-  var frameCount = animation.getFrameCount();
+  let frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
   //console.log('frameId', frameId);
   if (state.FrameId >= 0 && state.FrameId < frameCount) {
-    var frame = animation.Frames[state.FrameId];
-    var colors = frame.Colors;
+    let frame = animation.Frames[state.FrameId];
+    let colors = frame.Colors;
+    let frameKeys = frame.Keys;
     if (maps[canvasName] != undefined) {
-      var mapKeyboard = maps[canvasName].mapKeyboard;
+      let mapKeyboard = maps[canvasName].mapKeyboard;
       if (mapKeyboard != undefined) {
         let keys = Object.keys(mapKeyboard);
         for (let keyIndex = 0; keyIndex < keys.length; ++keyIndex) {
@@ -859,6 +1001,10 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
               let row = colors[i];
               let j = getLowByte(key);
               let color = row[j];
+              // check for color override
+              if (animation.UseChromaCustom) {
+                color = getKeyboardCustomColor(frameKeys, key, color);
+              }
               val.setAttribute("style", "fill: " + getHexColor(color));
             }
           }
