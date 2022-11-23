@@ -56,10 +56,6 @@ var exampleInterval = undefined;
 var pageHadFocus = undefined;
 var drawInProgress = false;
 var maps = {};
-var useTint = false;
-var tintRed = 255;
-var tintGreen = 255;
-var tintBlue = 255;
 detectWindowFocus = function () {
   if (browserTabIsVisible == true) {
     if (pageHadFocus != true) {
@@ -84,7 +80,7 @@ findLeds = function (children, collection, className) {
     if (child == undefined) {
       continue;
     }
-    //console.log('class', child.getAttribute("class"));
+    //console.log('class', child.getAttribute("class"), child);
     var childClassName = child.getAttribute("class");
     if (childClassName != undefined) {
       var classes = childClassName.split(" ");
@@ -104,21 +100,6 @@ function getHexColor(bgrColor) {
   var green = (bgrColor & 0xFF00) >> 8;
   var blue = (bgrColor & 0xFF0000) >> 16;
   return 'rgb(' + red + ',' + green + ',' + blue + ')';
-}
-
-function applyTint(bgrColor) {
-  if (useTint) {
-    var red = (bgrColor & 0xFF);
-    var green = (bgrColor & 0xFF00) >> 8;
-    var blue = (bgrColor & 0xFF0000) >> 16;
-    var v = Math.max(Math.max(red, green), blue);
-    red = 0xFF & Math.floor(v * tintRed / 255);
-    green = 0xFF & Math.floor(v * tintGreen / 255);
-    blue = 0xFF & Math.floor(v * tintBlue / 255);
-    return getRGB(red, green, blue);
-  } else {
-    return bgrColor;
-  }
 }
 
 function getMouseColor(colors, led) {
@@ -860,8 +841,6 @@ function drawKeypad(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('frameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keypad);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keypad);
   //console.log('frameId', frameId);
   if (state.FrameId >= 0 && state.FrameId < frameCount) {
     var frame = animation.Frames[state.FrameId];
@@ -955,7 +934,6 @@ function drawChromaLink(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_ChromaLink);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapChromaLink = maps[canvasName].mapChromaLink;
@@ -1031,7 +1009,6 @@ function drawHeadset(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Headset);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapHeadset = maps[canvasName].mapHeadset;
@@ -1111,8 +1088,6 @@ function drawMouse(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Mouse);
-  var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Mouse);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapMouse = maps[canvasName].mapMouse;
@@ -1206,7 +1181,6 @@ function drawMousepad(canvas, canvasName, animationName, loop) {
 
   var frameCount = animation.getFrameCount();
   //console.log('FrameCount', frameCount);
-  var maxLeds = ChromaAnimation.getMaxLeds(EChromaSDKDevice1DEnum.DE_Mousepad);
   var frameId = state.FrameId;
   if (maps[canvasName] != undefined) {
     var mapMousepad = maps[canvasName].mapMousepad;

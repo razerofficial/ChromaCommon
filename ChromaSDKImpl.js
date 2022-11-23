@@ -1557,20 +1557,20 @@ var ChromaAnimation = {
 
     let customFlag = 1 << 24;
     let keyColor = color | customFlag;
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     // both Keyboard and KeyboardExtended use 6x22
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Keys; // use Keys for custom layout
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          for (var k = 0; k < keys.length; ++k) {
-            var key = keys[k];
+      let colors = frame.Keys; // use Keys for custom layout
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          for (let k = 0; k < keys.length; ++k) {
+            let key = keys[k];
             if (getHighByte(key) == i &&
               getLowByte(key) == j) {
               row[j] = keyColor;

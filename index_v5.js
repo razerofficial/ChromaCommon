@@ -56,10 +56,6 @@ var exampleInterval = undefined;
 var pageHadFocus = undefined;
 var drawInProgress = false;
 var maps = {};
-var useTint = false;
-var tintRed = 255;
-var tintGreen = 255;
-var tintBlue = 255;
 detectWindowFocus = function () {
   if (browserTabIsVisible == true) {
     if (pageHadFocus != true) {
@@ -764,16 +760,24 @@ function checkVisible(elem) {
 
     let docViewBottom = docViewTop + windowHeight;
 
-    let elemTop = $(elem).offset().top;
+    let refElem = $(elem);
+    if (!refElem[0]) {
+      refElem = $('#' + elem);
+      if (!refElem[0]) {
+        console.error(new Date(), "Can't find element", elem);
+      }
+    }
+
+    let elemTop = refElem.offset().top;
     let elemBottom = elemTop + $(elem).height();
 
     //let result = ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
     let result = ((elemTop <= docViewBottom) && (elemBottom >= docViewTop));
     /*
     if (result) {
-      $(elem).css('background', '');
+      refElem.css('background', '');
     } else {
-      $(elem).css('background', '#2a2a2a'); //show inactive tiles
+      refElem.css('background', '#2a2a2a'); //show inactive tiles
     }
     */
     return result;

@@ -1,43 +1,43 @@
 // browser function to determine tab is hidden
 // ref: https://stackoverflow.com/questions/7389328/detect-if-browser-tab-has-focus/46719827#46719827
 var browserTabIsVisible = true;
-handleTabVisibility = function() {
+handleTabVisibility = function () {
 
   // check the visiblility of the page
   var hidden, visibilityState, visibilityChange;
 
   if (typeof document.hidden !== "undefined") {
-      hidden = "hidden", visibilityChange = "visibilitychange", visibilityState = "visibilityState";
+    hidden = "hidden", visibilityChange = "visibilitychange", visibilityState = "visibilityState";
   }
   else if (typeof document.mozHidden !== "undefined") {
-      hidden = "mozHidden", visibilityChange = "mozvisibilitychange", visibilityState = "mozVisibilityState";
+    hidden = "mozHidden", visibilityChange = "mozvisibilitychange", visibilityState = "mozVisibilityState";
   }
   else if (typeof document.msHidden !== "undefined") {
-      hidden = "msHidden", visibilityChange = "msvisibilitychange", visibilityState = "msVisibilityState";
+    hidden = "msHidden", visibilityChange = "msvisibilitychange", visibilityState = "msVisibilityState";
   }
   else if (typeof document.webkitHidden !== "undefined") {
-      hidden = "webkitHidden", visibilityChange = "webkitvisibilitychange", visibilityState = "webkitVisibilityState";
+    hidden = "webkitHidden", visibilityChange = "webkitvisibilitychange", visibilityState = "webkitVisibilityState";
   }
 
   if (typeof document.addEventListener === "undefined" || typeof hidden === "undefined") {
-      // not supported
+    // not supported
   }
   else {
-      document.addEventListener(visibilityChange, function() {
-          //console.log('hidden', document[hidden]);
-          //console.log('visibilityState: ', document[visibilityState]);
+    document.addEventListener(visibilityChange, function () {
+      //console.log('hidden', document[hidden]);
+      //console.log('visibilityState: ', document[visibilityState]);
 
-          switch (document[visibilityState]) {
-          case "visible":
-              // visible
-              browserTabIsVisible = true;
-              break;
-          case "hidden":
-              // hidden
-              browserTabIsVisible = false;
-              break;
-          }
-      }, false);
+      switch (document[visibilityState]) {
+        case "visible":
+          // visible
+          browserTabIsVisible = true;
+          break;
+        case "hidden":
+          // hidden
+          browserTabIsVisible = false;
+          break;
+      }
+    }, false);
   }
 
 };
@@ -49,11 +49,7 @@ var exampleInterval = undefined;
 var pageHadFocus = undefined;
 var drawInProgress = false;
 var maps = {};
-var useTint = false;
-var tintRed = 255;
-var tintGreen = 255;
-var tintBlue = 255;
-detectWindowFocus = function() {
+detectWindowFocus = function () {
   if (browserTabIsVisible == true) {
     if (pageHadFocus != true) {
       pageHadFocus = true;
@@ -71,13 +67,13 @@ detectWindowFocus = function() {
   }
 }
 
-findLeds = function(children, collection, className) {
+findLeds = function (children, collection, className) {
   for (var i = 0; i < children.length; ++i) {
     var child = children[i];
     if (child == undefined) {
       continue;
     }
-    //console.log('class', child.getAttribute("class"));
+    //console.log('class', child.getAttribute("class"), child);
     var childClassName = child.getAttribute("class");
     if (childClassName != undefined) {
       var classes = childClassName.split(" ");
@@ -96,22 +92,7 @@ function getHexColor(bgrColor) {
   var red = (bgrColor & 0xFF);
   var green = (bgrColor & 0xFF00) >> 8;
   var blue = (bgrColor & 0xFF0000) >> 16;
-  return 'rgb('+red+','+green+','+blue+')';
-}
-
-function applyTint(bgrColor) {
-  if (useTint) {
-    var red = (bgrColor & 0xFF);
-    var green = (bgrColor & 0xFF00) >> 8;
-    var blue = (bgrColor & 0xFF0000) >> 16;
-    var v = Math.max(Math.max(red, green), blue);
-    red = 0xFF & Math.floor(v * tintRed / 255);
-    green = 0xFF & Math.floor(v * tintGreen / 255);
-    blue = 0xFF & Math.floor(v * tintBlue / 255);
-    return getRGB(red, green, blue);
-  } else {
-    return bgrColor;
-  }
+  return 'rgb(' + red + ',' + green + ',' + blue + ')';
 }
 
 function getMouseColor(colors, led) {
@@ -121,9 +102,9 @@ function getMouseColor(colors, led) {
   return getHexColor(row[j]);
 }
 
-setupMapChromaLink = function(canvasName, svgObject) {
+setupMapChromaLink = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasChromaLink: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasChromaLink: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -145,9 +126,9 @@ setupMapChromaLink = function(canvasName, svgObject) {
   maps[canvasName].mapChromaLink = map;
 };
 
-setupMapHeadset = function(canvasName, svgObject) {
+setupMapHeadset = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasHeadset: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasHeadset: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -166,9 +147,9 @@ setupMapHeadset = function(canvasName, svgObject) {
   maps[canvasName].mapHeadset = map;
 };
 
-setupMapKeyboard = function(canvasName, svgObject) {
+setupMapKeyboard = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeyboard: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeyboard: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -298,9 +279,9 @@ setupMapKeyboard = function(canvasName, svgObject) {
   maps[canvasName].mapKeyboard = map;
 };
 
-setupMapMousepad = function(canvasName, svgObject) {
+setupMapMousepad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('setupMapMousepad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('setupMapMousepad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -320,9 +301,9 @@ setupMapMousepad = function(canvasName, svgObject) {
   maps[canvasName].mapMousepad = map;
 };
 
-setupMapMouse = function(canvasName, svgObject) {
+setupMapMouse = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasMouse: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasMouse: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -343,9 +324,9 @@ setupMapMouse = function(canvasName, svgObject) {
 
 };
 
-setupMapKeypad = function(canvasName, svgObject) {
+setupMapKeypad = function (canvasName, svgObject) {
   if (svgObject == undefined) {
-    console.error('canvasKeypad: SVG Object cannot be accessed!', svgObject.children);
+    console.error('canvasKeypad: SVG Object cannot be accessed!', canvasName);
     return;
   }
   if (maps[canvasName] == undefined) {
@@ -369,7 +350,7 @@ setupMapKeypad = function(canvasName, svgObject) {
 
 };
 
-loadCanvases = function() {
+loadCanvases = function () {
   //show loading text on canvases
   var canvases = document.getElementsByClassName('canvasKeyboard');
   for (var i in canvases) {
@@ -387,11 +368,11 @@ loadCanvases = function() {
   }
 
   var setupIndex = 0;
-  var timerSetup = setInterval(function() {
+  var timerSetup = setInterval(function () {
     if (!drawInProgress) {
       if (setupIndex < setupItems.length) {
         if (setupItems[setupIndex] != undefined &&
-        setupItems[setupIndex].click != undefined) {
+          setupItems[setupIndex].click != undefined) {
           setupItems[setupIndex].click();
         }
         setupIndex++;
@@ -431,7 +412,7 @@ onPageLoad = function () {
   if (window.frames.length > 0) {
     var linkVideos = window.frames[0].document.getElementById('linkVideos');
     if (linkVideos != undefined) {
-      linkVideos.onclick = function() {
+      linkVideos.onclick = function () {
         if (!window.location.href.endsWith('#Videos')) {
           window.location.href = window.location.href + '#Videos';
         } else {
@@ -450,7 +431,7 @@ onPageLoad = function () {
   handleTabVisibility();
   chromaSDK = new ChromaSDK();
   detectWindowFocus();
-  setInterval(function() {
+  setInterval(function () {
     detectWindowFocus();
   }, 1000);
 };
@@ -470,10 +451,10 @@ exampleReset = function (ignoreUseIdleAnimation) {
   }
   drawInProgress = true;
 };
-getRGBString = function(red, green, blue) {
-  return "rgb("+red+", "+green+", "+blue+")";
+getRGBString = function (red, green, blue) {
+  return "rgb(" + red + ", " + green + ", " + blue + ")";
 }
-getRGBAString = function(red, green, blue, alpha) {
+getRGBAString = function (red, green, blue, alpha) {
   return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
 }
 var canvasTimers = {
@@ -492,13 +473,57 @@ var stateDisplay = {
   mouse: [],
   mousepad: []
 };
-function checkVisible(elm) {
+function checkVisible(elem) {
   return true;
-  //var rect = elm.getBoundingClientRect();
-  //var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-  //var tolerance = 800;
-  //return !((rect.bottom-tolerance) <= 0 || rect.top - (viewHeight+tolerance) >= 0);
+  let zoom = 1;
+  if (document.body.style.zoom) {
+    if (document.body.style.zoom.length > 1) {
+      zoom = Number(document.body.style.zoom.substring(0, document.body.style.zoom.length - 1)) / 100;
+    }
+  }
+  try {
+    let docViewTop = $(window).scrollTop();
+    //let windowHeight = $(window).height();
+    let windowHeight = window.innerHeight / zoom;
+
+    let docViewBottom = docViewTop + windowHeight;
+
+    let refElem = $(elem);
+    if (!refElem[0]) {
+      refElem = $('#' + elem);
+      if (!refElem[0]) {
+        console.error(new Date(), "Can't find element", elem);
+      }
+    }
+
+    let elemTop = refElem.offset().top;
+    let elemBottom = elemTop + $(elem).height();
+
+    //let result = ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    let result = ((elemTop <= docViewBottom) && (elemBottom >= docViewTop));
+    ///*
+    if (result) {
+      refElem.css('background', '');
+    } else {
+      refElem.css('background', '#2a0000'); //show inactive tiles
+    }
+    //*/
+    return result;
+  } catch {
+    // not loaded yet
+    //console.error('checkVisible', elem);
+    return false;
+  }
 }
+
+function getKeyboardCustomColor(color, keyColor) {
+  const chromaFlag = 1 << 24;
+  if ((keyColor & chromaFlag) == chromaFlag) {
+    return keyColor;
+  }
+  return color;
+}
+
 function drawKeyboard(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
@@ -548,28 +573,35 @@ function drawKeyboard(canvasName, animationName, loop) {
 
     var frameCount = animation.getFrameCount();
     //console.log('frameCount', frameCount);
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log('frameId', frameId);
     if (state.FrameId >= 0 && state.FrameId < frameCount) {
-      var frame = animation.Frames[state.FrameId];
-      var colors = frame.Colors;
+      let frame = animation.Frames[state.FrameId];
+      let colors = frame.Colors;
+      let frameKeys = frame.Keys;
       if (maps[canvasName] != undefined) {
-        var mapKeyboard = maps[canvasName].mapKeyboard;
+        let mapKeyboard = maps[canvasName].mapKeyboard;
         if (mapKeyboard != undefined) {
-          for (var key in RZKEY) {
-            //console.log('key', 'RZKEY.'+key, RZKEY[key], 'i', i, 'j', j, map[keyDesc]);
-            var val = RZKEY[key];
-            if (val == RZKEY.RZKEY_INVALID) {
+          let keys = Object.keys(mapKeyboard);
+          for (let keyIndex = 0; keyIndex < keys.length; ++keyIndex) {
+            let key = parseInt(keys[keyIndex]);
+            if (key == RZKEY.RZKEY_INVALID) {
               continue;
             }
-            var i = getHighByte(val);
-            var row = colors[i];
-            var j = getLowByte(val);
-            var color = row[j];
-            var keyDesc = eval('RZKEY.'+key);
-            if (mapKeyboard[keyDesc] != undefined) {
-              mapKeyboard[keyDesc].setAttribute("style", "fill: "+getHexColor(color));
+            let val = mapKeyboard[key];
+            if (val) {
+              let i = getHighByte(key);
+              let row = colors[i];
+              let keyRow = frameKeys[i];
+              let j = getLowByte(key);
+              let color = row[j];
+              let keyColor = keyRow[j];
+              if (mapKeyboard[key] != undefined) {
+                // check for color override
+                if (animation.UseChromaCustom) {
+                  color = getKeyboardCustomColor(color, keyColor);
+                }
+                mapKeyboard[key].setAttribute("style", "fill: " + getHexColor(color));
+              }
             }
           }
         }
@@ -583,10 +615,10 @@ function drawKeyboard(canvasName, animationName, loop) {
     clearTimeout(canvasTimers.keyboard[canvasName]);
     canvasTimers.keyboard[canvasName] = undefined;
   }
-  var timer = setTimeout(function() {
+  var timer = setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -658,26 +690,26 @@ function drawKeypad(canvasName, animationName, loop) {
       if (maps[canvasName] != undefined) {
         var mapKeypad = maps[canvasName].mapKeypad;
         if (mapKeypad != undefined) {
-          mapKeypad[0].setAttribute("style", "fill: "+getHexColor(colors[0][0]));
-          mapKeypad[1].setAttribute("style", "fill: "+getHexColor(colors[0][1]));
-          mapKeypad[2].setAttribute("style", "fill: "+getHexColor(colors[0][2]));
-          mapKeypad[3].setAttribute("style", "fill: "+getHexColor(colors[0][3]));
-          mapKeypad[4].setAttribute("style", "fill: "+getHexColor(colors[0][4]));
-          mapKeypad[5].setAttribute("style", "fill: "+getHexColor(colors[1][0]));
-          mapKeypad[6].setAttribute("style", "fill: "+getHexColor(colors[1][1]));
-          mapKeypad[7].setAttribute("style", "fill: "+getHexColor(colors[1][2]));
-          mapKeypad[8].setAttribute("style", "fill: "+getHexColor(colors[1][3]));
-          mapKeypad[9].setAttribute("style", "fill: "+getHexColor(colors[1][4]));
-          mapKeypad[10].setAttribute("style", "fill: "+getHexColor(colors[2][0]));
-          mapKeypad[11].setAttribute("style", "fill: "+getHexColor(colors[2][1]));
-          mapKeypad[12].setAttribute("style", "fill: "+getHexColor(colors[2][2]));
-          mapKeypad[13].setAttribute("style", "fill: "+getHexColor(colors[2][3]));
-          mapKeypad[14].setAttribute("style", "fill: "+getHexColor(colors[2][4]));
-          mapKeypad[15].setAttribute("style", "fill: "+getHexColor(colors[3][0]));
-          mapKeypad[16].setAttribute("style", "fill: "+getHexColor(colors[3][1]));
-          mapKeypad[17].setAttribute("style", "fill: "+getHexColor(colors[3][2]));
-          mapKeypad[18].setAttribute("style", "fill: "+getHexColor(colors[3][3]));
-          mapKeypad[20].setAttribute("style", "fill: "+getHexColor(colors[3][4]));
+          mapKeypad[0].setAttribute("style", "fill: " + getHexColor(colors[0][0]));
+          mapKeypad[1].setAttribute("style", "fill: " + getHexColor(colors[0][1]));
+          mapKeypad[2].setAttribute("style", "fill: " + getHexColor(colors[0][2]));
+          mapKeypad[3].setAttribute("style", "fill: " + getHexColor(colors[0][3]));
+          mapKeypad[4].setAttribute("style", "fill: " + getHexColor(colors[0][4]));
+          mapKeypad[5].setAttribute("style", "fill: " + getHexColor(colors[1][0]));
+          mapKeypad[6].setAttribute("style", "fill: " + getHexColor(colors[1][1]));
+          mapKeypad[7].setAttribute("style", "fill: " + getHexColor(colors[1][2]));
+          mapKeypad[8].setAttribute("style", "fill: " + getHexColor(colors[1][3]));
+          mapKeypad[9].setAttribute("style", "fill: " + getHexColor(colors[1][4]));
+          mapKeypad[10].setAttribute("style", "fill: " + getHexColor(colors[2][0]));
+          mapKeypad[11].setAttribute("style", "fill: " + getHexColor(colors[2][1]));
+          mapKeypad[12].setAttribute("style", "fill: " + getHexColor(colors[2][2]));
+          mapKeypad[13].setAttribute("style", "fill: " + getHexColor(colors[2][3]));
+          mapKeypad[14].setAttribute("style", "fill: " + getHexColor(colors[2][4]));
+          mapKeypad[15].setAttribute("style", "fill: " + getHexColor(colors[3][0]));
+          mapKeypad[16].setAttribute("style", "fill: " + getHexColor(colors[3][1]));
+          mapKeypad[17].setAttribute("style", "fill: " + getHexColor(colors[3][2]));
+          mapKeypad[18].setAttribute("style", "fill: " + getHexColor(colors[3][3]));
+          mapKeypad[20].setAttribute("style", "fill: " + getHexColor(colors[3][4]));
         }
       }
     }
@@ -685,10 +717,10 @@ function drawKeypad(canvasName, animationName, loop) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -759,7 +791,7 @@ function drawChromaLink(canvasName, animationName, loop) {
           var frame = animation.Frames[state.FrameId];
           var colors = frame.Colors;
           for (var led = 0; led < 5; ++led) {
-            mapChromaLink[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
+            mapChromaLink[led].setAttribute("style", "fill: " + getHexColor(colors[led]));
           }
         }
       }
@@ -768,10 +800,10 @@ function drawChromaLink(canvasName, animationName, loop) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -844,7 +876,7 @@ function drawHeadset(canvasName, animationName, loop) {
 
           if (mapHeadset != undefined) {
             for (var led = 0; led < 2; ++led) {
-              mapHeadset[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
+              mapHeadset[led].setAttribute("style", "fill: " + getHexColor(colors[led]));
             }
           }
         }
@@ -854,10 +886,10 @@ function drawHeadset(canvasName, animationName, loop) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -930,24 +962,24 @@ function drawMouse(canvasName, animationName, loop) {
           var colors = frame.Colors;
 
           if (mapMouse != undefined) {
-            mapMouse[0].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE1));
-            mapMouse[3].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE2));
-            mapMouse[5].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE3));
-            mapMouse[7].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE4));
-            mapMouse[9].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE5));
-            mapMouse[11].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE6));
-            mapMouse[13].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE7));
+            mapMouse[0].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE1));
+            mapMouse[3].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE2));
+            mapMouse[5].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE3));
+            mapMouse[7].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE4));
+            mapMouse[9].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE5));
+            mapMouse[11].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE6));
+            mapMouse[13].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LEFT_SIDE7));
 
-            mapMouse[2].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE1));
-            mapMouse[4].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE2));
-            mapMouse[6].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE3));
-            mapMouse[8].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE4));
-            mapMouse[10].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE5));
-            mapMouse[12].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE6));
-            mapMouse[14].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE7));
+            mapMouse[2].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE1));
+            mapMouse[4].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE2));
+            mapMouse[6].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE3));
+            mapMouse[8].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE4));
+            mapMouse[10].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE5));
+            mapMouse[12].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE6));
+            mapMouse[14].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_RIGHT_SIDE7));
 
-            mapMouse[1].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_SCROLLWHEEL));
-            mapMouse[15].setAttribute("style", "fill: "+getMouseColor(colors, Mouse.RZLED2.RZLED2_LOGO));
+            mapMouse[1].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_SCROLLWHEEL));
+            mapMouse[15].setAttribute("style", "fill: " + getMouseColor(colors, Mouse.RZLED2.RZLED2_LOGO));
           }
         }
       }
@@ -956,10 +988,10 @@ function drawMouse(canvasName, animationName, loop) {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -972,7 +1004,7 @@ function drawMouse(canvasName, animationName, loop) {
     drawMouse(canvasName, animationName, loop);
   }, duration * 1000);
 }
-function drawMousepad(canvasName, animationName, loop)  {
+function drawMousepad(canvasName, animationName, loop) {
 
   var animation = ChromaAnimation.getAnimation(animationName);
   if (animation == undefined) {
@@ -1032,7 +1064,7 @@ function drawMousepad(canvasName, animationName, loop)  {
 
           if (mapMousepad != undefined) {
             for (var led = 0; led < 15; ++led) {
-              mapMousepad[led].setAttribute("style", "fill: "+getHexColor(colors[led]));
+              mapMousepad[led].setAttribute("style", "fill: " + getHexColor(colors[led]));
             }
           }
         }
@@ -1042,10 +1074,10 @@ function drawMousepad(canvasName, animationName, loop)  {
 
   var duration = Number(animation.getDuration());
   duration = Math.max(duration, 0.033);
-  setTimeout(function() {
+  setTimeout(function () {
     if (state.Loop == false) {
       if (!usingIdle &&
-        (state.FrameId+1) >= animation.getFrameCount()) {
+        (state.FrameId + 1) >= animation.getFrameCount()) {
         // delay before looping again
         state.Delay = Date.now() + 3000;
         state.FrameId = 0;
@@ -1058,7 +1090,7 @@ function drawMousepad(canvasName, animationName, loop)  {
     drawMousepad(canvasName, animationName, loop);
   }, duration * 1000);
 }
-displayKeyboardCanvas = function(baseLayer, effectName, loop) {
+displayKeyboardCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasKeyboard' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1066,7 +1098,7 @@ displayKeyboardCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayKeypadCanvas = function(baseLayer, effectName, loop) {
+displayKeypadCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasKeypad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1074,7 +1106,7 @@ displayKeypadCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayChromaLinkCanvas = function(baseLayer, effectName, loop) {
+displayChromaLinkCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasChromaLink' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1082,7 +1114,7 @@ displayChromaLinkCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayHeadsetCanvas = function(baseLayer, effectName, loop) {
+displayHeadsetCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasHeadset' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1090,7 +1122,7 @@ displayHeadsetCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayMouseCanvas = function(baseLayer, effectName, loop) {
+displayMouseCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasMouse' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1098,7 +1130,7 @@ displayMouseCanvas = function(baseLayer, effectName, loop) {
   }
   drawInProgress = false;
 }
-displayMousepadCanvas = function(baseLayer, effectName, loop) {
+displayMousepadCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasMousepad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
@@ -1108,12 +1140,12 @@ displayMousepadCanvas = function(baseLayer, effectName, loop) {
 }
 //display canvases
 var setupComplete = false;
-var handleButtonClick = function(button) {
+var handleButtonClick = function (button) {
   if (setupComplete) {
-  // when user clicks button, invoke the callback after Chroma has initialized
+    // when user clicks button, invoke the callback after Chroma has initialized
     if (!initialized) {
       chromaSDK.init();
-      setTimeout(function() {
+      setTimeout(function () {
         initialized = true;
         //console.log('set static color');
         if (button.click != undefined) {
