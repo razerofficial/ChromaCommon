@@ -3630,8 +3630,9 @@ var ChromaAnimation = {
               green <= minThreshold &&
               blue <= minThreshold) {
               colors[i] = minColor;
-            } else if (red >= maxThreshold ||
-              green >= maxThreshold ||
+            }
+            if (red >= maxThreshold &&
+              green >= maxThreshold &&
               blue >= maxThreshold) {
               colors[i] = maxColor;
             }
@@ -3659,11 +3660,71 @@ var ChromaAnimation = {
                 green <= minThreshold &&
                 blue <= minThreshold) {
                 row[j] = minColor;
-              } else if (red >= maxThreshold ||
-                green >= maxThreshold ||
+              }
+              if (red >= maxThreshold &&
+                green >= maxThreshold &&
                 blue >= maxThreshold) {
                 row[j] = maxColor;
               }
+            }
+          }
+        }
+      }
+    }
+  },
+  fillThresholdColorsMiddleAllFramesRGB: function (animationName, minThreshold, red, green, blue, maxThreshold) {
+    let animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    let frames = animation.Frames;
+    if (frames.length == 0) {
+      return;
+    }
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let color = ChromaAnimation.getRGB(red, green, blue);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let oldRed = oldColor & 0xFF;
+          let oldGreen = (oldColor >> 8) & 0xFF;
+          let oldBlue = (oldColor >> 16) & 0xFF;
+          if (oldRed >= minThreshold &&
+            oldGreen >= minThreshold &&
+            oldBlue >= minThreshold &&
+            oldRed <= maxThreshold &&
+            oldGreen <= maxThreshold &&
+            oldBlue <= maxThreshold) {
+            colors[i] = color;
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let color = ChromaAnimation.getRGB(red, green, blue);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor >> 8) & 0xFF;
+            let oldBlue = (oldColor >> 16) & 0xFF;
+            if (oldRed >= minThreshold &&
+              oldGreen >= minThreshold &&
+              oldBlue >= minThreshold &&
+              oldRed <= maxThreshold &&
+              oldGreen <= maxThreshold &&
+              oldBlue <= maxThreshold) {
+              row[j] = color;
             }
           }
         }
@@ -3696,8 +3757,9 @@ var ChromaAnimation = {
             green <= minThreshold &&
             blue <= minThreshold) {
             colors[i] = minColor;
-          } else if (red >= maxThreshold ||
-            green >= maxThreshold ||
+          }
+          if (red >= maxThreshold &&
+            green >= maxThreshold &&
             blue >= maxThreshold) {
             colors[i] = maxColor;
           }
@@ -3723,8 +3785,9 @@ var ChromaAnimation = {
               green <= minThreshold &&
               blue <= minThreshold) {
               row[j] = minColor;
-            } else if (red >= maxThreshold ||
-              green >= maxThreshold ||
+            }
+            if (red >= maxThreshold &&
+              green >= maxThreshold &&
               blue >= maxThreshold) {
               row[j] = maxColor;
             }
@@ -3762,8 +3825,9 @@ var ChromaAnimation = {
               green <= minThreshold &&
               blue <= minThreshold) {
               colors[i] = minColor;
-            } else if (red >= maxThreshold ||
-              green >= maxThreshold ||
+            }
+            if (red >= maxThreshold &&
+              green >= maxThreshold &&
               blue >= maxThreshold) {
               colors[i] = maxColor;
             }
@@ -3793,8 +3857,9 @@ var ChromaAnimation = {
                 green <= minThreshold &&
                 blue <= minThreshold) {
                 row[j] = minColor;
-              } else if (red >= maxThreshold ||
-                green >= maxThreshold ||
+              }
+              if (red >= maxThreshold &&
+                green >= maxThreshold &&
                 blue >= maxThreshold) {
                 row[j] = maxColor;
               }
@@ -3833,8 +3898,9 @@ var ChromaAnimation = {
               green <= minThreshold &&
               blue <= minThreshold) {
               colors[i] = ChromaAnimation.addColor(oldColor, minColor);
-            } else if (red >= maxThreshold ||
-              green >= maxThreshold ||
+            }
+            if (red >= maxThreshold &&
+              green >= maxThreshold &&
               blue >= maxThreshold) {
               colors[i] = ChromaAnimation.addColor(oldColor, maxColor);
             }
@@ -3864,8 +3930,9 @@ var ChromaAnimation = {
                 green <= minThreshold &&
                 blue <= minThreshold) {
                 row[j] = ChromaAnimation.addColor(oldColor, minColor);
-              } else if (red >= maxThreshold ||
-                green >= maxThreshold ||
+              }
+              if (red >= maxThreshold &&
+                green >= maxThreshold &&
                 blue >= maxThreshold) {
                 row[j] = ChromaAnimation.addColor(oldColor, maxColor);
               }
@@ -3904,8 +3971,9 @@ var ChromaAnimation = {
               green <= minThreshold &&
               blue <= minThreshold) {
               colors[i] = ChromaAnimation.subtractColor(oldColor, minColor);
-            } else if (red >= maxThreshold ||
-              green >= maxThreshold ||
+            }
+            if (red >= maxThreshold &&
+              green >= maxThreshold &&
               blue >= maxThreshold) {
               colors[i] = ChromaAnimation.subtractColor(oldColor, maxColor);
             }
@@ -3935,8 +4003,9 @@ var ChromaAnimation = {
                 green <= minThreshold &&
                 blue <= minThreshold) {
                 row[j] = ChromaAnimation.subtractColor(oldColor, minColor);
-              } else if (red >= maxThreshold ||
-                green >= maxThreshold ||
+              }
+              if (red >= maxThreshold &&
+                green >= maxThreshold &&
                 blue >= maxThreshold) {
                 row[j] = ChromaAnimation.subtractColor(oldColor, maxColor);
               }
@@ -6688,7 +6757,7 @@ ChromaAnimation2D.prototype = {
           if (this.UseChromaCustom) {
             chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors, this.getFrame().Keys);
           } else {
-            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors);
+            chromaSDK.createKeyboardEffect2("CHROMA_CUSTOM2", this.getFrame().Colors, this.getFrame().Keys);
           }
           break;
         case EChromaSDKDevice2DEnum.DE_Keypad:
