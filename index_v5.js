@@ -1002,14 +1002,18 @@ function drawKeyboard(canvas, canvasName, animationName, loop) {
             let val = valArray[valIndex];
             if (val) {
               let i = getHighByte(key);
-              let row = colors[i];
-              let j = getLowByte(key);
-              let color = row[j];
-              // check for color override
-              if (animation.UseChromaCustom) {
-                color = getKeyboardCustomColor(frameKeys, key, color);
+              if (i < colors.length) {
+                let row = colors[i];
+                let j = getLowByte(key);
+                if (j < row.length) {
+                  let color = row[j];
+                  // check for color override
+                  if (animation.UseChromaCustom) {
+                    color = getKeyboardCustomColor(frameKeys, key, color);
+                  }
+                  val.setAttribute("style", "fill: " + getHexColor(color));
+                }
               }
-              val.setAttribute("style", "fill: " + getHexColor(color));
             }
           }
         }
