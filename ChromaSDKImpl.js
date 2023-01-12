@@ -2757,6 +2757,64 @@ var ChromaAnimation = {
       }
     }
   },
+  replaceZeroKeysWithSourceAllFrames: function (sourceAnimationName, targetAnimationName) {
+    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    var sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    var targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxLeds; ++i) {
+          var sourceColor = sourceColors[i];
+          var targetColor = targetColors[i];
+          if (sourceColor != 0 &&
+            targetColor == 0) {
+            targetColors[i] = sourceColor;
+          }
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
+        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        var targetFrame = targetFrames[frameId];
+        var sourceColors = sourceFrame.Colors;
+        var targetColors = targetFrame.Colors;
+        for (var i = 0; i < maxRow; ++i) {
+          var sourceRow = sourceColors[i];
+          var targetRow = targetColors[i];
+          for (var j = 0; j < maxColumn; ++j) {
+            var sourceColor = sourceRow[j];
+            var targetColor = targetRow[j];
+            if (sourceColor != 0 &&
+              targetColor == 0) {
+              targetRow[j] = sourceColor;
+            }
+          }
+        }
+      }
+    }
+  },
   copyNonZeroTargetZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
     var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
@@ -6126,7 +6184,7 @@ var ChromaAnimation = {
       case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
         break;
       default:
-      return;
+        return;
     }
     animation.setChromaCustomFlag(flag);
   },
@@ -6212,22 +6270,22 @@ var ChromaAnimation = {
     this.stopByAnimationType(device);
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
-      chromaSDK.createChromaLinkEffect("CHROMA_CUSTOM", colors);
+        chromaSDK.createChromaLinkEffect("CHROMA_CUSTOM", colors);
         break;
       case EChromaSDKDeviceEnum.DE_Headset:
-      chromaSDK.createHeadsetEffect("CHROMA_CUSTOM", colors);
+        chromaSDK.createHeadsetEffect("CHROMA_CUSTOM", colors);
         break;
       case EChromaSDKDeviceEnum.DE_Keyboard:
         chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", colors, keys);
         break;
       case EChromaSDKDeviceEnum.DE_Keypad:
-      chromaSDK.createKeypadEffect("CHROMA_CUSTOM", colors);
+        chromaSDK.createKeypadEffect("CHROMA_CUSTOM", colors);
         break;
       case EChromaSDKDeviceEnum.DE_Mouse:
-      chromaSDK.createMouseEffect("CHROMA_CUSTOM2", colors);
+        chromaSDK.createMouseEffect("CHROMA_CUSTOM2", colors);
         break;
       case EChromaSDKDeviceEnum.DE_Mousepad:
-      chromaSDK.createMousematEffect("CHROMA_CUSTOM", colors);
+        chromaSDK.createMousematEffect("CHROMA_CUSTOM", colors);
         break;
       case EChromaSDKDeviceEnum.DE_KeyboardExtended:
         chromaSDK.createKeyboardEffect("CHROMA_CUSTOM", colors, keys);
@@ -6252,22 +6310,22 @@ var ChromaAnimation = {
     this.stopByAnimationType(device);
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
-      chromaSDK.createChromaLinkEffect("CHROMA_NONE");
+        chromaSDK.createChromaLinkEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_Headset:
-      chromaSDK.createHeadsetEffect("CHROMA_NONE");
+        chromaSDK.createHeadsetEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_Keyboard:
-      chromaSDK.createKeyboardEffect("CHROMA_NONE");
+        chromaSDK.createKeyboardEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_Keypad:
-      chromaSDK.createKeypadEffect("CHROMA_NONE");
+        chromaSDK.createKeypadEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_Mouse:
-      chromaSDK.createMouseEffect("CHROMA_NONE");
+        chromaSDK.createMouseEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_Mousepad:
-      chromaSDK.createMousematEffect("CHROMA_NONE");
+        chromaSDK.createMousematEffect("CHROMA_NONE");
         break;
       case EChromaSDKDeviceEnum.DE_KeyboardExtended:
         chromaSDK.createKeyboardEffect("CHROMA_NONE");
