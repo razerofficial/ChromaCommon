@@ -1460,7 +1460,12 @@ displayKeyboardCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasKeyboard' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    drawKeyboard(canvasName, canvasName, loop);
+    let canvas = document.getElementById(canvasName);
+    if (canvas == undefined) {
+      console.error('Canvas is missing!', canvasName);
+      return;
+    }
+    drawKeyboard(canvas, canvasName, canvasName, loop);
   }
   drawInProgress = false;
 }
@@ -1468,7 +1473,12 @@ displayKeypadCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasKeypad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
-    drawKeypad(canvasName, canvasName, loop);
+    let canvas = document.getElementById(canvasName);
+    if (canvas == undefined) {
+      console.error('Canvas is missing!', canvasName);
+      return;
+    }
+    drawKeypad(canvas, canvasName, loop);
   }
   drawInProgress = false;
 }
@@ -1515,6 +1525,11 @@ displayMousepadCanvas = function (baseLayer, effectName, loop) {
   var canvasName = 'canvasMousepad' + effectName;
   if (ChromaAnimation.getAnimation(canvasName) == undefined) {
     ChromaAnimation.copyAnimation(baseLayer, canvasName);
+    let canvas = document.getElementById(canvasName);
+    if (canvas == undefined) {
+      console.error('Canvas is missing!', canvasName);
+      return;
+    }
     drawMousepad(canvasName, canvasName, loop);
   }
   drawInProgress = false;
