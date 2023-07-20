@@ -887,6 +887,28 @@ var ChromaAnimation = {
     }
     return undefined;
   },
+  getDeviceEnumName(deviceEnum) {
+    switch (deviceEnum) {
+      case EChromaSDKDeviceEnum.DE_ChromaLink:
+        return "ChromaLink";
+      case EChromaSDKDeviceEnum.DE_Headset:
+        return "Headset";
+      case EChromaSDKDeviceEnum.DE_Keyboard:
+        return "Keyboard";
+      case EChromaSDKDeviceEnum.DE_Keypad:
+        return "Keypad";
+      case EChromaSDKDeviceEnum.DE_Mouse:
+        return "Mouse";
+      case EChromaSDKDeviceEnum.DE_Mousepad:
+        return "Mousepad";
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
+        return "KeyboardExtended";
+    }
+    return '';
+  },
+  getDeviceName(deviceType, device) {
+    return this.getDeviceEnumName(this.getDeviceEnum(deviceType, device));
+  },
   lerp: function (start, end, amt) {
     return (1 - amt) * start + amt * end;
   },
