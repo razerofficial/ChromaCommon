@@ -387,7 +387,7 @@ Vue.component('div-chroma-set', {
         <button class="buttonChroma" :onclick="keyboardClick" style="font-size: 1.2em; display: inline-table; padding: 4px; max-width: 65px" :id="'showEffect'+index">{{ index }}</button>
         <div style="width: 550px; display: inline-table">{{ header }}</div>
       </div>
-      <section v-show="index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
+      <section v-show="false && index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
         <small>
         <b>Download:</b>
         <a style="border:1px solid #04D;
