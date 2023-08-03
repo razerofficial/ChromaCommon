@@ -405,7 +405,7 @@ Vue.component('div-chroma-set', {
       </section>
       <section v-show="video != undefined && video != ''">
         <div style="width: 645px; padding-left: 25px; background: hsl(0, 0%, 10%); color: white; display: inline-table">
-        <video :id="'video'+index" style="width: 645px; height: 430px;" :src="video" muted autoplay loop></video>
+        <video :id="'video'+index" style="width: 326px; height: 240px; zoom: 175%" :src="video" muted autoplay loop></video>
         </div>
       </section>
       <section v-show="index != undefined && index != ''">
