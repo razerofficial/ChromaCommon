@@ -1478,27 +1478,26 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
+    }
+    const customFlag = 1 << 24;
+    const keyColor = color | customFlag;
+    let frames = animation.Frames;
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          if (getHighByte(key) == i &&
-            getLowByte(key) == j) {
-            row[j] = color;
-          }
-        }
-      }
+      let frame = frames[frameId];
+      let keys = frame.Keys;
+      const i = getHighByte(key);
+      let row = keys[i];
+      const j = getLowByte(key);
+      row[j] = color | keyColor;
     }
   },
   copyKeyColorToKey: function (animationName, frameId, sourceKey, targetKey) {
@@ -1510,27 +1509,26 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          if (getHighByte(key) == i &&
-            getLowByte(key) == j) {
-            row[j] = color;
-          }
-        }
-      }
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
+    }
+    const customFlag = 1 << 24;
+    const keyColor = color | customFlag;
+    let frames = animation.Frames;
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
+      let keys = frame.Keys;
+      const i = getHighByte(key);
+      let row = keys[i];
+      const j = getLowByte(key);
+      row[j] = color | keyColor;
     }
   },
   setKeyColorAllFramesRGB: function (animationName, key, red, green, blue) {
@@ -1538,28 +1536,27 @@ var ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
+    }
     var color = (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          if (getHighByte(key) == i &&
-            getLowByte(key) == j) {
-            row[j] = color;
-          }
-        }
-      }
+    const customFlag = 1 << 24;
+    const keyColor = color | customFlag;
+    let frames = animation.Frames;
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
+      let keys = frame.Keys;
+      const i = getHighByte(key);
+      let row = keys[i];
+      const j = getLowByte(key);
+      row[j] = color | keyColor;
     }
   },
   setKeysColorAllFrames: function (animationName, keys, color) {
@@ -1604,34 +1601,32 @@ var ChromaAnimation = {
     }
   },
   setKeysColorAllFramesRGB: function (animationName, keys, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var color = (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
-    //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          for (var k = 0; k < keys.length; ++k) {
-            var key = keys[k];
-            if (getHighByte(key) == i &&
-              getLowByte(key) == j) {
-              row[j] = color;
-            }
-          }
-        }
+    switch (animation.Device) {
+      case EChromaSDKDevice2DEnum.DE_Keyboard:
+      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
+        break;
+      default:
+        return;
+    }
+    let frames = animation.Frames;
+    const color = (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
+    const customFlag = 1 << 24;
+    const keyColor = color | customFlag;
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
+      for (let k = 0; k < keys.length; ++k) {
+        let key = keys[k];
+        const i = getHighByte(key);
+        const j = getLowByte(key);
+        let row = frame.Keys[i];
+        row[j] = keyColor;
       }
     }
   },
