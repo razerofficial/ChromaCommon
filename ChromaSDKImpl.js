@@ -1,16 +1,28 @@
 // JavaScript source code
 
+/**
+ * A Color is a three-byte RGB value.
+ * 
+ * The red, green, and blue channels are in order from low byte to high byte.
+ * 
+ * i.e. in the color 0x012345, R=0x45, G=0x23, B=0x01.
+ * @typedef { number } Color
+ */
+
+/**
+ * Chroma SDK client.
+ */
 function ChromaSDK() {
-  var uri = undefined;
-  var timerId = undefined;
-  var initialized = false;
-  var customInitData = undefined;
+  let uri = undefined;
+  let timerId = undefined;
+  let initialized = false;
+  let customInitData = undefined;
 }
 
 ChromaSDK.prototype = {
   uri: undefined,
   onTimer: function () {
-    var refThis = chromaSDK; // used on interval so this is out of scope
+    let refThis = chromaSDK; // used on interval so this is out of scope
     if (refThis.uri == undefined) {
       return;
     }
@@ -19,7 +31,7 @@ ChromaSDK.prototype = {
       return;
     }
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("PUT", refThis.uri + "/heartbeat", true);
 
@@ -45,8 +57,13 @@ ChromaSDK.prototype = {
 
     request.send(null);
   },
+  /**
+   * Attempts to connect to the Chroma SDK.
+   * 
+   * Call before using the Chroma SDK.
+   */
   init: function () {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.timerId != undefined) {
@@ -54,7 +71,7 @@ ChromaSDK.prototype = {
         refThis.timerId = undefined;
       }
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       // let url = "https://chromasdk.io:54236/razer/chromasdk"; // secure port
       let url = "http://localhost:54235/razer/chromasdk"; // insecure port
@@ -95,8 +112,11 @@ ChromaSDK.prototype = {
       }
     }, 0);
   },
+  /**
+   * Shuts down the connection to the Chroma SDK.
+   */
   uninit: function () {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       refThis.initialized = false;
@@ -106,7 +126,7 @@ ChromaSDK.prototype = {
       }
 
       console.log('Uninitializing Chroma...');
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("DELETE", refThis.uri, true);
 
@@ -124,30 +144,30 @@ ChromaSDK.prototype = {
     }, 0);
   },
   createKeyboardEffect: function (effect, data, keys) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       } else if (effect == "CHROMA_CUSTOM_KEY") {
-        var color = { "color": data, "key": keys };
+        let color = { "color": data, "key": keys };
         jsonObj = JSON.stringify({ effect: effect, param: color });
       }
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/keyboard", true);
 
@@ -159,14 +179,14 @@ ChromaSDK.prototype = {
     }, 0);
   },
   createKeyboardEffect2: function (effect, data, keys) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       switch (effect) {
         case "CHROMA_NONE":
@@ -191,7 +211,7 @@ ChromaSDK.prototype = {
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/keyboard", true);
 
@@ -203,18 +223,18 @@ ChromaSDK.prototype = {
     }, 0);
   },
   preCreateKeyboardEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     if (refThis.uri == undefined) {
       return;
     }
-    var jsonObj;
+    let jsonObj;
 
     if (effect == "CHROMA_NONE") {
       jsonObj = JSON.stringify({ "effect": effect });
     } else if (effect == "CHROMA_CUSTOM") {
       jsonObj = JSON.stringify({ "effect": effect, "param": data });
     } else if (effect == "CHROMA_STATIC") {
-      var color = { "color": data };
+      let color = { "color": data };
       jsonObj = JSON.stringify({ "effect": effect, "param": color });
     } else if (effect == "CHROMA_CUSTOM_KEY") {
       jsonObj = JSON.stringify({ "effect": effect, "param": keys });
@@ -222,7 +242,7 @@ ChromaSDK.prototype = {
 
     //console.log(jsonObj);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("POST", refThis.uri + "/keyboard", false);
 
@@ -237,27 +257,27 @@ ChromaSDK.prototype = {
     return JSON.parse(request.responseText)['id'];
   },
   createMousematEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       }
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/mousepad", true);
 
@@ -269,24 +289,24 @@ ChromaSDK.prototype = {
     }, 0);
   },
   preCreateMousematEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     if (refThis.uri == undefined) {
       return;
     }
-    var jsonObj;
+    let jsonObj;
 
     if (effect == "CHROMA_NONE") {
       jsonObj = JSON.stringify({ "effect": effect });
     } else if (effect == "CHROMA_CUSTOM") {
       jsonObj = JSON.stringify({ "effect": effect, "param": data });
     } else if (effect == "CHROMA_STATIC") {
-      var color = { "color": data };
+      let color = { "color": data };
       jsonObj = JSON.stringify({ "effect": effect, "param": color });
     }
 
     //console.log(jsonObj);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("POST", refThis.uri + "/mousepad", false);
 
@@ -299,27 +319,27 @@ ChromaSDK.prototype = {
     return JSON.parse(request.responseText)['id'];
   },
   createMouseEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM2") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       }
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/mouse", true);
 
@@ -331,24 +351,24 @@ ChromaSDK.prototype = {
     }, 0);
   },
   preCreateMouseEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     if (refThis.uri == undefined) {
       return;
     }
-    var jsonObj;
+    let jsonObj;
 
     if (effect == "CHROMA_NONE") {
       jsonObj = JSON.stringify({ "effect": effect });
     } else if (effect == "CHROMA_CUSTOM2") {
       jsonObj = JSON.stringify({ "effect": effect, "param": data });
     } else if (effect == "CHROMA_STATIC") {
-      var color = { "color": data };
+      let color = { "color": data };
       jsonObj = JSON.stringify({ "effect": effect, "param": color });
     }
 
     //console.log(jsonObj);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("POST", refThis.uri + "/mouse", false);
 
@@ -361,27 +381,27 @@ ChromaSDK.prototype = {
     return JSON.parse(request.responseText)['id'];
   },
   createHeadsetEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       }
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/headset", true);
 
@@ -393,25 +413,25 @@ ChromaSDK.prototype = {
     }, 0);
   },
   preCreateHeadsetEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     if (refThis.uri == undefined) {
       return;
     }
 
-    var jsonObj;
+    let jsonObj;
 
     if (effect == "CHROMA_NONE") {
       jsonObj = JSON.stringify({ "effect": effect });
     } else if (effect == "CHROMA_CUSTOM") {
       jsonObj = JSON.stringify({ "effect": effect, "param": data });
     } else if (effect == "CHROMA_STATIC") {
-      var color = { "color": data };
+      let color = { "color": data };
       jsonObj = JSON.stringify({ "effect": effect, "param": color });
     }
 
     //console.log(jsonObj);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("POST", refThis.uri + "/headset", false);
 
@@ -424,27 +444,27 @@ ChromaSDK.prototype = {
     return JSON.parse(request.responseText)['id'];
   },
   createKeypadEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       }
 
       //console.log(jsonObj);
 
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
 
       request.open("PUT", refThis.uri + "/keypad", true);
 
@@ -456,24 +476,24 @@ ChromaSDK.prototype = {
     }, 0);
   },
   preCreateKeypadEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     if (refThis.uri == undefined) {
       return;
     }
-    var jsonObj;
+    let jsonObj;
 
     if (effect == "CHROMA_NONE") {
       jsonObj = JSON.stringify({ "effect": effect });
     } else if (effect == "CHROMA_CUSTOM") {
       jsonObj = JSON.stringify({ "effect": effect, "param": data });
     } else if (effect == "CHROMA_STATIC") {
-      var color = { "color": data };
+      let color = { "color": data };
       jsonObj = JSON.stringify({ "effect": effect, "param": color });
     }
 
     //console.log(jsonObj);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.open("POST", refThis.uri + "/keypad", false);
 
@@ -486,21 +506,21 @@ ChromaSDK.prototype = {
     return JSON.parse(request.responseText)['id'];
   },
   createChromaLinkEffect: function (effect, data) {
-    var refThis = this;
+    let refThis = this;
     setTimeout(function () {
 
       if (refThis.uri == undefined) {
         return;
       }
 
-      var jsonObj;
+      let jsonObj;
 
       if (effect == "CHROMA_NONE") {
         jsonObj = JSON.stringify({ "effect": effect });
       } else if (effect == "CHROMA_CUSTOM") {
         jsonObj = JSON.stringify({ "effect": effect, "param": data });
       } else if (effect == "CHROMA_STATIC") {
-        var color = { "color": data };
+        let color = { "color": data };
         jsonObj = JSON.stringify({ "effect": effect, "param": color });
       }
 
@@ -618,8 +638,10 @@ ChromaSDK.prototype = {
   }
 }
 
-// keyboard keys
-var RZKEY = {
+/**
+ * Object containing keyboard key constants.
+ */
+const RZKEY = {
   RZKEY_ESC: 0x0001,                 /*!< Esc (VK_ESCAPE) */
   RZKEY_F1: 0x0003,                  /*!< F1 (VK_F1) */
   RZKEY_F2: 0x0004,                  /*!< F2 (VK_F2) */
@@ -746,84 +768,127 @@ var RZKEY = {
   RZKEY_INVALID: 0xFFFF              /*!< Invalid keys. */
 };
 
-// keyboard leds
-var RZLED = {
+/**
+ * Object containing keyboard LED constants.
+ */
+const RZLED = {
   RZLED_LOGO: 0x0014                 /*!< Razer logo */
 };
 
-// mouse leds
-var Mouse = {};
-Mouse.RZLED2 = {
-  RZLED2_SCROLLWHEEL: 0x0203,  //!< Scroll Wheel LED.
-  RZLED2_LOGO: 0x0703,  //!< Logo LED.
-  RZLED2_BACKLIGHT: 0x0403,  //!< Backlight LED.
-  RZLED2_LEFT_SIDE1: 0x0100,  //!< Left LED 1.
-  RZLED2_LEFT_SIDE2: 0x0200,  //!< Left LED 2.
-  RZLED2_LEFT_SIDE3: 0x0300,  //!< Left LED 3.
-  RZLED2_LEFT_SIDE4: 0x0400,  //!< Left LED 4.
-  RZLED2_LEFT_SIDE5: 0x0500,  //!< Left LED 5.
-  RZLED2_LEFT_SIDE6: 0x0600,  //!< Left LED 6.
-  RZLED2_LEFT_SIDE7: 0x0700,  //!< Left LED 7.
-  RZLED2_BOTTOM1: 0x0801,  //!< Bottom LED 1.
-  RZLED2_BOTTOM2: 0x0802,  //!< Bottom LED 2.
-  RZLED2_BOTTOM3: 0x0803,  //!< Bottom LED 3.
-  RZLED2_BOTTOM4: 0x0804,  //!< Bottom LED 4.
-  RZLED2_BOTTOM5: 0x0805,  //!< Bottom LED 5.
-  RZLED2_RIGHT_SIDE1: 0x0106,  //!< Right LED 1.
-  RZLED2_RIGHT_SIDE2: 0x0206,  //!< Right LED 2.
-  RZLED2_RIGHT_SIDE3: 0x0306,  //!< Right LED 3.
-  RZLED2_RIGHT_SIDE4: 0x0406,  //!< Right LED 4.
-  RZLED2_RIGHT_SIDE5: 0x0506,  //!< Right LED 5.
-  RZLED2_RIGHT_SIDE6: 0x0606,  //!< Right LED 6.
-  RZLED2_RIGHT_SIDE7: 0x0706   //!< Right LED 7.
+/**
+ * Object containing mouse LED constants.
+ */
+const Mouse = {
+  RZLED2: {
+    RZLED2_SCROLLWHEEL: 0x0203,  //!< Scroll Wheel LED.
+    RZLED2_LOGO: 0x0703,  //!< Logo LED.
+    RZLED2_BACKLIGHT: 0x0403,  //!< Backlight LED.
+    RZLED2_LEFT_SIDE1: 0x0100,  //!< Left LED 1.
+    RZLED2_LEFT_SIDE2: 0x0200,  //!< Left LED 2.
+    RZLED2_LEFT_SIDE3: 0x0300,  //!< Left LED 3.
+    RZLED2_LEFT_SIDE4: 0x0400,  //!< Left LED 4.
+    RZLED2_LEFT_SIDE5: 0x0500,  //!< Left LED 5.
+    RZLED2_LEFT_SIDE6: 0x0600,  //!< Left LED 6.
+    RZLED2_LEFT_SIDE7: 0x0700,  //!< Left LED 7.
+    RZLED2_BOTTOM1: 0x0801,  //!< Bottom LED 1.
+    RZLED2_BOTTOM2: 0x0802,  //!< Bottom LED 2.
+    RZLED2_BOTTOM3: 0x0803,  //!< Bottom LED 3.
+    RZLED2_BOTTOM4: 0x0804,  //!< Bottom LED 4.
+    RZLED2_BOTTOM5: 0x0805,  //!< Bottom LED 5.
+    RZLED2_RIGHT_SIDE1: 0x0106,  //!< Right LED 1.
+    RZLED2_RIGHT_SIDE2: 0x0206,  //!< Right LED 2.
+    RZLED2_RIGHT_SIDE3: 0x0306,  //!< Right LED 3.
+    RZLED2_RIGHT_SIDE4: 0x0406,  //!< Right LED 4.
+    RZLED2_RIGHT_SIDE5: 0x0506,  //!< Right LED 5.
+    RZLED2_RIGHT_SIDE6: 0x0606,  //!< Right LED 6.
+    RZLED2_RIGHT_SIDE7: 0x0706   //!< Right LED 7.
+  }
 };
 
+/**
+ * Retrieves the high byte of a 2-byte RZKEY value.
+ * @param { number } key The 2-byte RZKEY value.
+ * @returns The high byte.
+ */
 function getHighByte(key) {
   return (key & 0xFF00) >> 8;
 }
 
+/**
+ * Retrieves the low byte of a 2-byte RZKEY value.
+ * @param { number } key The 2-byte RZKEY value.
+ * @returns The low byte.
+ */
 function getLowByte(key) {
   return (key & 0xFF);
 }
 
-var EChromaSDKDeviceTypeEnum = {
-  'DE_1D': 0,
-  'DE_2D': 1
+/**
+ * Enum for the type of Chroma device.
+ */
+const EChromaSDKDeviceTypeEnum = {
+  /**
+   * One dimensional device.
+   */
+  DE_1D: 0,
+  /**
+   * Two dimensional device.
+   */
+  DE_2D: 1
 };
 
-var EChromaSDKDevice1DEnum = {
-  'DE_ChromaLink': 0,
-  'DE_Headset': 1,
-  'DE_Mousepad': 2,
-  'DE_MAX': 3
+/**
+ * Enum for the type of 1D Chroma device.
+ */
+const EChromaSDKDevice1DEnum = {
+  DE_ChromaLink: 0,
+  DE_Headset: 1,
+  DE_Mousepad: 2,
+  DE_MAX: 3
 };
 
-var EChromaSDKDevice2DEnum = {
-  'DE_Keyboard': 0,
-  'DE_Keypad': 1,
-  'DE_Mouse': 2,
-  'DE_KeyboardExtended': 3,
-  'DE_MAX': 4
+/**
+ * Enum for the type of 2D Chroma device.
+ */
+const EChromaSDKDevice2DEnum = {
+  DE_Keyboard: 0,
+  DE_Keypad: 1,
+  DE_Mouse: 2,
+  DE_KeyboardExtended: 3,
+  DE_MAX: 4
 };
 
-var EChromaSDKDeviceEnum = {
-  'DE_ChromaLink': 0,
-  'DE_Headset': 1,
-  'DE_Keyboard': 2,
-  'DE_Keypad': 3,
-  'DE_Mouse': 4,
-  'DE_Mousepad': 5,
-  'DE_KeyboardExtended': 6,
-  'DE_MAX': 7
+/**
+ * Enum for the type of Chroma device.
+ */
+const EChromaSDKDeviceEnum = {
+  DE_ChromaLink: 0,
+  DE_Headset: 1,
+  DE_Keyboard: 2,
+  DE_Keypad: 3,
+  DE_Mouse: 4,
+  DE_Mousepad: 5,
+  DE_KeyboardExtended: 6,
+  DE_MAX: 7
 };
 
+/**
+ * Frame for 1D Chroma animation.
+ */
 function ChromaAnimationFrame1D() {
+  /** @type { number } */
   this.Duration = 0.033;
+  /** @type { Color[] } */
   this.Colors = undefined;
 }
 
+/**
+ * Frame for 2D Chroma animation.
+ */
 function ChromaAnimationFrame2D(device) {
+  /** @type { number } */
   this.Duration = 0.033;
+  /** @type { Color[][] } */
   this.Colors = [];
   switch (device) {
     case EChromaSDKDevice2DEnum.DE_Keyboard:
@@ -838,22 +903,90 @@ function ChromaAnimationFrame2D(device) {
           row[j] = 0;
         }
       }
+      /** @type { number[][] } */
       this.Keys = keys; // For Keyboard and KeyboardExtended
       break;
   }
 }
 
-var ChromaAnimation = {
+/**
+ * Global object for manipulating Chroma animations.
+ */
+let ChromaAnimation = {
+  /**
+   * All animations.
+   * 
+   * Key is the name of the animation.
+   * @type { Object.<string, ChromaAnimation1D | ChromaAnimation2D> }
+   */
   LoadedAnimations: {},
+  /**
+   * The current 1D animation for each 1D device.
+   * 
+   * Key is of type EChromaSDKDevice1DEnum.
+   * @type { Object.<number, ChromaAnimation1D> }
+   */
   LoadedAnimations1D: {},
+  /**
+   * The current 2D animation for each 2D device.
+   * 
+   * Key is of type EChromaSDKDevice2DEnum.
+   * @type { Object.<number, ChromaAnimation2D> }
+   */
   LoadedAnimations2D: {},
+  /**
+   * The array of 1D animations for each 1D device.
+   * 
+   * Key is of type EChromaSDKDevice1DEnum.
+   * @type { Object.<number, Array.<ChromaAnimation1D>> }
+   */
   PlayingAnimations1D: {},
+  /**
+   * The array of 2D animations for each 2D device.
+   * 
+   * Key is of type EChromaSDKDevice2DEnum.
+   * @type { Object.<number, Array.<ChromaAnimation2D>> }
+   */
   PlayingAnimations2D: {},
+  /**
+   * Whether to play the 1D idle animations for each 1D device.
+   * 
+   * Key is of type EChromaSDKDevice1DEnum.
+   * @type { Object.<number, boolean> }
+   */
   UseIdleAnimation1D: {},
+  /**
+   * Whether to play the 2D idle animations for each 2D device.
+   * 
+   * Key is of type EChromaSDKDevice2DEnum.
+   * @type { Object.<number, boolean> }
+   */
   UseIdleAnimation2D: {},
+  /**
+   * The name of 1D animations to use when idle for each 1D device.
+   * 
+   * Key is of type EChromaSDKDevice1DEnum.
+   * @type { Object.<number, string> }
+   */
   IdleAnimation1D: {},
+  /**
+   * The name of 2D animations to use when idle for each 2D device.
+   * 
+   * Key is of type EChromaSDKDevice2DEnum.
+   * @type { Object.<number, string> }
+   */
   IdleAnimation2D: {},
+  /**
+   * The ID of the interval handler.
+   * @type { number | undefined }
+   */
   IntervalUpdateFrame: undefined,
+
+  /**
+   * Processes the main update loop.
+   * 
+   * Reinitialises all idle and playing animations when first run, 
+   */
   updateFrame: function () {
     if (ChromaAnimation.IntervalUpdateFrame == undefined) {
 
@@ -876,12 +1009,12 @@ var ChromaAnimation = {
     }
 
     // 1D Devices
-    for (var device = 0; device < EChromaSDKDevice1DEnum.DE_MAX; ++device) {
-      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[device]);
-      var useIdleAnimation = true;
+    for (let device = 0; device < EChromaSDKDevice1DEnum.DE_MAX; ++device) {
+      let idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation1D[device]);
+      let useIdleAnimation = true;
 
-      for (var animationName in ChromaAnimation.PlayingAnimations1D[device]) {
-        var animation = ChromaAnimation.PlayingAnimations1D[device][animationName];
+      for (let animationName in ChromaAnimation.PlayingAnimations1D[device]) {
+        let animation = ChromaAnimation.PlayingAnimations1D[device][animationName];
         if (animation != undefined) {
           animation.playFrame();
           if (idleAnimation != animation) {
@@ -904,12 +1037,12 @@ var ChromaAnimation = {
     }
 
     // 2D Devices
-    for (var device = 0; device < EChromaSDKDevice2DEnum.DE_MAX; ++device) {
-      var idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[device]);
-      var useIdleAnimation = true;
+    for (let device = 0; device < EChromaSDKDevice2DEnum.DE_MAX; ++device) {
+      let idleAnimation = ChromaAnimation.getAnimation(ChromaAnimation.IdleAnimation2D[device]);
+      let useIdleAnimation = true;
 
-      for (var animationName in ChromaAnimation.PlayingAnimations2D[device]) {
-        var animation = ChromaAnimation.PlayingAnimations2D[device][animationName];
+      for (let animationName in ChromaAnimation.PlayingAnimations2D[device]) {
+        let animation = ChromaAnimation.PlayingAnimations2D[device][animationName];
         if (animation != undefined) {
           animation.playFrame();
           if (idleAnimation != animation) {
@@ -932,6 +1065,11 @@ var ChromaAnimation = {
     }
 
   },
+  /**
+   * Retrieves the number of LEDs in a 1D device.
+   * @param { number } device The EChromaSDKDevice1DEnum.
+   * @returns The number of LEDs.
+   */
   getMaxLeds: function (device) {
     switch (device) {
       case EChromaSDKDevice1DEnum.DE_ChromaLink:
@@ -944,6 +1082,11 @@ var ChromaAnimation = {
     console.log('getMaxLeds: Invalid device!');
     return undefined;
   },
+  /**
+   * Retrieves the number of rows in a 2D device.
+   * @param { number } device The EChromaSDKDevice2DEnum.
+   * @returns The number of rows.
+   */
   getMaxRow: function (device) {
     switch (device) {
       case EChromaSDKDevice2DEnum.DE_Keyboard:
@@ -958,6 +1101,11 @@ var ChromaAnimation = {
     console.log('getMaxRow: Invalid device!');
     return undefined;
   },
+  /**
+   * Retrieves the number of columns in a 2D device.
+   * @param { number } device The EChromaSDKDevice2DEnum.
+   * @returns The number of columns.
+   */
   getMaxColumn: function (device) {
     switch (device) {
       case EChromaSDKDevice2DEnum.DE_Keyboard:
@@ -972,12 +1120,18 @@ var ChromaAnimation = {
     console.log('getMaxColumn: Invalid device!');
     return undefined;
   },
+  /**
+   * Opens an animation from memory.
+   * @param { any[] } buffer The data buffer.
+   * @param { string } animationName The name of the animation, without the _{DEVICE} suffix.
+   * @param { (anim: ChromaAnimation1D | ChromaAnimation2D | undefined) => void } callback The callback.
+   */
   openAnimationFromMemory: function (buffer, animationName, callback) {
-    var arrayBuffer = (new Uint8Array(buffer)).buffer;
+    let arrayBuffer = (new Uint8Array(buffer)).buffer;
 
-    var readIndex = 0;
-    var readSize = 4;
-    var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let readIndex = 0;
+    let readSize = 4;
+    let version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('version:', version);
 
@@ -987,18 +1141,18 @@ var ChromaAnimation = {
     }
 
     readSize = 1;
-    var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('deviceType:', deviceType);
 
     if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var animation = new ChromaAnimation1D();
+      let animation = new ChromaAnimation1D();
       animation.openAnimation(arrayBuffer, readIndex);
       animation.Name = animationName;
       this.LoadedAnimations[animationName] = animation;
       callback(animation);
     } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var animation = new ChromaAnimation2D();
+      let animation = new ChromaAnimation2D();
       animation.openAnimation(arrayBuffer, readIndex);
       animation.Name = animationName;
       this.LoadedAnimations[animationName] = animation;
@@ -1012,15 +1166,21 @@ var ChromaAnimation = {
     }
 
   },
+  /**
+   * Opens an animation from file.
+   * @param { string } animationName The name of the animation, without the _{DEVICE} suffix.
+   * @param { (anim: ChromaAnimation1D | ChromaAnimation2D | undefined) => void } callback The callback.
+   * @param { boolean } useCache Whether to use the cached object. 
+   */
   openAnimation: function (animationName, callback, useCache) {
-    var refThis = this;
-    var xhr = new XMLHttpRequest();
+    let refThis = this;
+    let xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status != 200) {
           console.error('Animation is missing!', animationName);
-          let animation = null;
+          let animation = undefined;
           if (animationName.indexOf("_KeyboardExtended") > 0) {
             animation = refThis.createAnimation(animationName, EChromaSDKDeviceTypeEnum.DE_2D, EChromaSDKDevice2DEnum.DE_KeyboardExtended);
           } else if (animationName.indexOf("_Keyboard") > 0) {
@@ -1041,13 +1201,13 @@ var ChromaAnimation = {
         }
         //console.log('Animation Name:', animationName);
 
-        var arrayBuffer = xhr.response;
+        let arrayBuffer = xhr.response;
         //console.log('Array Buffer:');
         //console.log(arrayBuffer);
 
-        var readIndex = 0;
-        var readSize = 4;
-        var version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+        let readIndex = 0;
+        let readSize = 4;
+        let version = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
         readIndex += readSize;
         //console.log('version:', version);
 
@@ -1057,18 +1217,18 @@ var ChromaAnimation = {
         }
 
         readSize = 1;
-        var deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+        let deviceType = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
         readIndex += readSize;
         //console.log('deviceType:', deviceType);
 
         if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-          var animation = new ChromaAnimation1D();
+          let animation = new ChromaAnimation1D();
           animation.openAnimation(arrayBuffer, readIndex);
           animation.Name = animationName;
           refThis.LoadedAnimations[animationName] = animation;
           callback(animation);
         } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-          var animation = new ChromaAnimation2D();
+          let animation = new ChromaAnimation2D();
           animation.openAnimation(arrayBuffer, readIndex);
           animation.Name = animationName;
           refThis.LoadedAnimations[animationName] = animation;
@@ -1091,6 +1251,11 @@ var ChromaAnimation = {
     xhr.responseType = "arraybuffer";
     xhr.send('');
   },
+  /**
+   * Converts a EChromaSDKDeviceEnum to EChromaSDKDeviceTypeEnum.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @returns The EChromaSDKDeviceTypeEnum, or undefined if not a valid input.
+   */
   getDeviceType(device) {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
@@ -1104,6 +1269,11 @@ var ChromaAnimation = {
     }
     return undefined;
   },
+  /**
+   * Converts a EChromaSDKDeviceEnum to EChromaSDKDevice1DEnum.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @returns The EChromaSDKDevice1DEnum, or undefined if not a 1D device.
+   */
   getDevice1D(device) {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
@@ -1116,6 +1286,11 @@ var ChromaAnimation = {
     }
     return undefined;
   },
+  /**
+   * Converts a EChromaSDKDeviceEnum to EChromaSDKDevice2DEnum.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @returns The EChromaSDKDevice2DEnum, or undefined if not a 2D device.
+   */
   getDevice2D(device) {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_Keyboard:
@@ -1129,6 +1304,12 @@ var ChromaAnimation = {
     }
     return undefined;
   },
+  /**
+   * Converts a EChromaSDKDeviceTypeEnum and EChromaSDKDevice1DEnum to EChromaSDKDeviceEnum.
+   * @param { number } deviceType The EChromaSDKDeviceTypeEnum.
+   * @param { number } device The EChromaSDKDevice1DEnum or EChromaSDKDevice2DEnum.
+   * @returns The EChromaSDKDeviceEnum, or undefined if not a valid input.
+   */
   getDeviceEnum(deviceType, device) {
     switch (deviceType) {
       case EChromaSDKDeviceTypeEnum.DE_1D:
@@ -1156,6 +1337,11 @@ var ChromaAnimation = {
     }
     return undefined;
   },
+  /**
+   * Retrieves the Pascal case name of a device.
+   * @param { number } deviceEnum The EChromaSDKDeviceEnum.
+   * @returns The name of the device.
+   */
   getDeviceEnumName(deviceEnum) {
     switch (deviceEnum) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
@@ -1175,35 +1361,64 @@ var ChromaAnimation = {
     }
     return '';
   },
+  /**
+   * Retrieves the Pascal case name of a device.
+   * @param { number } deviceType The EChromaSDKDeviceTypeEnum.
+   * @param { number } device The EChromaSDKDevice1DEnum or EChromaSDKDevice2DEnum.
+   * @returns The name of the device.
+   */
   getDeviceName(deviceType, device) {
     return this.getDeviceEnumName(this.getDeviceEnum(deviceType, device));
   },
+  /**
+   * Linearly interpolates between two numbers.
+   * @param { number } start The first value.
+   * @param { number } end The second value.
+   * @param { number } amt The amount to interpolate by.
+   * @returns The interpolated value.
+   */
   lerp: function (start, end, amt) {
     return (1 - amt) * start + amt * end;
   },
+  /**
+   * Linearly interpolates between two color values.
+   * @param { number } from The first color as a 3-byte number.
+   * @param { number } to The second color as a 3-byte number.
+   * @param { number } t The amount to interpolate by.
+   * @returns The interpolated color.
+   */
   lerpColor: function (from, to, t) {
-    var red = Math.floor(this.lerp((from & 0xFF), (to & 0xFF), t));
-    var green = Math.floor(this.lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
-    var blue = Math.floor(this.lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
-    var color = red | (green << 8) | (blue << 16);
+    let red = Math.floor(this.lerp((from & 0xFF), (to & 0xFF), t));
+    let green = Math.floor(this.lerp((from & 0xFF00) >> 8, (to & 0xFF00) >> 8, t));
+    let blue = Math.floor(this.lerp((from & 0xFF0000) >> 16, (to & 0xFF0000) >> 16, t));
+    let color = red | (green << 8) | (blue << 16);
     return color;
   },
+  /**
+   * Retrieves an animation by its name.
+   * @param { string } animationName The name of the animation.
+   * @returns The ChromaAnimation1D or ChromaAnimation2D, or undefined if the animation does not exist.
+   */
   getAnimation: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return undefined;
-    } else {
-      return animation;
-    }
+    return this.LoadedAnimations[animationName];
   },
+  /**
+   * Retrieves the number of frames in an animation.
+   * @param { string } animationName The name of the animation.
+   * @returns The number of frames, or 0 if the animation does not exist.
+   */
   getFrameCount: function (animationName) {
-    var animation = this.getAnimation(animationName);
+    const animation = this.getAnimation(animationName);
     if (animation == undefined) {
       return 0;
     } else {
       return animation.getFrameCount();
     }
   },
+  /**
+   * Stops the current animation for a device.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   */
   stopByAnimationType: function (device) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.stopByAnimationType(device); }, 100);
@@ -1230,6 +1445,9 @@ var ChromaAnimation = {
       this.LoadedAnimations2D[device2D] = undefined;
     }
   },
+  /**
+   * Stops all current animations.
+   */
   stopAll: function () {
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_ChromaLink);
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Headset);
@@ -1238,6 +1456,11 @@ var ChromaAnimation = {
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mouse);
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Mousepad);
   },
+  /**
+   * Checks whether an animation is playing.
+   * @param { string } animationName The name of the animation.
+   * @returns Whether the named animation is playing.
+   */
   isPlaying: function (animationName) {
     if (chromaSDK == undefined) {
       return false;
@@ -1247,13 +1470,19 @@ var ChromaAnimation = {
     }
     return false;
   },
+  /**
+   * Plays an animation.
+   * @param { string } animationName The name of the animation. 
+   * @param { boolean } loop Whether to loop the animation.
+   * @param { (anim: ChromaAnimation1D | ChromaAnimation2D, colors: Color[]) => void } frameCallback The callback to call once per frame.
+   */
   playAnimation: function (animationName, loop, frameCallback) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.playAnimation(animationName, loop, frameCallback); }, 100);
       return;
     }
     if (this.LoadedAnimations[animationName] == undefined) {
-      var refThis = this;
+      const refThis = this;
       ChromaAnimation.openAnimation(animationName,
         function (animation) {
           //console.log(animation);
@@ -1276,7 +1505,7 @@ var ChromaAnimation = {
           animation.play(loop);
         });
     } else {
-      var animation = this.LoadedAnimations[animationName];
+      let animation = this.LoadedAnimations[animationName];
       //console.log('playAnimation:', animationName);
       animation.FrameCallback = frameCallback;
       let device = animation.Device;
@@ -1295,8 +1524,12 @@ var ChromaAnimation = {
       animation.play(loop);
     }
   },
+  /**
+   * Stops an animation.
+   * @param { string } animationName The name of the animation.
+   */
   stopAnimation: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation != undefined) {
       this.LoadedAnimations[animationName].stop();
       let device = animation.Device;
@@ -1314,12 +1547,21 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Stops and unloads an animation.
+   * @param { string } animationName The name of the animation.
+   */
   closeAnimation: function (animationName) {
     if (this.LoadedAnimations[animationName] != undefined) {
       this.LoadedAnimations[animationName].stop();
       this.LoadedAnimations[animationName] = undefined;
     }
   },
+  /**
+   * Set the idling state of a device.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @param { boolean } flag Whether to play the idle animation.
+   */
   useIdleAnimation: function (device, flag) {
     switch (device) {
       case EChromaSDKDeviceEnum.DE_ChromaLink:
@@ -1342,6 +1584,10 @@ var ChromaAnimation = {
         break;
     }
   },
+  /**
+   * Set the idling state of all devices.
+   * @param { boolean } flag Whether to play the idle animations.
+   */
   useIdleAnimations: function (flag) {
     ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_ChromaLink] = flag;
     ChromaAnimation.UseIdleAnimation1D[EChromaSDKDevice1DEnum.DE_Headset] = flag;
@@ -1350,8 +1596,12 @@ var ChromaAnimation = {
     ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Keypad] = flag;
     ChromaAnimation.UseIdleAnimation2D[EChromaSDKDevice2DEnum.DE_Mouse] = flag;
   },
+  /**
+   * Designates an animation as the idle animation for its device.
+   * @param { string } animationName The name of the animation.
+   */
   setIdleAnimation: function (animationName) {
-    var animation = ChromaAnimation.LoadedAnimations[animationName];
+    let animation = ChromaAnimation.LoadedAnimations[animationName];
     if (animation == undefined) {
       ChromaAnimation.openAnimation(animationName, function (animation) {
         switch (animation.DeviceType) {
@@ -1374,15 +1624,26 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Reverses the frames of an animation.
+   * @param { string } animationName The name of the animation.
+   */
   reverseAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
     animation.Frames = animation.Frames.reverse();
   },
+  /**
+   * Sets the colors of all given keyboard keys for a single frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number[] } keys The array of RZKEYs.
+   * @param { Color } color The color.
+   */
   setKeysColor: function (animationName, frameId, keys, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -1390,19 +1651,19 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          for (var k = 0; k < keys.length; ++k) {
-            var key = keys[k];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          for (let k = 0; k < keys.length; ++k) {
+            let key = keys[k];
             if (getHighByte(key) == i &&
               getLowByte(key) == j) {
               row[j] = color;
@@ -1412,40 +1673,27 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets the colors of all given keyboard keys for a single frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number[] } keys The array of RZKEYs.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   setKeysColorRGB: function (animationName, frameId, keys, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
-      return;
-    }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var color = ChromaAnimation.getRGB(red, green, blue);
-    //console.log(animation.Frames);
-    if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          for (var k = 0; k < keys.length; ++k) {
-            var key = keys[k];
-            if (getHighByte(key) == i &&
-              getLowByte(key) == j) {
-              row[j] = color;
-            }
-          }
-        }
-      }
-    }
+    setKeysColor(animationName, frameId, keys, ChromaAnimation.getRGB(red, green, blue));
   },
+  /**
+   * Retrieves the color of a given keyboard key for a single frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } key The RZKEY.
+   * @returns { Color } The color.
+   */
   getKeyColor: function (animationName, frameId, key) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return 0;
     }
@@ -1453,17 +1701,17 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return 0;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
           if (getHighByte(key) == i &&
             getLowByte(key) == j) {
             return row[j];
@@ -1473,8 +1721,15 @@ var ChromaAnimation = {
     }
     return 0;
   },
+  /**
+   * Sets the color of a given keyboard key for a single frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } key The RZKEY.
+   * @param { Color } color The color.
+   */
   setKeyColor: function (animationName, frameId, key, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -1500,12 +1755,25 @@ var ChromaAnimation = {
       row[j] = color | keyColor;
     }
   },
+  /**
+   * Copies the color from one keyboard key to another for a single frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } sourceKey The source RZKEY.
+   * @param { number } targetKey The target RZKEY.
+   */
   copyKeyColorToKey: function (animationName, frameId, sourceKey, targetKey) {
     let color = ChromaAnimation.getKeyColor(animationName, frameId, sourceKey);
     ChromaAnimation.setKeyColor(animationName, frameId, targetKey, color);
   },
+  /**
+   * Sets the color of a given keyboard key for every frame in an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } key The RZKEY.
+   * @param { Color } color The color.
+   */
   setKeyColorAllFrames: function (animationName, key, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -1531,36 +1799,25 @@ var ChromaAnimation = {
       row[j] = color | keyColor;
     }
   },
+  /**
+   * Sets the color of a given keyboard key for every frame in an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } key The RZKEY.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   setKeyColorAllFramesRGB: function (animationName, key, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
-      return;
-    }
-    switch (animation.Device) {
-      case EChromaSDKDevice2DEnum.DE_Keyboard:
-      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
-        break;
-      default:
-        return;
-    }
-    var color = (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
-    const customFlag = 1 << 24;
-    const keyColor = color | customFlag;
-    let frames = animation.Frames;
-    for (let frameId = 0; frameId < frames.length; ++frameId) {
-      let frame = frames[frameId];
-      let keys = frame.Keys;
-      const i = getHighByte(key);
-      let row = keys[i];
-      const j = getLowByte(key);
-      row[j] = color | keyColor;
-    }
+    setKeyColorAllFrames(animationName, key, ChromaAnimation.getRGB(red, green, blue));
   },
+  /**
+   * Sets the colors of all given keyboard keys for every frame in an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number[] } keys The array of RZKEYs.
+   * @param { Color } color The color.
+   */
   setKeysColorAllFrames: function (animationName, keys, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -1590,42 +1847,32 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets the colors of all given keyboard keys for every frame in an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number[] } keys The array of RZKEYs.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   setKeysColorAllFramesRGB: function (animationName, keys, red, green, blue) {
-    let animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D) {
-      return;
-    }
-    switch (animation.Device) {
-      case EChromaSDKDevice2DEnum.DE_Keyboard:
-      case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
-        break;
-      default:
-        return;
-    }
-    let frames = animation.Frames;
-    const color = (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
-    const customFlag = 1 << 24;
-    const keyColor = color | customFlag;
-    for (let frameId = 0; frameId < frames.length; ++frameId) {
-      let frame = frames[frameId];
-      for (let k = 0; k < keys.length; ++k) {
-        let key = keys[k];
-        const i = getHighByte(key);
-        const j = getLowByte(key);
-        let row = frame.Keys[i];
-        row[j] = keyColor;
-      }
-    }
+    setKeysColorAllFrames(animationName, keys, ChromaAnimation.getRGB(red, green, blue));
   },
+  /**
+   * Copies the color of a given keyboard key for every frame from one animation to another.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } key The RZKEY.
+   */
   copyKeyColorAllFrames: function (sourceAnimationName, targetAnimationName, key) {
     let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -1672,12 +1919,19 @@ var ChromaAnimation = {
       targetRow[j] = keyColor;
     }
   },
+  /**
+   * Copies the color of a given keyboard key for every frame from one animation to another, offsetting the frame index.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } key The RZKEY.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   copyKeyColorAllFramesOffset: function (sourceAnimationName, targetAnimationName, key, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -1689,26 +1943,26 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
+    for (let frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
           if (getHighByte(key) == i &&
             getLowByte(key) == j) {
             targetRow[j] = sourceRow[j];
@@ -1717,6 +1971,15 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all given keyboard keys for every frame from one animation to another.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number[] } keys The array of RZKEYs.
+   */
   copyKeysColorAllFrames: function (sourceAnimationName, targetAnimationName, keys) {
     let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
@@ -1774,12 +2037,22 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for a single frame from one animation to another,
+   * if the source color is not zero.
+   * 
+   * If the number of source frames is less than the frame index,
+   * the frame index wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } frameId The frame index.
+   */
   copyNonZeroAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -1791,27 +2064,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < targetFrames.length) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0) {
             targetRow[j] = color;
           }
@@ -1819,12 +2092,21 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * if the source color is not zero.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -1832,43 +2114,43 @@ var ChromaAnimation = {
       sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = sourceColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
           if (color != 0) {
             targetColors[i] = color;
           }
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
             if (color != 0) {
               targetRow[j] = color;
             }
@@ -1877,44 +2159,64 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Adds two colors.
+   * @param { Color } color1 The first color.
+   * @param { Color } color2 The second color.
+   * @returns The added color.
+   */
   addColor(color1, color2) {
-    var red1 = color1 & 0xFF;
-    var green1 = (color1 & 0xFF00) >> 8;
-    var blue1 = (color1 & 0xFF0000) >> 16;
+    let red1 = color1 & 0xFF;
+    let green1 = (color1 & 0xFF00) >> 8;
+    let blue1 = (color1 & 0xFF0000) >> 16;
 
-    var red2 = color2 & 0xFF;
-    var green2 = (color2 & 0xFF00) >> 8;
-    var blue2 = (color2 & 0xFF0000) >> 16;
+    let red2 = color2 & 0xFF;
+    let green2 = (color2 & 0xFF00) >> 8;
+    let blue2 = (color2 & 0xFF0000) >> 16;
 
-    var red = Math.min(255, Math.max(0, Number(red1) + Number(red2))) & 0xFF;
-    var green = Math.min(255, Math.max(0, Number(green1) + Number(green2))) & 0xFF;
-    var blue = Math.min(255, Math.max(0, Number(blue1) + Number(blue2))) & 0xFF;
+    let red = Math.min(255, Math.max(0, Number(red1) + Number(red2))) & 0xFF;
+    let green = Math.min(255, Math.max(0, Number(green1) + Number(green2))) & 0xFF;
+    let blue = Math.min(255, Math.max(0, Number(blue1) + Number(blue2))) & 0xFF;
 
-    var newColor = red | (green << 8) | (blue << 16);
+    let newColor = red | (green << 8) | (blue << 16);
     return newColor;
   },
+  /**
+   * Subtracts two colors.
+   * @param { Color } color1 The first color.
+   * @param { Color } color2 The second color.
+   * @returns The subtracted color.
+   */
   subtractColor(color1, color2) {
-    var red1 = color1 & 0xFF;
-    var green1 = (color1 & 0xFF00) >> 8;
-    var blue1 = (color1 & 0xFF0000) >> 16;
+    let red1 = color1 & 0xFF;
+    let green1 = (color1 & 0xFF00) >> 8;
+    let blue1 = (color1 & 0xFF0000) >> 16;
 
-    var red2 = color2 & 0xFF;
-    var green2 = (color2 & 0xFF00) >> 8;
-    var blue2 = (color2 & 0xFF0000) >> 16;
+    let red2 = color2 & 0xFF;
+    let green2 = (color2 & 0xFF00) >> 8;
+    let blue2 = (color2 & 0xFF0000) >> 16;
 
-    var red = Math.min(255, Math.max(0, Number(red1) - Number(red2))) & 0xFF;
-    var green = Math.min(255, Math.max(0, Number(green1) - Number(green2))) & 0xFF;
-    var blue = Math.min(255, Math.max(0, Number(blue1) - Number(blue2))) & 0xFF;
+    let red = Math.min(255, Math.max(0, Number(red1) - Number(red2))) & 0xFF;
+    let green = Math.min(255, Math.max(0, Number(green1) - Number(green2))) & 0xFF;
+    let blue = Math.min(255, Math.max(0, Number(blue1) - Number(blue2))) & 0xFF;
 
-    var newColor = red | (green << 8) | (blue << 16);
+    let newColor = red | (green << 8) | (blue << 16);
     return newColor;
   },
+  /**
+   * Adds the color of all keyboard keys for every frame in one animation to another.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   addAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -1922,67 +2224,67 @@ var ChromaAnimation = {
       sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = sourceColors[i];
-          var sourceRed = color & 0xFF;
-          var sourceGreen = (color & 0xFF00) >> 8;
-          var sourceBlue = (color & 0xFF0000) >> 16;
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
+          let sourceRed = color & 0xFF;
+          let sourceGreen = (color & 0xFF00) >> 8;
+          let sourceBlue = (color & 0xFF0000) >> 16;
 
-          var oldColor = targetColors[i];
-          var oldRed = oldColor & 0xFF;
-          var oldGreen = (oldColor & 0xFF00) >> 8;
-          var oldBlue = (oldColor & 0xFF0000) >> 16;
+          let oldColor = targetColors[i];
+          let oldRed = oldColor & 0xFF;
+          let oldGreen = (oldColor & 0xFF00) >> 8;
+          let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-          var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-          var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-          var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-          var newColor = red | (green << 8) | (blue << 16);
+          let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+          let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+          let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+          let newColor = red | (green << 8) | (blue << 16);
 
           targetColors[i] = newColor;
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -1990,12 +2292,21 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Adds the color of all keyboard keys for every frame in one animation to another,
+   * if the source color is not zero.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   addNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2003,70 +2314,70 @@ var ChromaAnimation = {
       sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = sourceColors[i];
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
           if (color != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetColors[i];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetColors[i];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetColors[i] = newColor;
           }
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
             if (color != 0) {
-              var sourceRed = color & 0xFF;
-              var sourceGreen = (color & 0xFF00) >> 8;
-              var sourceBlue = (color & 0xFF0000) >> 16;
+              let sourceRed = color & 0xFF;
+              let sourceGreen = (color & 0xFF00) >> 8;
+              let sourceBlue = (color & 0xFF0000) >> 16;
 
-              var oldColor = targetRow[j];
-              var oldRed = oldColor & 0xFF;
-              var oldGreen = (oldColor & 0xFF00) >> 8;
-              var oldBlue = (oldColor & 0xFF0000) >> 16;
+              let oldColor = targetRow[j];
+              let oldRed = oldColor & 0xFF;
+              let oldGreen = (oldColor & 0xFF00) >> 8;
+              let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-              var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-              var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-              var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-              var newColor = red | (green << 8) | (blue << 16);
+              let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+              let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+              let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+              let newColor = red | (green << 8) | (blue << 16);
 
               targetRow[j] = newColor;
             }
@@ -2075,12 +2386,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts the color of all keyboard keys for every frame in one animation from another.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   subtractAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2088,68 +2407,68 @@ var ChromaAnimation = {
       sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = sourceColors[i];
-          var sourceRed = color & 0xFF;
-          var sourceGreen = (color & 0xFF00) >> 8;
-          var sourceBlue = (color & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
+          let sourceRed = color & 0xFF;
+          let sourceGreen = (color & 0xFF00) >> 8;
+          let sourceBlue = (color & 0xFF0000) >> 16;
 
-          var oldColor = targetColors[i];
-          var oldRed = oldColor & 0xFF;
-          var oldGreen = (oldColor & 0xFF00) >> 8;
-          var oldBlue = (oldColor & 0xFF0000) >> 16;
+          let oldColor = targetColors[i];
+          let oldRed = oldColor & 0xFF;
+          let oldGreen = (oldColor & 0xFF00) >> 8;
+          let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-          var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-          var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-          var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-          var newColor = red | (green << 8) | (blue << 16);
+          let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+          let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+          let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+          let newColor = red | (green << 8) | (blue << 16);
 
           targetColors[i] = newColor;
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -2157,12 +2476,21 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts the color of all keyboard keys for every frame in one animation from another,
+   * if the source color is not zero.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   subtractNonZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2170,71 +2498,71 @@ var ChromaAnimation = {
       sourceAnimation.Device != targetAnimation.Device) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = sourceColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
           if (color != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetColors[i];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetColors[i];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetColors[i] = newColor;
           }
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
             if (color != 0) {
-              var sourceRed = color & 0xFF;
-              var sourceGreen = (color & 0xFF00) >> 8;
-              var sourceBlue = (color & 0xFF0000) >> 16;
+              let sourceRed = color & 0xFF;
+              let sourceGreen = (color & 0xFF00) >> 8;
+              let sourceBlue = (color & 0xFF0000) >> 16;
 
-              var oldColor = targetRow[j];
-              var oldRed = oldColor & 0xFF;
-              var oldGreen = (oldColor & 0xFF00) >> 8;
-              var oldBlue = (oldColor & 0xFF0000) >> 16;
+              let oldColor = targetRow[j];
+              let oldRed = oldColor & 0xFF;
+              let oldGreen = (oldColor & 0xFF00) >> 8;
+              let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-              var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-              var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-              var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-              var newColor = red | (green << 8) | (blue << 16);
+              let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+              let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+              let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+              let newColor = red | (green << 8) | (blue << 16);
 
               targetRow[j] = newColor;
             }
@@ -2243,12 +2571,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Adds the color of all keyboard keys for every frame in one animation to another,
+   * offsetting the frame index,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   addNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2260,41 +2596,41 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = sourceFrames.length - 1; frameId >= 0; --frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = sourceFrames.length - 1; frameId >= 0; --frameId) {
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -2302,12 +2638,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts the color of all keyboard keys for every frame in one animation from another,
+   * offsetting the frame index,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   subtractNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2319,41 +2663,41 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < sourceFrames.length && frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < sourceFrames.length && frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -2361,12 +2705,21 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for a single frame from one animation to another,
+   * offsetting the frame index,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } frameId The frame index.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   copyNonZeroAllKeysOffset: function (sourceAnimationName, targetAnimationName, frameId, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2378,27 +2731,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < sourceFrames.length) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0) {
             targetRow[j] = color;
           }
@@ -2406,12 +2759,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * offsetting the frame index,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   copyNonZeroAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2423,27 +2784,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < sourceFrames.length && (frameId + offset) < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0) {
             targetRow[j] = color;
           }
@@ -2451,12 +2812,19 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for a single frame from one animation to another,
+   * if the source and target colors are not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } frameId The frame index.
+   */
   copyNonZeroTargetAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2466,26 +2834,26 @@ var ChromaAnimation = {
     if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
 
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
-          var targetColor = targetColors[i];
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
+          let targetColor = targetColors[i];
           if (sourceColor != 0 &&
             targetColor != 0) {
             targetColors[i] = sourceColor;
@@ -2493,19 +2861,19 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
             if (color != 0 &&
               targetRow[j] != 0) {
               targetRow[j] = color;
@@ -2515,12 +2883,19 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies the color of all keyboard keys for a single frame of one animation to another,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } frameId The frame index.
+   */
   copyNonZeroTargetMultiplyAllKeys: function (sourceAnimationName, targetAnimationName, frameId) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2530,25 +2905,25 @@ var ChromaAnimation = {
     if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
 
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
           if (sourceColor != 0) {
             let oldColor = targetColors[i];
             let oldRed = oldColor & 0xFF;
@@ -2560,18 +2935,18 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
             let sourceColor = sourceRow[j];
             if (sourceColor != 0) {
               let oldColor = targetRow[j];
@@ -2586,12 +2961,17 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies the color of all keyboard keys for every frame of one animation to another.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyTargetMultiplyAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2601,25 +2981,25 @@ var ChromaAnimation = {
     if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
 
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
           let oldColor = targetColors[i];
           let oldRed = oldColor & 0xFF;
           let oldGreen = (oldColor & 0xFF00) >> 8;
@@ -2629,18 +3009,18 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
             let sourceColor = sourceRow[j];
             let oldColor = targetRow[j];
             let oldRed = oldColor & 0xFF;
@@ -2653,12 +3033,18 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies the color of all keyboard keys for every frame of one animation to another,
+   * if the source color is not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyNonZeroTargetMultiplyAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2668,25 +3054,25 @@ var ChromaAnimation = {
     if (sourceAnimation.DeviceType != targetAnimation.DeviceType) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
 
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
           if (sourceColor != 0) {
             let oldColor = targetColors[i];
             let oldRed = oldColor & 0xFF;
@@ -2698,18 +3084,18 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId % targetFrames.length];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId % targetFrames.length];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
             let sourceColor = sourceRow[j];
             if (sourceColor != 0) {
               let oldColor = targetRow[j];
@@ -2724,34 +3110,40 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * if the source and target colors are not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
-          var targetColor = targetColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
+          let targetColor = targetColors[i];
           if (sourceColor != 0 &&
             targetColor != 0) {
             targetColors[i] = sourceColor;
@@ -2759,19 +3151,19 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = sourceRow[j];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
             if (color != 0 &&
               targetRow[j] != 0) {
               targetRow[j] = color;
@@ -2781,34 +3173,40 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Replaces the color of all keyboard keys for every frame from one animation to another,
+   * if the target color is zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   replaceZeroKeysWithSourceAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var sourceColor = sourceColors[i];
-          var targetColor = targetColors[i];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let sourceColor = sourceColors[i];
+          let targetColor = targetColors[i];
           if (sourceColor != 0 &&
             targetColor == 0) {
             targetColors[i] = sourceColor;
@@ -2816,20 +3214,20 @@ var ChromaAnimation = {
         }
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-        var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-        var targetFrame = targetFrames[frameId];
-        var sourceColors = sourceFrame.Colors;
-        var targetColors = targetFrame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var sourceRow = sourceColors[i];
-          var targetRow = targetColors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var sourceColor = sourceRow[j];
-            var targetColor = targetRow[j];
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let sourceColor = sourceRow[j];
+            let targetColor = targetRow[j];
             if (sourceColor != 0 &&
               targetColor == 0) {
               targetRow[j] = sourceColor;
@@ -2839,12 +3237,18 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * if the target color is zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyNonZeroTargetZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2856,27 +3260,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0 &&
             targetRow[j] == 0) {
             targetRow[j] = color;
@@ -2885,12 +3289,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * offsetting the frame index,
+   * if the source and target colors are not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   * @param { number } offset The number of frames to offset the destination by.
+   */
   copyNonZeroTargetAllKeysAllFramesOffset: function (sourceAnimationName, targetAnimationName, offset) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2902,27 +3314,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId];
-      var targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId];
+      let targetFrame = targetFrames[(frameId + offset) % targetFrames.length];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0 &&
             targetRow[j] != 0) {
             targetRow[j] = color;
@@ -2931,12 +3343,18 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Adds the color of all keyboard keys for every frame from one animation to another,
+   * if the source and target colors are not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   addNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -2948,42 +3366,42 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0 &&
             targetRow[j] != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) + Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) + Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) + Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -2991,12 +3409,18 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts the color of all keyboard keys for every frame of one animation from another,
+   * if the source and target colors are not zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   subtractNonZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -3008,42 +3432,42 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color != 0 &&
             targetRow[j] != 0) {
-            var sourceRed = color & 0xFF;
-            var sourceGreen = (color & 0xFF00) >> 8;
-            var sourceBlue = (color & 0xFF0000) >> 16;
+            let sourceRed = color & 0xFF;
+            let sourceGreen = (color & 0xFF00) >> 8;
+            let sourceBlue = (color & 0xFF0000) >> 16;
 
-            var oldColor = targetRow[j];
-            var oldRed = oldColor & 0xFF;
-            var oldGreen = (oldColor & 0xFF00) >> 8;
-            var oldBlue = (oldColor & 0xFF0000) >> 16;
+            let oldColor = targetRow[j];
+            let oldRed = oldColor & 0xFF;
+            let oldGreen = (oldColor & 0xFF00) >> 8;
+            let oldBlue = (oldColor & 0xFF0000) >> 16;
 
-            var red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
-            var green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
-            var blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
-            var newColor = red | (green << 8) | (blue << 16);
+            let red = Math.min(255, Math.max(0, Number(oldRed) - Number(sourceRed))) & 0xFF;
+            let green = Math.min(255, Math.max(0, Number(oldGreen) - Number(sourceGreen))) & 0xFF;
+            let blue = Math.min(255, Math.max(0, Number(oldBlue) - Number(sourceBlue))) & 0xFF;
+            let newColor = red | (green << 8) | (blue << 16);
 
             targetRow[j] = newColor;
           }
@@ -3051,12 +3475,18 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * if the source color is zero.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyZeroTargetAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -3068,27 +3498,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color == 0 &&
             targetRow[j] != 0) {
             targetRow[j] = color;
@@ -3097,12 +3527,20 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the color of all keyboard keys for every frame from one animation to another,
+   * if the source and target colors are zero.
+   * 
+   * This function actually doesn't have any tangible effect.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   copyZeroTargetZeroAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -3114,27 +3552,27 @@ var ChromaAnimation = {
       targetAnimation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
+    let sourceFrames = sourceAnimation.Frames;
     if (sourceFrames.length == 0) {
       return;
     }
-    var targetFrames = targetAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
     if (targetFrames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < targetFrames.length; ++frameId) {
-      var sourceFrame = sourceFrames[frameId % sourceFrames.length];
-      var targetFrame = targetFrames[frameId];
-      var sourceColors = sourceFrame.Colors;
-      var targetColors = targetFrame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var sourceRow = sourceColors[i];
-        var targetRow = targetColors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = sourceRow[j];
+    for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+      let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+      let targetFrame = targetFrames[frameId];
+      let sourceColors = sourceFrame.Colors;
+      let targetColors = targetFrame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let sourceRow = sourceColors[i];
+        let targetRow = targetColors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = sourceRow[j];
           if (color == 0 &&
             targetRow[j] == 0) {
             targetRow[j] = color;
@@ -3143,43 +3581,52 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { Color } newColor The color.
+   */
   fillColor: function (animationName, frameId, newColor) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
           colors[i] = newColor;
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
             row[j] = newColor;
           }
         }
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { Color } newColor The color.
+   */
   fillColorAllFrames: function (animationName, newColor) {
     let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -3215,63 +3662,44 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillColorRGB: function (animationName, frameId, red, green, blue) {
-    var newColor = this.getRGB(red, green, blue);
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    var frames = animation.Frames;
-    if (frames.length == 0) {
-      return;
-    }
-    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      //console.log(animation.Frames);
-      if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
-          colors[i] = newColor;
-        }
-      }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      //console.log(animation.Frames);
-      if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
-            row[j] = newColor;
-          }
-        }
-      }
-    }
+    let newColor = this.getRGB(red, green, blue);
+    this.fillColor(animationName, frameId, newColor);
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { Color } newColor The color.
+   */
   fillNonZeroColor: function (animationName, frameId, newColor) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let frame = frames[frameId];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           if (color != 0) {
             row[j] = newColor;
           }
@@ -3279,65 +3707,57 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillNonZeroColorRGB: function (animationName, frameId, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    var frames = animation.Frames;
-    if (frames.length == 0) {
-      return;
-    }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var newColor = ChromaAnimation.getRGB(red, green, blue);
-    //console.log(animation.Frames);
-    if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
-          if (color != 0) {
-            row[j] = newColor;
-          }
-        }
-      }
-    }
+    let newColor = ChromaAnimation.getRGB(red, green, blue);
+    fillNonZeroColor(animationName, frameId, newColor);
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { Color } newColor The color.
+   */
   fillNonZeroColorAllFrames: function (animationName, newColor) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color != 0) {
             colors[i] = newColor;
           }
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color != 0) {
               row[j] = newColor;
             }
@@ -3346,80 +3766,58 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillNonZeroColorAllFramesRGB: function (animationName, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    var frames = animation.Frames;
-    if (frames.length == 0) {
-      return;
-    }
-    var newColor = red | (green << 8) | (blue << 16);
-    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
-          if (color != 0) {
-            colors[i] = newColor;
-          }
-        }
-      }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
-            if (color != 0) {
-              row[j] = newColor;
-            }
-          }
-        }
-      }
-    }
+    let newColor = ChromaAnimation.getRGB(red, green, blue);
+    fillNonZeroColorAllFrames(animationName, newColor);
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { Color } newColor The color.
+   */
   fillZeroColor: function (animationName, frameId, newColor) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color == 0) {
             colors[i] = newColor;
           }
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color == 0) {
               row[j] = newColor;
             }
@@ -3428,39 +3826,45 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { Color } newColor The color.
+   */
   fillZeroColorAllFrames: function (animationName, newColor) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color == 0) {
             colors[i] = newColor;
           }
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color == 0) {
               row[j] = newColor;
             }
@@ -3469,69 +3873,48 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillZeroColorAllFramesRGB: function (animationName, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    var frames = animation.Frames;
-    if (frames.length == 0) {
-      return;
-    }
-    var newColor = red | (green << 8) | (blue << 16);
-    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
-          if (color == 0) {
-            colors[i] = newColor;
-          }
-        }
-      }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
-            if (color == 0) {
-              row[j] = newColor;
-            }
-          }
-        }
-      }
-    }
+    let newColor = ChromaAnimation.getRGB(red, green, blue);
+    fillZeroColorAllFrames(animationName, newColor);
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is less than a given threshold component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { Color } threshold The threshold color.
+   * @param { Color } color The color.
+   */
   fillThresholdColors: function (animationName, frameId, threshold, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var oldColor = row[j];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      let frame = frames[frameId];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let oldColor = row[j];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red != 0 &&
             green != 0 &&
             blue != 0 &&
@@ -3544,26 +3927,33 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is less than a given threshold component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { Color } threshold The threshold color.
+   * @param { Color } color The color.
+   */
   fillThresholdColorsAllFrames: function (animationName, threshold, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if ((red != 0 ||
             green != 0 ||
             blue != 0) &&
@@ -3575,19 +3965,19 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if ((red != 0 ||
               green != 0 ||
               blue != 0) &&
@@ -3601,86 +3991,50 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is less than a given threshold component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { Color } threshold The threshold color.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillThresholdColorsRGB: function (animationName, frameId, threshold, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    var frames = animation.Frames;
-    if (frames.length == 0) {
-      return;
-    }
-    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var color = ChromaAnimation.getRGB(red, green, blue);
-      //console.log(animation.Frames);
-      if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
-          if ((red != 0 ||
-            green != 0 ||
-            blue != 0) &&
-            red <= threshold &&
-            green <= threshold &&
-            blue <= threshold) {
-            colors[i] = color;
-          }
-        }
-      }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var color = ChromaAnimation.getRGB(red, green, blue);
-      //console.log(animation.Frames);
-      if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
-            if ((red != 0 ||
-              green != 0 ||
-              blue != 0) &&
-              red <= threshold &&
-              green <= threshold &&
-              blue <= threshold) {
-              row[j] = color;
-            }
-          }
-        }
-      }
-    }
+    let color = ChromaAnimation.getRGB(red, green, blue);
+    fillThresholdColors(animationName, frameId, threshold, color);
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is less than a given threshold component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { Color } threshold The threshold color.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillThresholdColorsAllFramesRGB: function (animationName, threshold, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var color = ChromaAnimation.getRGB(red, green, blue);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let color = ChromaAnimation.getRGB(red, green, blue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if ((red != 0 ||
             green != 0 ||
             blue != 0) &&
@@ -3692,20 +4046,20 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var color = ChromaAnimation.getRGB(red, green, blue);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let color = ChromaAnimation.getRGB(red, green, blue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if ((red != 0 ||
               green != 0 ||
               blue != 0) &&
@@ -3719,27 +4073,43 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is outside of a given threshold range component-wise.
+   * If less than the minimum threshold, the color is set to the minimum color,
+   * else if more than the maximum threshold, the color is set to the maximum color.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } minRed The minimum red value, in [0, 255].
+   * @param { number } minGreen The minimum green value, in [0, 255].
+   * @param { number } minBlue The minimum blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   * @param { number } maxRed The maximum red value, in [0, 255].
+   * @param { number } maxGreen The maximum green value, in [0, 255].
+   * @param { number } maxBlue The maximum blue value, in [0, 255].
+   */
   fillThresholdColorsMinMaxRGB: function (animationName, frameId, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-    var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+    let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+    let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red != 0 ||
             green != 0 ||
             blue != 0) {
@@ -3756,20 +4126,20 @@ var ChromaAnimation = {
           }
         }
       }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-      var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+      let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if (red != 0 ||
               green != 0 ||
               blue != 0) {
@@ -3789,6 +4159,17 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation,
+   * if the color is within a given threshold range component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   */
   fillThresholdColorsMiddleAllFramesRGB: function (animationName, minThreshold, red, green, blue, maxThreshold) {
     let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
@@ -3805,7 +4186,7 @@ var ChromaAnimation = {
       for (let frameId = 0; frameId < frames.length; ++frameId) {
         let frame = frames[frameId];
         let colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           let oldColor = colors[i];
           let oldRed = oldColor & 0xFF;
           let oldGreen = (oldColor >> 8) & 0xFF;
@@ -3848,28 +4229,43 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is outside of a given threshold range component-wise.
+   * If less than the minimum threshold, the color is set to the minimum color,
+   * else if more than the maximum threshold, the color is set to the maximum color.
+   * @param { string } animationName The name of the animation.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } minRed The minimum red value, in [0, 255].
+   * @param { number } minGreen The minimum green value, in [0, 255].
+   * @param { number } minBlue The minimum blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   * @param { number } maxRed The maximum red value, in [0, 255].
+   * @param { number } maxGreen The maximum green value, in [0, 255].
+   * @param { number } maxBlue The maximum blue value, in [0, 255].
+   */
   fillThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red <= minThreshold &&
             green <= minThreshold &&
             blue <= minThreshold) {
@@ -3883,21 +4279,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if (red <= minThreshold &&
               green <= minThreshold &&
               blue <= minThreshold) {
@@ -3913,28 +4309,43 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is outside of a given threshold range component-wise.
+   * If less than the minimum threshold, the color is set to the minimum color,
+   * else if more than the maximum threshold, the color is set to the maximum color.
+   * @param { string } animationName The name of the animation.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } minRed The minimum red value, in [0, 255].
+   * @param { number } minGreen The minimum green value, in [0, 255].
+   * @param { number } minBlue The minimum blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   * @param { number } maxRed The maximum red value, in [0, 255].
+   * @param { number } maxGreen The maximum green value, in [0, 255].
+   * @param { number } maxBlue The maximum blue value, in [0, 255].
+   */
   fillThresholdNonZeroColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red != 0 ||
             green != 0 ||
             blue != 0) {
@@ -3952,21 +4363,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if (red != 0 ||
               green != 0 ||
               blue != 0) {
@@ -3986,28 +4397,43 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Adds to every color for every frame of an animation,
+   * if the color is outside of a given threshold range component-wise.
+   * If less than the minimum threshold, the color is added by the minimum color,
+   * else if more than the maximum threshold, the color is added by the maximum color.
+   * @param { string } animationName The name of the animation.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } minRed The minimum red value, in [0, 255].
+   * @param { number } minGreen The minimum green value, in [0, 255].
+   * @param { number } minBlue The minimum blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   * @param { number } maxRed The maximum red value, in [0, 255].
+   * @param { number } maxGreen The maximum green value, in [0, 255].
+   * @param { number } maxBlue The maximum blue value, in [0, 255].
+   */
   addThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red != 0 ||
             green != 0 ||
             blue != 0) {
@@ -4025,21 +4451,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if (red != 0 ||
               green != 0 ||
               blue != 0) {
@@ -4059,28 +4485,43 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts from every color for every frame of an animation,
+   * if the color is outside of a given threshold range component-wise.
+   * If less than the minimum threshold, the color is subtracted by the minimum color,
+   * else if more than the maximum threshold, the color is subtracted by the maximum color.
+   * @param { string } animationName The name of the animation.
+   * @param { number } minThreshold The minimum threshold value.
+   * @param { number } minRed The minimum red value, in [0, 255].
+   * @param { number } minGreen The minimum green value, in [0, 255].
+   * @param { number } minBlue The minimum blue value, in [0, 255].
+   * @param { number } maxThreshold The maximum threshold value.
+   * @param { number } maxRed The maximum red value, in [0, 255].
+   * @param { number } maxGreen The maximum green value, in [0, 255].
+   * @param { number } maxBlue The maximum blue value, in [0, 255].
+   */
   subtractThresholdColorsMinMaxAllFramesRGB: function (animationName, minThreshold, minRed, minGreen, minBlue, maxThreshold, maxRed, maxGreen, maxBlue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var oldColor = colors[i];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if (red != 0 ||
             green != 0 ||
             blue != 0) {
@@ -4098,21 +4539,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
-      var maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let minColor = ChromaAnimation.getRGB(minRed, minGreen, minBlue);
+      let maxColor = ChromaAnimation.getRGB(maxRed, maxGreen, maxBlue);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var oldColor = row[j];
-            var red = oldColor & 0xFF;
-            var green = (oldColor & 0xFF00) >> 8;
-            var blue = (oldColor & 0xFF0000) >> 16;
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
             if (red != 0 ||
               green != 0 ||
               blue != 0) {
@@ -4132,29 +4573,40 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation,
+   * if the color is less than a given threshold component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } redThreshold The red threshold value, in [0, 255].
+   * @param { number } greenThreshold The green threshold value, in [0, 255].
+   * @param { number } blueThreshold The blue threshold value, in [0, 255].
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   fillThresholdRGBColorsAllFramesRGB: function (animationName, redThreshold, greenThreshold, blueThreshold, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var color = ChromaAnimation.getRGB(red, green, blue);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let color = ChromaAnimation.getRGB(red, green, blue);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var oldColor = row[j];
-          var red = oldColor & 0xFF;
-          var green = (oldColor & 0xFF00) >> 8;
-          var blue = (oldColor & 0xFF0000) >> 16;
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let oldColor = row[j];
+          let red = oldColor & 0xFF;
+          let green = (oldColor & 0xFF00) >> 8;
+          let blue = (oldColor & 0xFF0000) >> 16;
           if ((red != 0 ||
             green != 0 ||
             blue != 0) &&
@@ -4167,186 +4619,208 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation to random colors.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   */
   fillRandomColors: function (animationName, frameId) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var red = Math.floor(Math.random() * 256) % 256;
-          var green = Math.floor(Math.random() * 256) % 256;
-          var blue = Math.floor(Math.random() * 256) % 256;
-          var color = red | (green << 8) | (blue << 16);
+      let frame = frames[frameId];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let red = Math.floor(Math.random() * 256) % 256;
+          let green = Math.floor(Math.random() * 256) % 256;
+          let blue = Math.floor(Math.random() * 256) % 256;
+          let color = red | (green << 8) | (blue << 16);
           row[j] = color;
         }
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation to random colors.
+   * @param { string } animationName The name of the animation.
+   */
   fillRandomColorsAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var red = Math.floor(Math.random() * 256) % 256;
-          var green = Math.floor(Math.random() * 256) % 256;
-          var blue = Math.floor(Math.random() * 256) % 256;
-          var color = red | (green << 8) | (blue << 16);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let red = Math.floor(Math.random() * 256) % 256;
+          let green = Math.floor(Math.random() * 256) % 256;
+          let blue = Math.floor(Math.random() * 256) % 256;
+          let color = red | (green << 8) | (blue << 16);
           colors[i] = color;
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var red = Math.floor(Math.random() * 256) % 256;
-            var green = Math.floor(Math.random() * 256) % 256;
-            var blue = Math.floor(Math.random() * 256) % 256;
-            var color = red | (green << 8) | (blue << 16);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let red = Math.floor(Math.random() * 256) % 256;
+            let green = Math.floor(Math.random() * 256) % 256;
+            let blue = Math.floor(Math.random() * 256) % 256;
+            let color = red | (green << 8) | (blue << 16);
             row[j] = color;
           }
         }
       }
     }
   },
+  /**
+   * Sets every color for a single frame of an animation to random greyscale colors.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   */
   fillRandomColorsBlackAndWhite: function (animationName, frameId) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var c = Math.floor(Math.random() * 256) % 256;
-          var red = c;
-          var green = c;
-          var blue = c;
-          var color = red | (green << 8) | (blue << 16);
+      let frame = frames[frameId];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let c = Math.floor(Math.random() * 256) % 256;
+          let red = c;
+          let green = c;
+          let blue = c;
+          let color = red | (green << 8) | (blue << 16);
           row[j] = color;
         }
       }
     }
   },
+  /**
+   * Sets every color for every frame of an animation to random greyscale colors.
+   * @param { string } animationName The name of the animation.
+   */
   fillRandomColorsBlackAndWhiteAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
     //console.log(animation.Frames);
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var c = Math.floor(Math.random() * 256) % 256;
-          var red = c;
-          var green = c;
-          var blue = c;
-          var color = red | (green << 8) | (blue << 16);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let c = Math.floor(Math.random() * 256) % 256;
+          let red = c;
+          let green = c;
+          let blue = c;
+          let color = red | (green << 8) | (blue << 16);
           colors[i] = color;
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var c = Math.floor(Math.random() * 256) % 256;
-            var red = c;
-            var green = c;
-            var blue = c;
-            var color = red | (green << 8) | (blue << 16);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let c = Math.floor(Math.random() * 256) % 256;
+            let red = c;
+            let green = c;
+            let blue = c;
+            let color = red | (green << 8) | (blue << 16);
             row[j] = color;
           }
         }
       }
     }
   },
+  /**
+   * Inverts every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   */
   invertColorsAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
 
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
-          var red = 255 - (color & 0xFF);
-          var green = 255 - ((color & 0xFF00) >> 8);
-          var blue = 255 - ((color & 0xFF0000) >> 16);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
+          let red = 255 - (color & 0xFF);
+          let green = 255 - ((color & 0xFF00) >> 8);
+          let blue = 255 - ((color & 0xFF0000) >> 16);
           color = red | (green << 8) | (blue << 16);
           colors[i] = color;
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
-            var red = 255 - (color & 0xFF);
-            var green = 255 - ((color & 0xFF00) >> 8);
-            var blue = 255 - ((color & 0xFF0000) >> 16);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
+            let red = 255 - (color & 0xFF);
+            let green = 255 - ((color & 0xFF00) >> 8);
+            let blue = 255 - ((color & 0xFF0000) >> 16);
             color = red | (green << 8) | (blue << 16);
             row[j] = color;
           }
@@ -4354,8 +4828,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Duplicates a frame at a given frame index and inserts it at another frame index.
+   * @param { string } animationName The name of the animation.
+   * @param { number } sourceFrame The source frame index.
+   * @param { number } targetFrame The destination frame index.
+   */
   insertFrame: function (animationName, sourceFrame, targetFrame) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4368,17 +4848,17 @@ var ChromaAnimation = {
       sourceFrame >= animation.Frames.length) {
       return;
     }
-    var copyFrame = animation.Frames[sourceFrame];
-    var frames = [];
+    let copyFrame = animation.Frames[sourceFrame];
+    let frames = [];
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < animation.Frames.length; ++frameId) {
-        var oldFrame = animation.Frames[frameId];
+      for (let frameId = 0; frameId < animation.Frames.length; ++frameId) {
+        let oldFrame = animation.Frames[frameId];
         if (frameId == targetFrame) {
-          var frame = new ChromaAnimationFrame1D();
+          let frame = new ChromaAnimationFrame1D();
           frame.Colors = new Array(maxLeds);
-          for (var i = 0; i < maxLeds; ++i) {
+          for (let i = 0; i < maxLeds; ++i) {
             frame.Colors[i] = copyFrame.Colors[i];
           }
           frame.Duration = copyFrame.Duration;
@@ -4387,17 +4867,17 @@ var ChromaAnimation = {
         frames.push(oldFrame);
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < animation.Frames.length; ++frameId) {
-        var oldFrame = animation.Frames[frameId];
+      for (let frameId = 0; frameId < animation.Frames.length; ++frameId) {
+        let oldFrame = animation.Frames[frameId];
         if (frameId == targetFrame) {
-          var frame = new ChromaAnimationFrame2D(animation.Device);
+          let frame = new ChromaAnimationFrame2D(animation.Device);
           frame.Colors = new Array(maxRow);
-          for (var i = 0; i < maxRow; ++i) {
+          for (let i = 0; i < maxRow; ++i) {
             frame.Colors[i] = new Array(maxColumn);
-            for (var j = 0; j < maxColumn; ++j) {
+            for (let j = 0; j < maxColumn; ++j) {
               frame.Colors[i][j] = copyFrame.Colors[i][j];
             }
           }
@@ -4409,17 +4889,28 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  /**
+   * Duplicates a frame at a given frame index a given number of times.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } delay The number of times to duplicate.
+   */
   insertDelay: function (animationName, frameId, delay) {
-    for (var i = 0; i < delay; ++i) {
+    for (let i = 0; i < delay; ++i) {
       this.insertFrame(animationName, frameId, frameId);
     }
   },
+  /**
+   * Copies every frame from one animation to the end of another.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
   appendAllFrames: function (sourceAnimationName, targetAnimationName) {
-    var sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
     if (sourceAnimation == undefined) {
       return;
     }
-    var targetAnimation = this.LoadedAnimations[targetAnimationName];
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
     if (targetAnimation == undefined) {
       return;
     }
@@ -4428,31 +4919,31 @@ var ChromaAnimation = {
       console.error('appendAllFrames', 'Source Frame length is zero!', animationName)
       return;
     }
-    var sourceFrames = sourceAnimation.Frames;
-    var targetFrames = targetAnimation.Frames;
-    var frameCount = sourceFrames.length;
+    let sourceFrames = sourceAnimation.Frames;
+    let targetFrames = targetAnimation.Frames;
+    let frameCount = sourceFrames.length;
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var sourceFrame = sourceFrames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let sourceFrame = sourceFrames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = sourceFrame.Colors[i];
         }
         frame.Duration = sourceFrame.Duration;
         targetFrames.push(frame);
       }
     } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var sourceFrame = sourceFrames[frameId];
-        var frame = new ChromaAnimationFrame2D(sourceAnimation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let sourceFrame = sourceFrames[frameId];
+        let frame = new ChromaAnimationFrame2D(sourceAnimation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = sourceFrame.Colors[i][j];
           }
         }
@@ -4461,8 +4952,13 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Duplicates the first frame a given number of times.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameCount The number of times to duplicate.
+   */
   duplicateFirstFrame: function (animationName, frameCount) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4471,14 +4967,14 @@ var ChromaAnimation = {
       console.error('duplicateFirstFrame', 'Frame length is zero!', animationName)
       return;
     }
-    var firstFrame = animation.Frames[0];
-    var frames = [];
+    let firstFrame = animation.Frames[0];
+    let frames = [];
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame1D();
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = firstFrame.Colors[i];
         }
         frame.Duration = firstFrame.Duration;
@@ -4486,15 +4982,15 @@ var ChromaAnimation = {
       }
       animation.Frames = frames;
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D(animation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = firstFrame.Colors[i][j];
           }
         }
@@ -4504,8 +5000,12 @@ var ChromaAnimation = {
       animation.Frames = frames;
     }
   },
+  /**
+   * Duplicates every frame.
+   * @param { string } animationName The name of the animation.
+   */
   duplicateFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4514,17 +5014,17 @@ var ChromaAnimation = {
       console.error('duplicateFrames', 'Frame length is zero!', animationName)
       return;
     }
-    var frames = [];
-    var frameCount = animation.Frames.length;
+    let frames = [];
+    let frameCount = animation.Frames.length;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        for (var d = 0; d < 2; ++d) {
-          var copyFrame = animation.Frames[frameId];
-          var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        for (let d = 0; d < 2; ++d) {
+          let copyFrame = animation.Frames[frameId];
+          let frame = new ChromaAnimationFrame1D();
           frame.Colors = new Array(maxLeds);
-          for (var i = 0; i < maxLeds; ++i) {
+          for (let i = 0; i < maxLeds; ++i) {
             frame.Colors[i] = copyFrame.Colors[i];
           }
           frame.Duration = copyFrame.Duration;
@@ -4533,17 +5033,17 @@ var ChromaAnimation = {
       }
       animation.Frames = frames;
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        for (var d = 0; d < 2; ++d) {
-          var copyFrame = animation.Frames[frameId];
-          var frame = new ChromaAnimationFrame2D(animation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        for (let d = 0; d < 2; ++d) {
+          let copyFrame = animation.Frames[frameId];
+          let frame = new ChromaAnimationFrame2D(animation.Device);
           frame.Colors = new Array(maxRow);
-          for (var i = 0; i < maxRow; ++i) {
+          for (let i = 0; i < maxRow; ++i) {
             frame.Colors[i] = new Array(maxColumn);
-            for (var j = 0; j < maxColumn; ++j) {
+            for (let j = 0; j < maxColumn; ++j) {
               frame.Colors[i][j] = copyFrame.Colors[i][j];
             }
           }
@@ -4554,8 +5054,12 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  /**
+   * Duplicates every frame, starting from the end.
+   * @param { string } animationName The name of the animation.
+   */
   duplicateMirrorFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4564,26 +5068,26 @@ var ChromaAnimation = {
       console.error('duplcateMirrorFrames', 'Frame length is zero!', animationName)
       return;
     }
-    var frames = [];
+    let frames = [];
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      var frameCount = animation.Frames.length;
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+      let frameCount = animation.Frames.length;
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
         }
         frame.Duration = copyFrame.Duration;
         frames.push(frame);
       }
-      for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = frameCount - 1; frameId >= 0; --frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
         }
         frame.Duration = copyFrame.Duration;
@@ -4591,30 +5095,30 @@ var ChromaAnimation = {
       }
       animation.Frames = frames;
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      var frameCount = animation.Frames.length;
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D(animation.Device);
+      let frameCount = animation.Frames.length;
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = copyFrame.Colors[i][j];
           }
         }
         frame.Duration = copyFrame.Duration;
         frames.push(frame);
       }
-      for (var frameId = frameCount - 1; frameId >= 0; --frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D(animation.Device);
+      for (let frameId = frameCount - 1; frameId >= 0; --frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = copyFrame.Colors[i][j];
           }
         }
@@ -4624,8 +5128,13 @@ var ChromaAnimation = {
       animation.Frames = frames;
     }
   },
+  /**
+   * Copies an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { string } newAnimationName The name of the new animation.
+   */
   copyAnimation: function (animationName, newAnimationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4633,22 +5142,22 @@ var ChromaAnimation = {
       console.error('copyAnimation', 'Frame length is zero!', animationName)
       return;
     }
-    var frames = [];
-    var frameCount = animation.Frames.length;
+    let frames = [];
+    let frameCount = animation.Frames.length;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
         }
         frame.Duration = copyFrame.Duration;
         frames.push(frame);
       }
-      var newAnimation = new ChromaAnimation1D();
+      let newAnimation = new ChromaAnimation1D();
       newAnimation.Name = newAnimationName;
       newAnimation.Device = animation.Device;
       newAnimation.DeviceType = animation.DeviceType;
@@ -4694,6 +5203,11 @@ var ChromaAnimation = {
       this.LoadedAnimations[newAnimationName] = newAnimation;
     }
   },
+  /**
+   * Copies every frame from one animation to another.
+   * @param { ChromaAnimation1D | ChromaAnimation2D } sourceAnimation The source animation.
+   * @param { ChromaAnimation1D | ChromaAnimation2D } destinationAnimation The destination animation.
+   */
   copyAnimationFrames: function (sourceAnimation, destinationAnimation) {
     if (!sourceAnimation || !destinationAnimation) {
       return;
@@ -4702,16 +5216,16 @@ var ChromaAnimation = {
       console.error('copyAnimationFrames', 'Frame length is zero!', sourceAnimation.Name)
       return;
     }
-    var frames = [];
-    var frameCount = sourceAnimation.Frames.length;
+    let frames = [];
+    let frameCount = sourceAnimation.Frames.length;
     if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
       //console.log(sourceAnimation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = sourceAnimation.Frames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = sourceAnimation.Frames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
         }
         frame.Duration = copyFrame.Duration;
@@ -4756,8 +5270,16 @@ var ChromaAnimation = {
       destinationAnimation.Frames = frames;
     }
   },
+  /**
+   * Converts an animation for a new device.
+   * @param { string } animationName The name of the animation.
+   * @param { string } newAnimationName The name of the new converted animation.
+   * @param { number } newDeviceType The EChromaSDKDeviceTypeEnum.
+   * @param { number } newDevice The EChromaSDKDevice1DEnum or EChromaSDKDevice2DEnum.
+   * @returns The new converted animation, or undefined.
+   */
   convertAnimation: function (animationName, newAnimationName, newDeviceType, newDevice) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4766,24 +5288,24 @@ var ChromaAnimation = {
       return;
     }
     ChromaAnimation.closeAnimation(newAnimationName);
-    var frames = [];
-    var frameCount = animation.Frames.length;
+    let frames = [];
+    let frameCount = animation.Frames.length;
 
     // this only converts keyboard frames to *.*
-    var keyboardMaxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var keyboardMaxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let keyboardMaxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let keyboardMaxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
 
     if (newDeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var maxLeds = ChromaAnimation.getMaxLeds(newDevice);
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let maxLeds = ChromaAnimation.getMaxLeds(newDevice);
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < keyboardMaxRow; ++i) {
+        for (let i = 0; i < keyboardMaxRow; ++i) {
           if (i >= 1) {
             continue;
           }
-          for (var j = 0; j < keyboardMaxColumn; ++j) {
+          for (let j = 0; j < keyboardMaxColumn; ++j) {
             if (j >= maxLeds) {
               continue;
             }
@@ -4794,7 +5316,7 @@ var ChromaAnimation = {
         frames.push(frame);
       }
 
-      var newAnimation = new ChromaAnimation1D();
+      let newAnimation = new ChromaAnimation1D();
       newAnimation.Name = newAnimationName;
       newAnimation.Device = newDevice;
       newAnimation.DeviceType = newDeviceType;
@@ -4802,22 +5324,22 @@ var ChromaAnimation = {
       this.LoadedAnimations[newAnimationName] = newAnimation;
       return newAnimation;
     } else if (newDeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var copyFrame = animation.Frames[frameId];
-        var maxRow = ChromaAnimation.getMaxRow(newDevice);
-        var maxColumn = ChromaAnimation.getMaxColumn(newDevice);
-        var frame = new ChromaAnimationFrame2D(newAnimation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let copyFrame = animation.Frames[frameId];
+        let maxRow = ChromaAnimation.getMaxRow(newDevice);
+        let maxColumn = ChromaAnimation.getMaxColumn(newDevice);
+        let frame = new ChromaAnimationFrame2D(newAnimation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < keyboardMaxRow || i < maxRow; ++i) {
+        for (let i = 0; i < keyboardMaxRow || i < maxRow; ++i) {
           if (i >= maxRow) {
             continue;
           }
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < keyboardMaxColumn || j < maxColumn; ++j) {
+          for (let j = 0; j < keyboardMaxColumn || j < maxColumn; ++j) {
             if (j >= maxColumn) {
               continue;
             }
-            var color = undefined;
+            let color = undefined;
             if (i >= keyboardMaxRow ||
               j >= keyboardMaxColumn) {
               color = 0;
@@ -4831,7 +5353,7 @@ var ChromaAnimation = {
         frames.push(frame);
       }
 
-      var newAnimation = new ChromaAnimation2D();
+      let newAnimation = new ChromaAnimation2D();
       newAnimation.Name = newAnimationName;
       newAnimation.Device = newDevice;
       newAnimation.DeviceType = newDeviceType;
@@ -4840,23 +5362,30 @@ var ChromaAnimation = {
       return newAnimation;
     }
   },
+  /**
+   * Creates an animation for a device.
+   * @param { string } animationName The name of the animation.
+   * @param { number } deviceType The EChromaSDKDeviceTypeEnum.
+   * @param { number } device The EChromaSDKDevice1DEnum or EChromaSDKDevice2DEnum.
+   * @returns The created animation.
+   */
   createAnimation: function (animationName, deviceType, device) {
     this.closeAnimation(animationName);
-    var frames = [];
-    var frameCount = 1;
+    let frames = [];
+    let frameCount = 1;
     if (deviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(device);
+      let maxLeds = ChromaAnimation.getMaxLeds(device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = 0;
         }
         frame.Duration = 0.033;
         frames.push(frame);
       }
-      var newAnimation = new ChromaAnimation1D();
+      let newAnimation = new ChromaAnimation1D();
       newAnimation.Name = animationName;
       newAnimation.Device = device;
       newAnimation.DeviceType = deviceType;
@@ -4864,22 +5393,22 @@ var ChromaAnimation = {
       this.LoadedAnimations[animationName] = newAnimation;
       return newAnimation;
     } else if (deviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(device);
-      var maxColumn = ChromaAnimation.getMaxColumn(device);
+      let maxRow = ChromaAnimation.getMaxRow(device);
+      let maxColumn = ChromaAnimation.getMaxColumn(device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D(device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame2D(device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = 0;
           }
         }
         frame.Duration = 0.033;
         frames.push(frame);
       }
-      var newAnimation = new ChromaAnimation2D();
+      let newAnimation = new ChromaAnimation2D();
       newAnimation.Name = animationName;
       newAnimation.Device = device;
       newAnimation.DeviceType = deviceType;
@@ -4888,8 +5417,13 @@ var ChromaAnimation = {
       return newAnimation;
     }
   },
+  /**
+   * Removes every N frames from an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } n N.
+   */
   reduceFrames: function (animationName, n) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4898,38 +5432,38 @@ var ChromaAnimation = {
       console.error('reduceFrames', 'Frame length is zero!', animationName)
       return;
     }
-    var frames = [];
+    let frames = [];
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var frameCount = animation.Frames.length;
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let frameCount = animation.Frames.length;
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
         if (frameId % n == 0) {
           continue;
         }
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame1D();
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = copyFrame.Colors[i];
         }
         frame.Duration = copyFrame.Duration;
         frames.push(frame);
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      var frameCount = animation.Frames.length;
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
+      let frameCount = animation.Frames.length;
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
         if (frameId % n == 0) {
           continue;
         }
-        var copyFrame = animation.Frames[frameId];
-        var frame = new ChromaAnimationFrame2D(animation.Device);
+        let copyFrame = animation.Frames[frameId];
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = copyFrame.Colors[i][j];
           }
         }
@@ -4939,8 +5473,13 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  /**
+   * Removes a frame from an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } removeFrameId The frame index.
+   */
   trimFrame: function (animationName, removeFrameId) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4949,22 +5488,27 @@ var ChromaAnimation = {
       console.error('trimFrame', 'Frame length is zero!', animationName)
       return;
     }
-    var frames = [];
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = [];
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    var frameCount = animation.Frames.length;
-    for (var frameId = 0; frameId < frameCount; ++frameId) {
+    let frameCount = animation.Frames.length;
+    for (let frameId = 0; frameId < frameCount; ++frameId) {
       if (frameId == removeFrameId) {
         continue;
       }
-      var frame = animation.Frames[frameId];
+      let frame = animation.Frames[frameId];
       frames.push(frame);
     }
     animation.Frames = frames;
   },
+  /**
+   * Removes a given number of frames from the start of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } numberOfFrames The number of frames.
+   */
   trimStartFrames: function (animationName, numberOfFrames) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4974,12 +5518,17 @@ var ChromaAnimation = {
       return;
     }
     //console.log(animation.Frames);
-    for (var i = 0; i < numberOfFrames; ++i) {
+    for (let i = 0; i < numberOfFrames; ++i) {
       this.trimFrame(animationName, 0);
     }
   },
+  /**
+   * Removes frames after a given frame index from the end of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } lastFrameId The index of the last frame to keep.
+   */
   trimEndFrames: function (animationName, lastFrameId) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -4994,8 +5543,13 @@ var ChromaAnimation = {
       this.trimFrame(animationName, animation.Frames.length - 1);
     }
   },
+  /**
+   * Fade in the start of the animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } fade The number of frames to fade.
+   */
   fadeStartFrames: function (animationName, fade) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -5008,13 +5562,18 @@ var ChromaAnimation = {
       return;
     }
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < fade; ++frameId) {
-      var t = (frameId + 1) / fade;
+    for (let frameId = 0; frameId < fade; ++frameId) {
+      let t = (frameId + 1) / fade;
       this.multiplyIntensity(animationName, frameId, t);
     }
   },
+  /**
+   * Fade out the end of the animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } fade The number of frames to fade.
+   */
   fadeEndFrames: function (animationName, fade) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -5027,41 +5586,48 @@ var ChromaAnimation = {
       return;
     }
     //console.log(animation.Frames);
-    for (var offset = 0; offset < fade; ++offset) {
-      var frameId = animation.Frames.length - 1 - offset;
-      var t = (offset + 1) / fade;
+    for (let offset = 0; offset < fade; ++offset) {
+      let frameId = animation.Frames.length - 1 - offset;
+      let t = (offset + 1) / fade;
       this.multiplyIntensity(animationName, frameId, t);
     }
   },
+  /**
+   * Adds a given number of frames to the end of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameCount The number of frames.
+   * @param { number } duration The duration of each frame.
+   * @param { Color } color The color.
+   */
   makeBlankFrames: function (animationName, frameCount, duration, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
     this.stopAnimation(animationName);
-    var frames = [];
+    let frames = [];
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame1D();
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame1D();
         frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           frame.Colors[i] = color;
         }
         frame.Duration = duration;
         frames.push(frame);
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D(animation.Device);
+      for (let frameId = 0; frameId < frameCount; ++frameId) {
+        let frame = new ChromaAnimationFrame2D(animation.Device);
         frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxRow; ++i) {
           frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
+          for (let j = 0; j < maxColumn; ++j) {
             frame.Colors[i][j] = color;
           }
         }
@@ -5071,63 +5637,45 @@ var ChromaAnimation = {
     }
     animation.Frames = frames;
   },
+  /**
+   * Adds a given number of frames to the end of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameCount The number of frames.
+   * @param { number } duration The duration of each frame.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   makeBlankFramesRGB: function (animationName, frameCount, duration, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
-    if (animation == undefined) {
-      return;
-    }
-    this.stopAnimation(animationName);
-    var frames = [];
-    var color = ChromaAnimation.getRGB(red, green, blue);
-    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame1D();
-        frame.Colors = new Array(maxLeds);
-        for (var i = 0; i < maxLeds; ++i) {
-          frame.Colors[i] = color;
-        }
-        frame.Duration = duration;
-        frames.push(frame);
-      }
-    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frameCount; ++frameId) {
-        var frame = new ChromaAnimationFrame2D(animation.Device);
-        frame.Colors = new Array(maxRow);
-        for (var i = 0; i < maxRow; ++i) {
-          frame.Colors[i] = new Array(maxColumn);
-          for (var j = 0; j < maxColumn; ++j) {
-            frame.Colors[i][j] = color;
-          }
-        }
-        frame.Duration = duration;
-        frames.push(frame);
-      }
-    }
-    animation.Frames = frames;
+    let color = ChromaAnimation.getRGB(red, green, blue);
+    makeBlankFrames(animationName, frameCount, duration, color)
   },
+  /**
+   * Offsets every color for a single frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } redOffset The red offset, in [0, 255].
+   * @param { number } greenOffset The green offset, in [0, 255].
+   * @param { number } blueOffset The blue offset, in [0, 255].
+   */
   offsetColors: function (animationName, frameId, redOffset, greenOffset, blueOffset) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5136,21 +5684,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5161,8 +5709,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for a single frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } color The color.
+   */
   offsetColorsWithColor: function (animationName, frameId, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -5170,25 +5724,25 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var redOffset = (color & 0xFF);
-    var greenOffset = (color & 0xFF00) >> 8;
-    var blueOffset = (color & 0xFF0000) >> 16;
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let redOffset = (color & 0xFF);
+    let greenOffset = (color & 0xFF00) >> 8;
+    let blueOffset = (color & 0xFF0000) >> 16;
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5198,26 +5752,31 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color The color.
+   */
   offsetColorsWithColorAllFrames: function (animationName, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var redOffset = (color & 0xFF);
-    var greenOffset = (color & 0xFF00) >> 8;
-    var blueOffset = (color & 0xFF0000) >> 16;
-    var frames = animation.Frames;
+    let redOffset = (color & 0xFF);
+    let greenOffset = (color & 0xFF00) >> 8;
+    let blueOffset = (color & 0xFF0000) >> 16;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5226,21 +5785,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5251,28 +5810,34 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color The color.
+   */
   offsetNonZeroColorsWithColorAllFrames: function (animationName, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var redOffset = (color & 0xFF);
-    var greenOffset = (color & 0xFF00) >> 8;
-    var blueOffset = (color & 0xFF0000) >> 16;
-    var frames = animation.Frames;
+    let redOffset = (color & 0xFF);
+    let greenOffset = (color & 0xFF00) >> 8;
+    let blueOffset = (color & 0xFF0000) >> 16;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color != 0) {
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5282,22 +5847,22 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color != 0) {
               //console.log('color', color);
-              var red = (color & 0xFF);
-              var green = (color & 0xFF00) >> 8;
-              var blue = (color & 0xFF0000) >> 16;
+              let red = (color & 0xFF);
+              let green = (color & 0xFF00) >> 8;
+              let blue = (color & 0xFF0000) >> 16;
               red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
               green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
               blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5309,28 +5874,33 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Subtracts every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color The color.
+   */
   subtractColorsWithColorAllFrames: function (animationName, color) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var redOffset = (color & 0xFF);
-    var greenOffset = (color & 0xFF00) >> 8;
-    var blueOffset = (color & 0xFF0000) >> 16;
-    var frames = animation.Frames;
+    let redOffset = (color & 0xFF);
+    let greenOffset = (color & 0xFF00) >> 8;
+    let blueOffset = (color & 0xFF0000) >> 16;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color != 0) {
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) - Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) - Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) - Number(blueOffset))) & 0xFF;
@@ -5340,22 +5910,22 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color != 0) {
               //console.log('color', color);
-              var red = (color & 0xFF);
-              var green = (color & 0xFF00) >> 8;
-              var blue = (color & 0xFF0000) >> 16;
+              let red = (color & 0xFF);
+              let green = (color & 0xFF00) >> 8;
+              let blue = (color & 0xFF0000) >> 16;
               red = Math.min(255, Math.max(0, Number(red) - Number(redOffset))) & 0xFF;
               green = Math.min(255, Math.max(0, Number(green) - Number(greenOffset))) & 0xFF;
               blue = Math.min(255, Math.max(0, Number(blue) - Number(blueOffset))) & 0xFF;
@@ -5367,24 +5937,31 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } redOffset The red offset, in [0, 255].
+   * @param { number } greenOffset The green offset, in [0, 255].
+   * @param { number } blueOffset The blue offset, in [0, 255].
+   */
   offsetColorsAllFrames: function (animationName, redOffset, greenOffset, blueOffset) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5393,21 +5970,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5418,8 +5995,17 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for a single frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } redOffset The red offset, in [0, 255].
+   * @param { number } greenOffset The green offset, in [0, 255].
+   * @param { number } blueOffset The blue offset, in [0, 255].
+   */
   offsetNonZeroColors: function (animationName, frameId, redOffset, greenOffset, blueOffset) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -5427,23 +6013,23 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           if (color != 0) {
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5454,8 +6040,16 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Offsets every color for every frame of an animation,
+   * if the color is not zero.
+   * @param { string } animationName The name of the animation.
+   * @param { number } redOffset The red offset, in [0, 255].
+   * @param { number } greenOffset The green offset, in [0, 255].
+   * @param { number } blueOffset The blue offset, in [0, 255].
+   */
   offsetNonZeroColorsAllFrames: function (animationName, redOffset, greenOffset, blueOffset) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -5463,23 +6057,23 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           if (color != 0) {
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) + Number(redOffset))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) + Number(greenOffset))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) + Number(blueOffset))) & 0xFF;
@@ -5490,25 +6084,31 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for a single frame of an animation by a value component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } intensity The multiply value.
+   */
   multiplyIntensity: function (animationName, frameId, intensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -5517,21 +6117,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -5542,52 +6142,81 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Converts red, green, and blue values to its 3-byte representation.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   * @returns { Color } The color.
+   */
   getRGB(red, green, blue) {
     return (red & 0xFF) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 16);
   },
+  /**
+   * Retrieves the red value of a 3-byte color.
+   * @param { Color } color The color.
+   * @returns { number } The red value.
+   */
   getRed(color) {
-    var red = (color & 0xFF);
-    return red;
+    return (color & 0xFF);
   },
+  /**
+   * Retrieves the green value of a 3-byte color.
+   * @param { Color } color The color.
+   * @returns { number } The green value.
+   */
   getGreen(color) {
-    var green = (color & 0xFF00) >> 8;
-    return green;
+    return (color & 0xFF00) >> 8;
   },
+  /**
+   * Retrieves the blue value of a 3-byte color.
+   * @param { Color } color The color.
+   * @returns { number } The blue value.
+   */
   getBlue(color) {
-    var blue = (color & 0xFF0000) >> 16;
-    return blue;
+    return (color & 0xFF0000) >> 16;
   },
+  /**
+   * Prints the RGB values of a 3-byte color to the console.
+   * @param { Color } color The color.
+   */
   debugColor(color) {
-    var red = (color & 0xFF);
-    var green = (color & 0xFF00) >> 8;
-    var blue = (color & 0xFF0000) >> 16;
+    let red = (color & 0xFF);
+    let green = (color & 0xFF00) >> 8;
+    let blue = (color & 0xFF0000) >> 16;
     console.log('Red', red, 'Green', green, 'Blue', blue);
   },
+  /**
+   * Multiplies every color for a single frame of an animation by a color component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } colorTint The multiply color.
+   */
   multiplyIntensityColor: function (animationName, frameId, colorTint) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var red = (colorTint & 0xFF);
-      var green = (colorTint & 0xFF00) >> 8;
-      var blue = (colorTint & 0xFF0000) >> 16;
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let red = (colorTint & 0xFF);
+      let green = (colorTint & 0xFF00) >> 8;
+      let blue = (colorTint & 0xFF0000) >> 16;
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5596,27 +6225,27 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var red = (colorTint & 0xFF);
-      var green = (colorTint & 0xFF00) >> 8;
-      var blue = (colorTint & 0xFF0000) >> 16;
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let red = (colorTint & 0xFF);
+      let green = (colorTint & 0xFF00) >> 8;
+      let blue = (colorTint & 0xFF0000) >> 16;
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5627,31 +6256,36 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by a color component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } colorTint The multiply color.
+   */
   multiplyIntensityColorAllFrames: function (animationName, colorTint) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var red = (colorTint & 0xFF);
-      var green = (colorTint & 0xFF00) >> 8;
-      var blue = (colorTint & 0xFF0000) >> 16;
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let red = (colorTint & 0xFF);
+      let green = (colorTint & 0xFF00) >> 8;
+      let blue = (colorTint & 0xFF0000) >> 16;
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       for (frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5660,27 +6294,27 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var red = (colorTint & 0xFF);
-      var green = (colorTint & 0xFF00) >> 8;
-      var blue = (colorTint & 0xFF0000) >> 16;
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let red = (colorTint & 0xFF);
+      let green = (colorTint & 0xFF00) >> 8;
+      let blue = (colorTint & 0xFF0000) >> 16;
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       for (frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5691,29 +6325,37 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for a single frame of an animation by a color component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   multiplyIntensityRGB: function (animationName, frameId, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
 
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5722,24 +6364,24 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
-      var redIntensity = red / 255.0;
-      var greenIntensity = green / 255.0;
-      var blueIntensity = blue / 255.0;
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let redIntensity = red / 255.0;
+      let greenIntensity = green / 255.0;
+      let blueIntensity = blue / 255.0;
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5750,25 +6392,30 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by a value component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } intensity The multiply value.
+   */
   multiplyIntensityAllFrames: function (animationName, intensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -5777,21 +6424,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -5802,28 +6449,35 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by a color component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   multiplyIntensityAllFramesRGB: function (animationName, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
-    var redIntensity = red / 255.0;
-    var greenIntensity = green / 255.0;
-    var blueIntensity = blue / 255.0;
+    let frames = animation.Frames;
+    let redIntensity = red / 255.0;
+    let greenIntensity = green / 255.0;
+    let blueIntensity = blue / 255.0;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5832,21 +6486,21 @@ var ChromaAnimation = {
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -5857,154 +6511,192 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by an interpolated color.
+   * 
+   * The multiplied color is linearly interpolated between the two given colors
+   * by the normalized position of the frame in the animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color1 The start color.
+   * @param { number } color2 The end color.
+   */
   multiplyColorLerpAllFrames: function (animationName, color1, color2) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
-    var frameCount = frames.length;
-    for (var frameId = 0; frameId < frameCount; ++frameId) {
-      var t = (frameId + 1) / frameCount;
-      var color = this.lerpColor(color1, color2, t);
+    let frames = animation.Frames;
+    let frameCount = frames.length;
+    for (let frameId = 0; frameId < frameCount; ++frameId) {
+      let t = (frameId + 1) / frameCount;
+      let color = this.lerpColor(color1, color2, t);
       this.multiplyIntensityColor(animationName, frameId, color);
     }
   },
+  /**
+   * Multiplies every color for a single frame of an animation by an interpolated color.
+   * 
+   * The multiplied color is linearly interpolated between the two given colors
+   * by the average value of the components of color of the original frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } color1 The start color.
+   * @param { number } color2 The end color.
+   */
   multiplyTargetColorLerp: function (animationName, frameId, color1, color2) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF) / 255.0;
-          var green = ((color & 0xFF00) >> 8) / 255.0;
-          var blue = ((color & 0xFF0000) >> 16) / 255.0;
-          var t = (red + green + blue) / 3.0;
+          let red = (color & 0xFF) / 255.0;
+          let green = ((color & 0xFF00) >> 8) / 255.0;
+          let blue = ((color & 0xFF0000) >> 16) / 255.0;
+          let t = (red + green + blue) / 3.0;
           colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
       if (frameId >= 0 && frameId < frames.length) {
-        var frame = frames[frameId];
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF) / 255.0;
-            var green = ((color & 0xFF00) >> 8) / 255.0;
-            var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red + green + blue) / 3.0;
+            let red = (color & 0xFF) / 255.0;
+            let green = ((color & 0xFF00) >> 8) / 255.0;
+            let blue = ((color & 0xFF0000) >> 16) / 255.0;
+            let t = (red + green + blue) / 3.0;
             row[j] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by an interpolated color.
+   * 
+   * The multiplied color is linearly interpolated between the two given colors
+   * by the average value of the components of color of the original frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color1 The start color.
+   * @param { number } color2 The end color.
+   */
   multiplyTargetColorLerpAllFrames: function (animationName, color1, color2) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           //console.log('color', color);
-          var red = (color & 0xFF) / 255.0;
-          var green = ((color & 0xFF00) >> 8) / 255.0;
-          var blue = ((color & 0xFF0000) >> 16) / 255.0;
-          var t = (red + green + blue) / 3.0;
+          let red = (color & 0xFF) / 255.0;
+          let green = ((color & 0xFF00) >> 8) / 255.0;
+          let blue = ((color & 0xFF0000) >> 16) / 255.0;
+          let t = (red + green + blue) / 3.0;
           colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF) / 255.0;
-            var green = ((color & 0xFF00) >> 8) / 255.0;
-            var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red + green + blue) / 3.0;
+            let red = (color & 0xFF) / 255.0;
+            let green = ((color & 0xFF00) >> 8) / 255.0;
+            let blue = ((color & 0xFF0000) >> 16) / 255.0;
+            let t = (red + green + blue) / 3.0;
             row[j] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
       }
     }
   },
+  /**
+   * Multiplies every color for every frame of an animation by an interpolated color,
+   * if the color is not zero.
+   * 
+   * The multiplied color is linearly interpolated between the two given colors
+   * by the average value of the components of color of the original frame.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color1 The start color.
+   * @param { number } color2 The end color.
+   */
   multiplyNonZeroTargetColorLerpAllFrames: function (animationName, color1, color2) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
-      var maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxLeds; ++i) {
-          var color = colors[i];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           if (color != 0) {
             //console.log('color', color);
-            var red = (color & 0xFF) / 255.0;
-            var green = ((color & 0xFF00) >> 8) / 255.0;
-            var blue = ((color & 0xFF0000) >> 16) / 255.0;
-            var t = (red + green + blue) / 3.0;
+            let red = (color & 0xFF) / 255.0;
+            let green = ((color & 0xFF00) >> 8) / 255.0;
+            let blue = ((color & 0xFF0000) >> 16) / 255.0;
+            let t = (red + green + blue) / 3.0;
             colors[i] = ChromaAnimation.lerpColor(color1, color2, t);
           }
         }
       }
     } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
-      var maxRow = ChromaAnimation.getMaxRow(animation.Device);
-      var maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
       //console.log(animation.Frames);
-      for (var frameId = 0; frameId < frames.length; ++frameId) {
-        var frame = frames[frameId];
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
         //console.log(frame);
-        var colors = frame.Colors;
-        for (var i = 0; i < maxRow; ++i) {
-          var row = colors[i];
-          for (var j = 0; j < maxColumn; ++j) {
-            var color = row[j];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
             if (color != 0) {
               //console.log('color', color);
-              var red = (color & 0xFF) / 255.0;
-              var green = ((color & 0xFF00) >> 8) / 255.0;
-              var blue = ((color & 0xFF0000) >> 16) / 255.0;
-              var t = (red + green + blue) / 3.0;
+              let red = (color & 0xFF) / 255.0;
+              let green = ((color & 0xFF00) >> 8) / 255.0;
+              let blue = ((color & 0xFF0000) >> 16) / 255.0;
+              let t = (red + green + blue) / 3.0;
               row[j] = ChromaAnimation.lerpColor(color1, color2, t);
             }
           }
@@ -6012,8 +6704,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the red channel of every color for every frame of an animation to the other channels.
+   * @param { string } animationName The name of the animation.
+   * @param { number } greenIntensity The green multiply value.
+   * @param { number } blueIntensity The blue multiply value.
+   */
   copyRedChannelAllFrames: function (animationName, greenIntensity, blueIntensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6021,22 +6719,22 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           green = Math.min(255, Math.max(0, Number(red) * Number(greenIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(red) * Number(blueIntensity))) & 0xFF;
           color = red | (green << 8) | (blue << 16);
@@ -6045,8 +6743,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the green channel of every color for every frame of an animation to the other channels.
+   * @param { string } animationName The name of the animation.
+   * @param { number } redIntensity The red multiply value.
+   * @param { number } blueIntensity The blue multiply value.
+   */
   copyGreenChannelAllFrames: function (animationName, redIntensity, blueIntensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6054,22 +6758,22 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(green) * Number(redIntensity))) & 0xFF;
           blue = Math.min(255, Math.max(0, Number(green) * Number(blueIntensity))) & 0xFF;
           color = red | (green << 8) | (blue << 16);
@@ -6078,8 +6782,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Copies the blue channel of every color for every frame of an animation to the other channels.
+   * @param { string } animationName The name of the animation.
+   * @param { number } redIntensity The red multiply value.
+   * @param { number } greenIntensity The green multiply value.
+   */
   copyBlueChannelAllFrames: function (animationName, redIntensity, greenIntensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6087,22 +6797,22 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           red = Math.min(255, Math.max(0, Number(blue) * Number(redIntensity))) & 0xFF;
           green = Math.min(255, Math.max(0, Number(blue) * Number(greenIntensity))) & 0xFF;
           color = red | (green << 8) | (blue << 16);
@@ -6111,8 +6821,12 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Desaturates every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   */
   desaturateAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6120,31 +6834,38 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
-          var gray = Math.sqrt(red * red + green * green + blue * blue);
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
+          let gray = Math.sqrt(red * red + green * green + blue * blue);
           color = gray | (gray << 8) | (gray << 16);
           row[j] = color;
         }
       }
     }
   },
+  /**
+   * Multiplies the color of a given keyboard key for a single frame of an animation by a value component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } frameId The frame index.
+   * @param { number } key The RZKEY.
+   * @param { number } intensity The multiply value.
+   */
   multiplyIntensityKey: function (animationName, frameId, key, intensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6152,25 +6873,25 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
     if (frameId >= 0 && frameId < frames.length) {
-      var frame = frames[frameId];
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
           if (getHighByte(key) == i &&
             getLowByte(key) == j) {
 
-            var color = row[j];
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -6181,8 +6902,14 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies the color of a given keyboard key for every frame of an animation by a value component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } key The RZKEY.
+   * @param { number } intensity The multiply value.
+   */
   multiplyIntensityKeyAllFrames: function (animationName, key, intensity) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6190,25 +6917,25 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
           if (getHighByte(key) == i &&
             getLowByte(key) == j) {
 
-            var color = row[j];
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(intensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(intensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(intensity))) & 0xFF;
@@ -6219,8 +6946,16 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Multiplies the color of a given keyboard key for every frame of an animation by a color component-wise.
+   * @param { string } animationName The name of the animation.
+   * @param { number } key The RZKEY.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   multiplyIntensityKeyAllFramesRGB: function (animationName, key, red, green, blue) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6228,28 +6963,28 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var redIntensity = red / 255.0;
-    var greenIntensity = green / 255.0;
-    var blueIntensity = blue / 255.0;
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let redIntensity = red / 255.0;
+    let greenIntensity = green / 255.0;
+    let blueIntensity = blue / 255.0;
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
           if (getHighByte(key) == i &&
             getLowByte(key) == j) {
 
-            var color = row[j];
+            let color = row[j];
             //console.log('color', color);
-            var red = (color & 0xFF);
-            var green = (color & 0xFF00) >> 8;
-            var blue = (color & 0xFF0000) >> 16;
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
             red = Math.min(255, Math.max(0, Number(red) * Number(redIntensity))) & 0xFF;
             green = Math.min(255, Math.max(0, Number(green) * Number(greenIntensity))) & 0xFF;
             blue = Math.min(255, Math.max(0, Number(blue) * Number(blueIntensity))) & 0xFF;
@@ -6260,8 +6995,12 @@ var ChromaAnimation = {
       }
     }
   },
+  /**
+   * Sets the custom color flag for every frame in an animation.
+   * @param { string } animationName The name of the animation.
+   */
   setChromaCustomColorAllFrames: function (animationName) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6269,31 +7008,36 @@ var ChromaAnimation = {
       animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
       return;
     }
-    var frames = animation.Frames;
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       //console.log(frame);
-      var colors = frame.Colors;
-      for (var i = 0; i < maxRow; ++i) {
-        var row = colors[i];
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = row[j];
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
           //console.log('color', color);
-          var customFlag = 0x01;
-          var red = (color & 0xFF);
-          var green = (color & 0xFF00) >> 8;
-          var blue = (color & 0xFF0000) >> 16;
+          let customFlag = 0x01;
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
           color = red | (green << 8) | (blue << 16) | (customFlag << 24);
           row[j] = color;
         }
       }
     }
   },
+  /**
+   * Sets the custom flag for an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { boolean } flag The flag.
+   */
   setChromaCustomFlag: function (animationName, flag) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
@@ -6309,6 +7053,12 @@ var ChromaAnimation = {
     }
     animation.setChromaCustomFlag(flag);
   },
+  /**
+   * Plays an animation for multiple devices.
+   * @param { string } animationName The name of the animations, without the _{DEVICE} suffix.
+   * @param { boolean } loop Whether to loop the animation.
+   * @param { (anim: ChromaAnimation1D | ChromaAnimation2D, colors: Color[]) => void } frameCallback The callback to call once per frame.
+   */
   playComposite: function (animationName, loop, frameCallback) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.playComposite(animationName, loop); }, 100);
@@ -6321,18 +7071,28 @@ var ChromaAnimation = {
     this.playAnimation(animationName + "_Mouse.chroma", loop, frameCallback);
     this.playAnimation(animationName + "_Mousepad.chroma", loop, frameCallback);
   },
+  /**
+   * Sets the duration for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } duration The duration of each frame.
+   * @returns 
+   */
   overrideFrameDuration: function (animationName, duration) {
-    var animation = this.LoadedAnimations[animationName];
+    let animation = this.LoadedAnimations[animationName];
     if (animation == undefined) {
       return;
     }
-    var frames = animation.Frames;
+    let frames = animation.Frames;
     //console.log(animation.Frames);
-    for (var frameId = 0; frameId < frames.length; ++frameId) {
-      var frame = frames[frameId];
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
       frame.Duration = duration;
     }
   },
+  /**
+   * Stops an animation for multiple devices.
+   * @param { string } animationName The name of the animations, without the _{DEVICE} suffix.
+   */
   stopComposite: function (animationName) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.stopComposite(animationName, loop); }, 100);
@@ -6346,6 +7106,11 @@ var ChromaAnimation = {
     this.stopAnimation(animationName + "_Mouse.chroma");
     this.stopAnimation(animationName + "_Mousepad.chroma");
   },
+  /**
+   * Sets a static color effect for a device.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @param { Color } color The color.
+   */
   staticColor: function (device, color) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.staticColor(device, color); }, 100);
@@ -6374,6 +7139,10 @@ var ChromaAnimation = {
         break;
     }
   },
+  /**
+   * Sets a static color effect for every device.
+   * @param { Color } color The color.
+   */
   staticColorAll: function (color) {
     this.staticColor(EChromaSDKDeviceEnum.DE_ChromaLink, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Headset, color);
@@ -6382,6 +7151,12 @@ var ChromaAnimation = {
     this.staticColor(EChromaSDKDeviceEnum.DE_Mouse, color);
     this.staticColor(EChromaSDKDeviceEnum.DE_Mousepad, color);
   },
+  /**
+   * Sets a custom color effect for a device.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   * @param { Color[] } colors The colors.
+   * @param { RZKEY[] } keys The RZKEYs.
+   */
   custom: function (device, colors, keys) {
     if (chromaSDK == undefined) {
       setTimeout(function () {
@@ -6414,6 +7189,11 @@ var ChromaAnimation = {
         break;
     }
   },
+  /**
+   * Sets a custom color effect for keyboard.
+   * @param { Color[] } colors The colors.
+   * @param { RZKEY[] } keys The RZKEYs.
+   */
   customKey: function (colors, keys) {
     if (chromaSDK == undefined) {
       setTimeout(function () {
@@ -6424,6 +7204,10 @@ var ChromaAnimation = {
     this.stopByAnimationType(EChromaSDKDeviceEnum.DE_Keyboard);
     chromaSDK.createKeyboardEffect("CHROMA_CUSTOM_KEY", colors, keys);
   },
+  /**
+   * Clears the color effect for a device.
+   * @param { number } device The EChromaSDKDeviceEnum.
+   */
   clear: function (device) {
     if (chromaSDK == undefined) {
       setTimeout(function () { ChromaAnimation.clear(device); }, 100);
@@ -6454,6 +7238,9 @@ var ChromaAnimation = {
         break;
     }
   },
+  /**
+   * Clears the color effect for every device.
+   */
   clearAll: function () {
     this.clear(EChromaSDKDeviceEnum.DE_ChromaLink);
     this.clear(EChromaSDKDeviceEnum.DE_Headset);
@@ -6463,6 +7250,11 @@ var ChromaAnimation = {
     this.clear(EChromaSDKDeviceEnum.DE_Mousepad);
     this.clear(EChromaSDKDeviceEnum.DE_KeyboardExtended);
   },
+  /**
+   * Retrieves the RZKEY at a given row and column.
+   * @param { number } row The row.
+   * @param { number } col The column.
+   */
   getKey: function (row, col) {
     return (row << 8) | col;
   },
@@ -6543,33 +7335,39 @@ var ChromaAnimation = {
     }
   },
 
-  // Helper function to implement reactive key setEffect
+  /**
+   * Helper function to implement reactive key effect.
+   * @param { string } layer The animation name.
+   * @param { number } key The RZKEY.
+   * @param { number } lineWidth The width of the line.
+   * @param { Color } color The color. 
+   */
   reactiveKeyEffectAllFrames: function (layer, key, lineWidth, color) {
 
-    var frameCount = ChromaAnimation.getFrameCount(layer);
+    let frameCount = ChromaAnimation.getFrameCount(layer);
 
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
 
-    var startRow = getHighByte(key);
-    var startColumn = getLowByte(key);
+    let startRow = getHighByte(key);
+    let startColumn = getLowByte(key);
 
     // console.log('Start Column =', startColumn);
     // console.log('Start Row =', startRow);
 
-    var radius = 0;
-    var speed = 25 / frameCount;
+    let radius = 0;
+    let speed = 25 / frameCount;
 
-    for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-      var stroke = radius;
-      for (var t = 0; t < lineWidth; ++t) {
-        for (var i = 0; i < 360; ++i) {
-          var angle = i * Math.PI / 180;
-          var r = Math.floor(startRow + stroke * Math.sin(angle));
-          var c = Math.floor(startColumn + stroke * Math.cos(angle));
+    for (let frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+      let stroke = radius;
+      for (let t = 0; t < lineWidth; ++t) {
+        for (let i = 0; i < 360; ++i) {
+          let angle = i * Math.PI / 180;
+          let r = Math.floor(startRow + stroke * Math.sin(angle));
+          let c = Math.floor(startColumn + stroke * Math.cos(angle));
           if (r >= 0 && r < maxRow &&
             c >= 0 && c < maxColumn) {
-            var rkey = ChromaAnimation.getKey(r, c);
+            let rkey = ChromaAnimation.getKey(r, c);
             ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
           }
         }
@@ -6579,85 +7377,82 @@ var ChromaAnimation = {
     }
   },
 
+  /**
+   * Helper function to implement reactive key effect.
+   * @param { string } layer The animation name.
+   * @param { number } key The RZKEY.
+   * @param { number } lineWidth The width of the line.
+   * @param { number } red The red value, in [0, 255].
+   * @param { number } green The green value, in [0, 255].
+   * @param { number } blue The blue value, in [0, 255].
+   */
   reactiveKeyEffectAllFramesRGB: function (layer, key, lineWidth, red, green, blue) {
-
-    var frameCount = ChromaAnimation.getFrameCount(layer);
-
-    var maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    var maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-
-    var startRow = getHighByte(key);
-    var startColumn = getLowByte(key);
-
-    // console.log('Start Column =', startColumn);
-    // console.log('Start Row =', startRow);
-
-    var color = ChromaAnimation.getRGB(red, green, blue);
-    var radius = 0;
-    var speed = 25 / frameCount;
-
-    for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
-      var stroke = radius;
-      for (var t = 0; t < lineWidth; ++t) {
-        for (var i = 0; i < 360; ++i) {
-          var angle = i * Math.PI / 180;
-          var r = Math.floor(startRow + stroke * Math.sin(angle));
-          var c = Math.floor(startColumn + stroke * Math.cos(angle));
-          if (r >= 0 && r < maxRow &&
-            c >= 0 && c < maxColumn) {
-            var rkey = ChromaAnimation.getKey(r, c);
-            ChromaAnimation.setKeyColor(layer, frameIndex, rkey, color);
-          }
-        }
-        stroke += speed;
-      }
-      radius += speed;
-    }
+    let color = ChromaAnimation.getRGB(red, green, blue);
+    reactiveKeyEffectAllFrames(layer, key, lineWidth, color);
   }
 };
+
+// Call update frame once to initialise everything
 ChromaAnimation.updateFrame();
 
-function ChromaAnimation1D() {
-  var Name;
-  var Device;
-  var Frames = [];
-  var Loop = true;
-  var FrameTime = 0;
-  var FrameCallback = undefined;
-}
+class ChromaAnimation1D {
+  /** @type { string } */
+  Name;
+  /**
+   * EChromaSDKDevice1DEnum.
+   * @type { number }
+   */
+  Device;
+  /** @type { ChromaAnimationFrame1D[] } */
+  Frames = [];
+  /** @type { boolean } */
+  Loop = true;
+  /** @type { number } */
+  FrameTime = 0;
+  /** @type { ((anim: ChromaAnimation1D | ChromaAnimation2D, colors: Color[]) => void) | undefined } */
+  FrameCallback = undefined;
 
-ChromaAnimation1D.prototype = {
+  /**
+   * EChromaSDKDeviceTypeEnum.
+   * @type { number }
+   */
+  DeviceType = EChromaSDKDeviceTypeEnum.DE_1D;
 
-  DeviceType: EChromaSDKDeviceTypeEnum.DE_1D,
+  /** @type { number } */
+  CurrentIndex = 0;
 
-  CurrentIndex: 0,
+  /** @type { boolean } */
+  IsPlaying = false;
 
-  IsPlaying: false,
+  /**
+   * Opens an animation.
+   * @param { Array } arrayBuffer The data buffer.
+   * @param { number } readIndex The starting index.
+   */
+  openAnimation(arrayBuffer, readIndex) {
 
-  openAnimation: function (arrayBuffer, readIndex) {
-
-    readSize = 1;
-    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let readSize = 1;
+    let device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
     this.Device = device;
 
     readSize = 4;
-    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('frameCount:', frameCount);
 
-    var maxLeds = ChromaAnimation.getMaxLeds(device);
+    let maxLeds = ChromaAnimation.getMaxLeds(device);
     //console.log('maxLeds:', maxLeds);
 
-    var frames = [];
+    let frames = [];
 
-    for (var index = 0; index < frameCount; ++index) {
+    for (let index = 0; index < frameCount; ++index) {
 
-      var frame = new ChromaAnimationFrame1D();
+      let frame = new ChromaAnimationFrame1D();
 
       readSize = Float32Array.BYTES_PER_ELEMENT;
-      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+      let duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
       readIndex += readSize;
 
       if (duration < 0.033) {
@@ -6669,13 +7464,13 @@ ChromaAnimation1D.prototype = {
       //console.log('Frame '+index+': duration='+duration);
 
       readSize = 4 * maxLeds;
-      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
+      let colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
       readIndex += readSize;
       //console.log(colors);
 
       frame.Colors = new Array(maxLeds);
-      for (var i = 0; i < maxLeds; ++i) {
-        var color = colors[i];
+      for (let i = 0; i < maxLeds; ++i) {
+        let color = colors[i];
         frame.Colors[i] = color;
       }
 
@@ -6683,26 +7478,30 @@ ChromaAnimation1D.prototype = {
     }
 
     this.Frames = frames;
-  },
-  saveAnimation: function () {
+  }
+  /**
+   * Serializes an animation to a file blob.
+   * @returns The file blob.
+   */
+  saveAnimation() {
 
-    var device = this.Device;
-    var maxLeds = ChromaAnimation.getMaxLeds(device);
-    var frames = this.Frames;
-    var frameCount = frames.length;
+    let device = this.Device;
+    let maxLeds = ChromaAnimation.getMaxLeds(device);
+    let frames = this.Frames;
+    let frameCount = frames.length;
 
-    var writeArrays = [];
+    let writeArrays = [];
 
 
     var writeArray = new Uint32Array(1);
-    var version = 1;
+    let version = 1;
     writeArray[0] = version;
     writeArrays.push(writeArray.buffer);
     //console.log('version:', version);
 
 
     var writeArray = new Uint8Array(1);
-    var deviceType = this.DeviceType;
+    let deviceType = this.DeviceType;
     writeArray[0] = deviceType;
     writeArrays.push(writeArray.buffer);
     //console.log('deviceType:', deviceType);
@@ -6719,12 +7518,12 @@ ChromaAnimation1D.prototype = {
     writeArrays.push(writeArray.buffer);
     //console.log('frameCount:', frameCount);
 
-    for (var index = 0; index < frameCount; ++index) {
+    for (let index = 0; index < frameCount; ++index) {
 
-      var frame = frames[index];
+      let frame = frames[index];
 
       var writeArray = new Float32Array(1);
-      var duration = frame.Duration;
+      let duration = frame.Duration;
       if (duration < 0.033) {
         duration = 0.033;
       }
@@ -6734,41 +7533,56 @@ ChromaAnimation1D.prototype = {
       //console.log('Frame', index, 'duration', duration);
 
       var writeArray = new Uint32Array(maxLeds);
-      for (var i = 0; i < maxLeds; ++i) {
-        var color = frame.Colors[i];
+      for (let i = 0; i < maxLeds; ++i) {
+        let color = frame.Colors[i];
         writeArray[i] = color;
       }
       writeArrays.push(writeArray.buffer);
     }
 
-    var blob = new Blob(writeArrays, { type: 'application/octet-stream' });
+    let blob = new Blob(writeArrays, { type: 'application/octet-stream' });
 
     return blob;
-  },
-  getFrameCount: function () {
+  }
+  /**
+   * Retrieves the number of frames.
+   * @returns The number of frames.
+   */
+  getFrameCount() {
     return this.Frames.length;
-  },
-  getFrame: function () {
+  }
+  /**
+   * Retrieves the current frame.
+   * @returns The current frame, or undefined if the current index is out of range.
+   */
+  getFrame() {
     if (this.CurrentIndex < this.Frames.length) {
       return this.Frames[this.CurrentIndex];
     } else {
       return undefined;
     }
-  },
-  getDuration: function () {
-    var frame = this.getFrame();
+  }
+  /**
+   * Retrieves the duration of the current frame.
+   * @returns The duration, or 0 if the current index is out of range.
+   */
+  getDuration() {
+    let frame = this.getFrame();
     if (frame != undefined) {
       return frame.Duration;
     } else {
       return 0;
     }
-  },
-  playFrame: function () {
+  }
+  /**
+   * Plays the current frame.
+   */
+  playFrame() {
     if (this.FrameTime > Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
-      var duration = this.getDuration();
+      let duration = this.getDuration();
       //console.log('Play Frame: '+this.CurrentIndex+' of: '+this.Frames.length+' Duration: '+duration);
 
       if (this.Device == EChromaSDKDevice1DEnum.DE_ChromaLink) {
@@ -6784,7 +7598,7 @@ ChromaAnimation1D.prototype = {
       }
 
       // schedule next frame
-      var refThis = this;
+      let refThis = this;
       if (duration < 0.033) {
         duration = 0.033;
       }
@@ -6798,8 +7612,11 @@ ChromaAnimation1D.prototype = {
         this.stop();
       }
     }
-  },
-  stop: function () {
+  }
+  /**
+   * Stops the animation.
+   */
+  stop() {
     this.IsPlaying = false;
     this.CurrentIndex = 0;
     this.Loop = false;
@@ -6807,11 +7624,19 @@ ChromaAnimation1D.prototype = {
       ChromaAnimation.LoadedAnimations1D[this.Device] = undefined;
     }
     ChromaAnimation.PlayingAnimations1D[this.Device][this.Name] = undefined;
-  },
-  isPlaying: function () {
+  }
+  /**
+   * Retrieves the playing state of the animation.
+   * @returns Whether the animation is playing.
+   */
+  isPlaying() {
     return this.IsPlaying;
-  },
-  play: function (loop) {
+  }
+  /**
+   * Plays the animation.
+   * @param { boolean } loop Whether to loop. 
+   */
+  play(loop) {
     this.stop();
     this.IsPlaying = true;
     ChromaAnimation.stopByAnimationType(ChromaAnimation.getDeviceEnum(this.DeviceType, this.Device));
@@ -6824,52 +7649,70 @@ ChromaAnimation1D.prototype = {
   }
 };
 
-function ChromaAnimation2D() {
-  var Name;
-  var Device;
-  var Frames = [];
-  var Loop = false;
-  var FrameTime = 0;
-  var FrameCallback = undefined;
-}
+class ChromaAnimation2D {
+  /** @type { string } */
+  Name;
+  /**
+   * EChromaSDKDevice2DEnum.
+   * @type { number }
+   */
+  Device;
+  /** @type { ChromaAnimationFrame1D[] } */
+  Frames = [];
+  /** @type { boolean } */
+  Loop = false;
+  /** @type { number } */
+  FrameTime = 0;
+  /** @type { ((anim: ChromaAnimation1D | ChromaAnimation2D, colors: Color[]) => void) | undefined } */
+  FrameCallback = undefined;
 
-ChromaAnimation2D.prototype = {
+  /**
+   * EChromaSDKDeviceTypeEnum.
+   * @type { number }
+   */
+  DeviceType = EChromaSDKDeviceTypeEnum.DE_2D;
 
-  DeviceType: EChromaSDKDeviceTypeEnum.DE_2D,
+  /** @type { number } */
+  CurrentIndex = 0;
 
-  CurrentIndex: 0,
+  /** @type { boolean } */
+  UseChromaCustom = false;
 
-  UseChromaCustom: false,
+  /** @type { boolean } */
+  IsPlaying = false;
 
-  IsPlaying: false,
+  /**
+   * Opens an animation from file.
+   * @param { Array } arrayBuffer The file buffer.
+   * @param { number } readIndex The starting index.
+   */
+  openAnimation(arrayBuffer, readIndex) {
 
-  openAnimation: function (arrayBuffer, readIndex) {
-
-    readSize = 1;
-    var device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let readSize = 1;
+    let device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
     this.Device = device;
 
     readSize = 4;
-    var frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+    let frameCount = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('frameCount:', frameCount);
 
-    var maxRow = ChromaAnimation.getMaxRow(device);
+    let maxRow = ChromaAnimation.getMaxRow(device);
     //console.log('maxRow:', maxRow);
 
-    var maxColumn = ChromaAnimation.getMaxColumn(device);
+    let maxColumn = ChromaAnimation.getMaxColumn(device);
     //console.log('maxColumn:', maxColumn);
 
-    var frames = [];
+    let frames = [];
 
-    for (var index = 0; index < frameCount; ++index) {
+    for (let index = 0; index < frameCount; ++index) {
 
-      var frame = new ChromaAnimationFrame2D(device);
+      let frame = new ChromaAnimationFrame2D(device);
 
       readSize = Float32Array.BYTES_PER_ELEMENT;
-      var duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
+      let duration = new Float32Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
       readIndex += readSize;
 
       if (duration < 0.033) {
@@ -6881,15 +7724,15 @@ ChromaAnimation2D.prototype = {
       //console.log('Frame '+index+': duration='+duration);
 
       readSize = 4 * maxRow * maxColumn;
-      var colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
+      let colors = new Uint32Array(arrayBuffer.slice(readIndex, readIndex + readSize));
       readIndex += readSize;
       //console.log(colors);
 
       frame.Colors = new Array(maxRow);
-      for (var i = 0; i < maxRow; ++i) {
+      for (let i = 0; i < maxRow; ++i) {
         frame.Colors[i] = new Array(maxColumn);
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = colors[i * maxColumn + j];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = colors[i * maxColumn + j];
           frame.Colors[i][j] = color;
         }
       }
@@ -6898,27 +7741,31 @@ ChromaAnimation2D.prototype = {
     }
 
     this.Frames = frames;
-  },
-  saveAnimation: function () {
+  }
+  /**
+   * Serializes an animation to a file blob.
+   * @returns The file blob.
+   */
+  saveAnimation() {
 
-    var device = this.Device;
-    var maxRow = ChromaAnimation.getMaxRow(device);
-    var maxColumn = ChromaAnimation.getMaxColumn(device);
-    var frames = this.Frames;
-    var frameCount = frames.length;
+    let device = this.Device;
+    let maxRow = ChromaAnimation.getMaxRow(device);
+    let maxColumn = ChromaAnimation.getMaxColumn(device);
+    let frames = this.Frames;
+    let frameCount = frames.length;
 
-    var writeArrays = [];
+    let writeArrays = [];
 
 
     var writeArray = new Uint32Array(1);
-    var version = 1;
+    let version = 1;
     writeArray[0] = version;
     writeArrays.push(writeArray.buffer);
     //console.log('version:', version);
 
 
     var writeArray = new Uint8Array(1);
-    var deviceType = this.DeviceType;
+    let deviceType = this.DeviceType;
     writeArray[0] = deviceType;
     writeArrays.push(writeArray.buffer);
     //console.log('deviceType:', deviceType);
@@ -6935,12 +7782,12 @@ ChromaAnimation2D.prototype = {
     writeArrays.push(writeArray.buffer);
     //console.log('frameCount:', frameCount);
 
-    for (var index = 0; index < frameCount; ++index) {
+    for (let index = 0; index < frameCount; ++index) {
 
-      var frame = frames[index];
+      let frame = frames[index];
 
       var writeArray = new Float32Array(1);
-      var duration = frame.Duration;
+      let duration = frame.Duration;
       if (duration < 0.033) {
         duration = 0.033;
       }
@@ -6950,38 +7797,54 @@ ChromaAnimation2D.prototype = {
       //console.log('Frame', index, 'duration', duration);
 
       var writeArray = new Uint32Array(maxRow * maxColumn);
-      for (var i = 0; i < maxRow; ++i) {
-        for (var j = 0; j < maxColumn; ++j) {
-          var color = frame.Colors[i][j];
+      for (let i = 0; i < maxRow; ++i) {
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = frame.Colors[i][j];
           writeArray[i * maxColumn + j] = color;
         }
       }
       writeArrays.push(writeArray.buffer);
     }
 
-    var blob = new Blob(writeArrays, { type: 'application/octet-stream' });
+    let blob = new Blob(writeArrays, { type: 'application/octet-stream' });
 
     return blob;
-  },
-  getFrameCount: function () {
+  }
+  /**
+   * Retrieves the number of frames.
+   * @returns The number of frames.
+   */
+  getFrameCount() {
     return this.Frames.length;
-  },
-  getFrame: function () {
+  }
+  /**
+   * Retrieves the current frame.
+   * @returns The current frame, or undefined if the current index is out of range.
+   */
+  getFrame() {
     if (this.CurrentIndex < this.Frames.length) {
       return this.Frames[this.CurrentIndex];
     } else {
       return undefined;
     }
-  },
-  getDuration: function () {
-    var frame = this.getFrame();
+  }
+  /**
+   * Retrieves the duration of the current frame.
+   * @returns The duration, or 0 if the current index is out of range.
+   */
+  getDuration() {
+    const frame = this.getFrame();
     if (frame != undefined) {
       return frame.Duration;
     } else {
       return 0;
     }
-  },
-  setChromaCustomFlag: function (flag) {
+  }
+  /**
+   * Sets the custom flag.
+   * @param { boolean } flag The flag.
+   */
+  setChromaCustomFlag(flag) {
     switch (this.Device) {
       case EChromaSDKDevice2DEnum.DE_Keyboard:
       case EChromaSDKDevice2DEnum.DE_KeyboardExtended:
@@ -6992,13 +7855,16 @@ ChromaAnimation2D.prototype = {
         }
         break;
     }
-  },
-  playFrame: function () {
+  }
+  /**
+   * Plays the current frame.
+   */
+  playFrame() {
     if (this.FrameTime > Date.now()) {
       return;
     }
     if (this.CurrentIndex < this.Frames.length) {
-      var duration = this.getDuration();
+      let duration = this.getDuration();
       //console.log('Play Frame: '+this.CurrentIndex+' of: '+this.Frames.length+' Duration: '+duration);
 
       switch (this.Device) {
@@ -7029,7 +7895,7 @@ ChromaAnimation2D.prototype = {
       }
 
       // schedule next frame
-      var refThis = this;
+      let refThis = this;
       if (duration < 0.033) {
         duration = 0.033;
       }
@@ -7043,8 +7909,11 @@ ChromaAnimation2D.prototype = {
         this.stop();
       }
     }
-  },
-  stop: function () {
+  }
+  /**
+   * Stops the animation.
+   */
+  stop() {
     this.IsPlaying = false;
     this.CurrentIndex = 0;
     this.Loop = false;
@@ -7057,11 +7926,19 @@ ChromaAnimation2D.prototype = {
       ChromaAnimation.LoadedAnimations2D[device] = undefined;
     }
     ChromaAnimation.PlayingAnimations2D[device][this.Name] = undefined;
-  },
-  isPlaying: function () {
+  }
+  /**
+   * Retrieves the playing state of the animation.
+   * @returns Whether the animation is playing.
+   */
+  isPlaying() {
     return this.IsPlaying;
-  },
-  play: function (loop) {
+  }
+  /**
+   * Plays the animation.
+   * @param { boolean } loop Whether to loop. 
+   */
+  play(loop) {
     this.stop();
     this.IsPlaying = true;
     let device = this.Device;
