@@ -5205,8 +5205,8 @@ let ChromaAnimation = {
   },
   /**
    * Copies every frame from one animation to another.
-   * @param { string } sourceAnimation The name of the source animation.
-   * @param { string } destinationAnimation The name of the destination animation.
+   * @param { ChromaAnimation1D | ChromaAnimation2D } sourceAnimation The source animation.
+   * @param { ChromaAnimation1D | ChromaAnimation2D } destinationAnimation The destination animation.
    */
   copyAnimationFrames: function (sourceAnimation, destinationAnimation) {
     if (!sourceAnimation || !destinationAnimation) {
