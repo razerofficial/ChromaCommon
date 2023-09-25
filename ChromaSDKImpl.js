@@ -6466,6 +6466,82 @@ var ChromaAnimation = {
   getKey: function (row, col) {
     return (row << 8) | col;
   },
+  
+  /**
+   * Overlays the color of all keyboard keys for every frame from one animation to another,
+   * using the source HSV value channel as the alpha.
+   * 
+   * If the number of source frames is less than the number of target frames,
+   * the animation wraps from the start.
+   * @param { string } sourceAnimationName The name of the source animation.
+   * @param { string } targetAnimationName The name of the target animation.
+   */
+  overlayAlphaMultAllKeysAllFrames: function (sourceAnimationName, targetAnimationName) {
+    let sourceAnimation = this.LoadedAnimations[sourceAnimationName];
+    if (sourceAnimation == undefined) {
+      return;
+    }
+    let targetAnimation = this.LoadedAnimations[targetAnimationName];
+    if (targetAnimation == undefined) {
+      return;
+    }
+    if (sourceAnimation.DeviceType != targetAnimation.DeviceType ||
+      sourceAnimation.Device != targetAnimation.Device) {
+      return;
+    }
+    let sourceFrames = sourceAnimation.Frames;
+    if (sourceFrames.length == 0) {
+      return;
+    }
+    let targetFrames = targetAnimation.Frames;
+    if (targetFrames.length == 0) {
+      return;
+    }
+    if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      let maxLeds = ChromaAnimation.getMaxLeds(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = sourceColors[i];
+          if (color != 0) {
+            let red = color & 0xFF;
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
+            let value = Math.max(red, green, blue) / 255;
+            targetColors[i] = this.lerpColor(targetColors[i], color, value);
+          }
+        }
+      }
+    } else if (sourceAnimation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(sourceAnimation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(sourceAnimation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < targetFrames.length; ++frameId) {
+        let sourceFrame = sourceFrames[frameId % sourceFrames.length];
+        let targetFrame = targetFrames[frameId];
+        let sourceColors = sourceFrame.Colors;
+        let targetColors = targetFrame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let sourceRow = sourceColors[i];
+          let targetRow = targetColors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = sourceRow[j];
+            if (color != 0) {
+              let red = color & 0xFF;
+              let green = (color & 0xFF00) >> 8;
+              let blue = (color & 0xFF0000) >> 16;
+              let value = Math.max(red, green, blue) / 255;
+              targetRow[j] = this.lerpColor(targetRow[j], color, value);
+            }
+          }
+        }
+      }
+    }
+  },
 
   // Helper function to implement reactive key setEffect
   reactiveKeyEffectAllFrames: function (layer, key, lineWidth, color) {
