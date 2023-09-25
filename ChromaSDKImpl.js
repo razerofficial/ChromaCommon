@@ -7355,7 +7355,7 @@ class ChromaAnimation1D {
    */
   openAnimation(arrayBuffer, readIndex) {
 
-    readSize = 1;
+    let readSize = 1;
     let device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
@@ -7612,7 +7612,7 @@ class ChromaAnimation2D {
    */
   openAnimation(arrayBuffer, readIndex) {
 
-    readSize = 1;
+    let readSize = 1;
     let device = new Uint8Array(arrayBuffer.slice(readIndex, readIndex + readSize))[0];
     readIndex += readSize;
     //console.log('device:', device);
