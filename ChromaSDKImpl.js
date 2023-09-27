@@ -5648,7 +5648,7 @@ let ChromaAnimation = {
    */
   makeBlankFramesRGB: function (animationName, frameCount, duration, red, green, blue) {
     let color = ChromaAnimation.getRGB(red, green, blue);
-    makeBlankFrames(animationName, frameCount, duration, color)
+    this.makeBlankFrames(animationName, frameCount, duration, color)
   },
   /**
    * Offsets every color for a single frame of an animation.
@@ -7258,7 +7258,7 @@ let ChromaAnimation = {
   getKey: function (row, col) {
     return (row << 8) | col;
   },
-  
+
   /**
    * Overlays the color of all keyboard keys for every frame from one animation to another,
    * using the source HSV value channel as the alpha.
