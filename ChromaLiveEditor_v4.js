@@ -383,9 +383,9 @@ Vue.component('div-chroma-set', {
   template: `
   <div style="padding-bottom: 50px; display: inline-table">
     <div class="box" style="padding: 0px; width: 650px; background: hsl(0, 0%, 10%); display: inline-table; vertical-align: top;">
-      <div style="background: hsl(0, 0%, 20%); width: 650px;">
+      <div style="background: hsl(0, 0%, 20%); width: 650px; display: flex; align-items: center">
         <button class="buttonChroma" :onclick="keyboardClick" style="font-size: 1.2em; display: inline-table; padding: 4px; max-width: 65px" :id="'showEffect'+index">{{ index }}</button>
-        <div style="width: 550px; display: inline-table">{{ header }}</div>
+        <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis" :title="header">{{ header }}</div>
       </div>
       <section v-show="false && index != undefined && index != ''" style="padding: 0px; font-size: 0.65em; text-align: center;">
         <small>
