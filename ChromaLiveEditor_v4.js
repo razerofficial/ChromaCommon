@@ -1,3 +1,6 @@
+// File name: ChromaLiveEditor_v4.js
+// File version: 1.0.0
+
 /*!
 
 JSZip v3.3.0 - A JavaScript class for generating and reading zip files
