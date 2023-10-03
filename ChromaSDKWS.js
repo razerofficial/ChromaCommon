@@ -7392,7 +7392,7 @@ class ChromaAnimation2D {
    * @type { number }
    */
   Device;
-  /** @type { ChromaAnimationFrame1D[] } */
+  /** @type { ChromaAnimationFrame2D[] } */
   Frames = [];
   /** @type { boolean } */
   Loop = false;
