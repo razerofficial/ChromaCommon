@@ -1859,7 +1859,7 @@ let ChromaAnimation = {
    * @param { number } blue The blue value, in [0, 255].
    */
   setKeysColorAllFramesRGB: function (animationName, keys, red, green, blue) {
-    setKeysColorAllFrames(animationName, keys, ChromaAnimation.getRGB(red, green, blue));
+    this.setKeysColorAllFrames(animationName, keys, ChromaAnimation.getRGB(red, green, blue));
   },
   /**
    * Copies the color of a given keyboard key for every frame from one animation to another.
@@ -3886,7 +3886,7 @@ let ChromaAnimation = {
    */
   fillZeroColorAllFramesRGB: function (animationName, red, green, blue) {
     let newColor = ChromaAnimation.getRGB(red, green, blue);
-    fillZeroColorAllFrames(animationName, newColor);
+    this.fillZeroColorAllFrames(animationName, newColor);
   },
   /**
    * Sets every color for a single frame of an animation,
@@ -3901,20 +3901,19 @@ let ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
+
     let frames = animation.Frames;
     if (frames.length == 0) {
       return;
     }
-    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    if (frameId >= 0 && frameId < frames.length) {
-      let frame = frames[frameId];
-      let colors = frame.Colors;
-      for (let i = 0; i < maxRow; ++i) {
-        let row = colors[i];
-        for (let j = 0; j < maxColumn; ++j) {
-          let oldColor = row[j];
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let oldColor = colors[i];
           let red = oldColor & 0xFF;
           let green = (oldColor & 0xFF00) >> 8;
           let blue = (oldColor & 0xFF0000) >> 16;
@@ -3924,7 +3923,32 @@ let ChromaAnimation = {
             red <= threshold &&
             green <= threshold &&
             blue <= threshold) {
-            row[j] = color;
+            colors[i] = color;
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let oldColor = row[j];
+            let red = oldColor & 0xFF;
+            let green = (oldColor & 0xFF00) >> 8;
+            let blue = (oldColor & 0xFF0000) >> 16;
+            if (red != 0 &&
+              green != 0 &&
+              blue != 0 &&
+              red <= threshold &&
+              green <= threshold &&
+              blue <= threshold) {
+              row[j] = color;
+            }
           }
         }
       }
@@ -4006,7 +4030,7 @@ let ChromaAnimation = {
    */
   fillThresholdColorsRGB: function (animationName, frameId, threshold, red, green, blue) {
     let color = ChromaAnimation.getRGB(red, green, blue);
-    fillThresholdColors(animationName, frameId, threshold, color);
+    this.fillThresholdColors(animationName, frameId, threshold, color);
   },
   /**
    * Sets every color for every frame of an animation,
@@ -4033,7 +4057,7 @@ let ChromaAnimation = {
       for (let frameId = 0; frameId < frames.length; ++frameId) {
         let frame = frames[frameId];
         let colors = frame.Colors;
-        for (let i = 0; i < maxRow; ++i) {
+        for (let i = 0; i < maxLeds; ++i) {
           let oldColor = colors[i];
           let red = oldColor & 0xFF;
           let green = (oldColor & 0xFF00) >> 8;
