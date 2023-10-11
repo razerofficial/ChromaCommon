@@ -375,6 +375,7 @@ ChromaSDK.prototype = {
     }
   }
 }
+var chromaSDK = new ChromaSDK();
 
 /**
  * Object containing keyboard key constants.
@@ -7730,7 +7731,7 @@ class ChromaAnimation2D {
   exports = factory();
 }(this, function () {
   return {
-    ChromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
+    ChromaSDK, chromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
     EChromaSDKDeviceTypeEnum, EChromaSDKDevice1DEnum, EChromaSDKDevice2DEnum, EChromaSDKDeviceEnum,
     ChromaAnimationFrame1D, ChromaAnimationFrame2D, ChromaAnimation, ChromaAnimation1D, ChromaAnimation2D
   };
