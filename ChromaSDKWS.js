@@ -15,13 +15,13 @@
 /**
  * Chroma SDK client.
  */
-function ChromaSDK() {
-  let initialized = false;
-  let socket = undefined;
-  let customInitData = undefined;
-}
+function ChromaSDK() { }
 
 ChromaSDK.prototype = {
+  initialized: false,
+  socket: undefined,
+  customInitData: undefined,
+
   /**
    * Attempts to connect to the Chroma SDK.
    * 
@@ -7717,3 +7717,21 @@ class ChromaAnimation2D {
     this.playFrame();
   }
 };
+
+// Universal Module Definition
+; (function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.Chroma = factory();
+  }
+  exports = factory();
+}(this, function () {
+  return {
+    ChromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
+    EChromaSDKDeviceTypeEnum, EChromaSDKDevice1DEnum, EChromaSDKDevice2DEnum, EChromaSDKDeviceEnum,
+    ChromaAnimationFrame1D, ChromaAnimationFrame2D, ChromaAnimation, ChromaAnimation1D, ChromaAnimation2D
+  };
+}));

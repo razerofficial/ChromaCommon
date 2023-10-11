@@ -15,15 +15,13 @@
 /**
  * Chroma SDK client.
  */
-function ChromaSDK() {
-  let uri = undefined;
-  let timerId = undefined;
-  let initialized = false;
-  let customInitData = undefined;
-}
+function ChromaSDK() { }
 
 ChromaSDK.prototype = {
   uri: undefined,
+  timerId: undefined,
+  initialized: false,
+  customInitData: undefined,
   onTimer: function () {
     let refThis = chromaSDK; // used on interval so this is out of scope
     if (refThis.uri == undefined) {
@@ -7982,3 +7980,21 @@ class ChromaAnimation2D {
     this.playFrame();
   }
 };
+
+// Universal Module Definition
+; (function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.Chroma = factory();
+  }
+  exports = factory();
+}(this, function () {
+  return {
+    ChromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
+    EChromaSDKDeviceTypeEnum, EChromaSDKDevice1DEnum, EChromaSDKDevice2DEnum, EChromaSDKDeviceEnum,
+    ChromaAnimationFrame1D, ChromaAnimationFrame2D, ChromaAnimation, ChromaAnimation1D, ChromaAnimation2D
+  };
+}));
