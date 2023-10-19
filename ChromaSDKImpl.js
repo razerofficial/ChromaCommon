@@ -1,5 +1,5 @@
 // File name: ChromaSDKImpl.js
-// File version: 1.0.0
+// File version: 1.0.1
 
 // JavaScript source code
 
@@ -15,15 +15,13 @@
 /**
  * Chroma SDK client.
  */
-function ChromaSDK() {
-  let uri = undefined;
-  let timerId = undefined;
-  let initialized = false;
-  let customInitData = undefined;
-}
+function ChromaSDK() { }
 
 ChromaSDK.prototype = {
   uri: undefined,
+  timerId: undefined,
+  initialized: false,
+  customInitData: undefined,
   onTimer: function () {
     let refThis = chromaSDK; // used on interval so this is out of scope
     if (refThis.uri == undefined) {
@@ -640,6 +638,7 @@ ChromaSDK.prototype = {
     }, 0);
   }
 }
+var chromaSDK = new ChromaSDK();
 
 /**
  * Object containing keyboard key constants.
@@ -1686,7 +1685,7 @@ let ChromaAnimation = {
    * @param { number } blue The blue value, in [0, 255].
    */
   setKeysColorRGB: function (animationName, frameId, keys, red, green, blue) {
-    setKeysColor(animationName, frameId, keys, ChromaAnimation.getRGB(red, green, blue));
+    this.setKeysColor(animationName, frameId, keys, ChromaAnimation.getRGB(red, green, blue));
   },
   /**
    * Retrieves the color of a given keyboard key for a single frame.
@@ -1811,7 +1810,7 @@ let ChromaAnimation = {
    * @param { number } blue The blue value, in [0, 255].
    */
   setKeyColorAllFramesRGB: function (animationName, key, red, green, blue) {
-    setKeyColorAllFrames(animationName, key, ChromaAnimation.getRGB(red, green, blue));
+    this.setKeyColorAllFrames(animationName, key, ChromaAnimation.getRGB(red, green, blue));
   },
   /**
    * Sets the colors of all given keyboard keys for every frame in an animation.
@@ -3721,7 +3720,7 @@ let ChromaAnimation = {
    */
   fillNonZeroColorRGB: function (animationName, frameId, red, green, blue) {
     let newColor = ChromaAnimation.getRGB(red, green, blue);
-    fillNonZeroColor(animationName, frameId, newColor);
+    this.fillNonZeroColor(animationName, frameId, newColor);
   },
   /**
    * Sets every color for every frame of an animation,
@@ -3779,7 +3778,7 @@ let ChromaAnimation = {
    */
   fillNonZeroColorAllFramesRGB: function (animationName, red, green, blue) {
     let newColor = ChromaAnimation.getRGB(red, green, blue);
-    fillNonZeroColorAllFrames(animationName, newColor);
+    this.fillNonZeroColorAllFrames(animationName, newColor);
   },
   /**
    * Sets every color for a single frame of an animation,
@@ -7415,7 +7414,7 @@ let ChromaAnimation = {
    */
   reactiveKeyEffectAllFramesRGB: function (layer, key, lineWidth, red, green, blue) {
     let color = ChromaAnimation.getRGB(red, green, blue);
-    reactiveKeyEffectAllFrames(layer, key, lineWidth, color);
+    this.reactiveKeyEffectAllFrames(layer, key, lineWidth, color);
   }
 };
 
@@ -7982,3 +7981,20 @@ class ChromaAnimation2D {
     this.playFrame();
   }
 };
+
+// Universal Module Definition
+; (function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.Chroma = factory();
+  }
+}(this, function () {
+  return {
+    ChromaSDK, chromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
+    EChromaSDKDeviceTypeEnum, EChromaSDKDevice1DEnum, EChromaSDKDevice2DEnum, EChromaSDKDeviceEnum,
+    ChromaAnimationFrame1D, ChromaAnimationFrame2D, ChromaAnimation, ChromaAnimation1D, ChromaAnimation2D
+  };
+}));
