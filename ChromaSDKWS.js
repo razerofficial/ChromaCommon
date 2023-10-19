@@ -7728,7 +7728,6 @@ class ChromaAnimation2D {
   } else {
     root.Chroma = factory();
   }
-  exports = factory();
 }(this, function () {
   return {
     ChromaSDK, chromaSDK, RZKEY, RZLED, Mouse, getHighByte, getLowByte,
