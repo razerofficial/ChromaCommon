@@ -1,5 +1,5 @@
 // File name: ChromaSDKWS.js
-// File version: 1.0.0
+// File version: 1.0.1
 
 // JavaScript source code
 
