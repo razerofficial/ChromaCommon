@@ -1422,7 +1422,7 @@ let ChromaAnimation = {
    * @param { number } blue The blue value, in [0, 255].
    */
   setKeysColorRGB: function (animationName, frameId, keys, red, green, blue) {
-    setKeysColor(animationName, frameId, keys, ChromaAnimation.getRGB(red, green, blue));
+    this.setKeysColor(animationName, frameId, keys, ChromaAnimation.getRGB(red, green, blue));
   },
   /**
    * Retrieves the color of a given keyboard key for a single frame.
@@ -1547,7 +1547,7 @@ let ChromaAnimation = {
    * @param { number } blue The blue value, in [0, 255].
    */
   setKeyColorAllFramesRGB: function (animationName, key, red, green, blue) {
-    setKeyColorAllFrames(animationName, key, ChromaAnimation.getRGB(red, green, blue));
+    this.setKeyColorAllFrames(animationName, key, ChromaAnimation.getRGB(red, green, blue));
   },
   /**
    * Sets the colors of all given keyboard keys for every frame in an animation.
@@ -3457,7 +3457,7 @@ let ChromaAnimation = {
    */
   fillNonZeroColorRGB: function (animationName, frameId, red, green, blue) {
     let newColor = ChromaAnimation.getRGB(red, green, blue);
-    fillNonZeroColor(animationName, frameId, newColor);
+    this.fillNonZeroColor(animationName, frameId, newColor);
   },
   /**
    * Sets every color for every frame of an animation,
@@ -3515,7 +3515,7 @@ let ChromaAnimation = {
    */
   fillNonZeroColorAllFramesRGB: function (animationName, red, green, blue) {
     let newColor = ChromaAnimation.getRGB(red, green, blue);
-    fillNonZeroColorAllFrames(animationName, newColor);
+    this.fillNonZeroColorAllFrames(animationName, newColor);
   },
   /**
    * Sets every color for a single frame of an animation,
@@ -7151,7 +7151,7 @@ let ChromaAnimation = {
    */
   reactiveKeyEffectAllFramesRGB: function (layer, key, lineWidth, red, green, blue) {
     let color = ChromaAnimation.getRGB(red, green, blue);
-    reactiveKeyEffectAllFrames(layer, key, lineWidth, color);
+    this.reactiveKeyEffectAllFrames(layer, key, lineWidth, color);
   }
 };
 
