@@ -1,16 +1,7 @@
 // File name: ChromaSDKImpl.js
-// File version: 1.0.1
+// File version: 1.0.2
 
-// JavaScript source code
-
-/**
- * A Color is a three-byte RGB value.
- * 
- * The red, green, and blue channels are in order from low byte to high byte.
- * 
- * i.e. in the color 0x012345, R=0x45, G=0x23, B=0x01.
- * @typedef { number } Color
- */
+// Generated from create_dist.js
 
 /**
  * Chroma SDK client.
@@ -639,6 +630,15 @@ ChromaSDK.prototype = {
   }
 }
 var chromaSDK = new ChromaSDK();
+
+/**
+ * A Color is a three-byte RGB value.
+ * 
+ * The red, green, and blue channels are in order from low byte to high byte.
+ * 
+ * i.e. in the color 0x012345, R=0x45, G=0x23, B=0x01.
+ * @typedef { number } Color
+ */
 
 /**
  * Object containing keyboard key constants.
@@ -7998,3 +7998,4 @@ class ChromaAnimation2D {
     ChromaAnimationFrame1D, ChromaAnimationFrame2D, ChromaAnimation, ChromaAnimation1D, ChromaAnimation2D
   };
 }));
+
