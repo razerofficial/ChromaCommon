@@ -33,7 +33,9 @@ const targets = [
     for (const target of targets) {
         // Remove old file
         const outFP = path.resolve(__dirname, `../${target.outFileName}`);
-        await fs.unlink(outFP);
+        try {
+            await fs.unlink(outFP);
+        } catch (e) { }
 
         console.log(`Writing to ${outFP}`);
 
