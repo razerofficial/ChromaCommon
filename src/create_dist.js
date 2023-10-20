@@ -27,6 +27,22 @@ const targets = [
         ],
         outFileName: "ChromaSDKWS.js"
     },
+    {
+        inFilePaths: [
+            "./client_rest.js",
+            "./anim_lib.js",
+            "./esm.js",
+        ],
+        outFileName: "ChromaSDKImpl.mjs"
+    },
+    {
+        inFilePaths: [
+            "./client_ws.js",
+            "./anim_lib.js",
+            "./esm.js",
+        ],
+        outFileName: "ChromaSDKWS.mjs"
+    },
 ];
 
 (async function () {
