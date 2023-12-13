@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests</title>
+    <script src="../ChromaSDKImpl.js"></script>
+</head>
+
+<body>
+    <script>
+        var chromaSDK = new ChromaSDK();
+
+        function getFunctions(obj) {
+            let funkys = [];
+            for (let funky in obj) {
+                const funk = obj[funky];
+                if (typeof funk != "function") {
+                    continue;
+                }
+                funkys.push(funky);
+            }
+            return funkys;
+        }
+
+        function getParams(func) {
+            // String representation of the function code
+            let str = func.toString();
+
+            // Remove comments of the form /* ... */
+            // Removing comments of the form //
+            // Remove body of the function { ... }
+            // removing '=>' if func is arrow function 
+            str = str.replace(/\/\*[\s\S]*?\*\//g, '')
+                .replace(/\/\/(.)*/g, '')
+                .replace(/{[\s\S]*}/, '')
+                .replace(/=>/g, '')
+                .trim();
+
+            // Start parameter names after first '('
+            let start = str.indexOf("(") + 1;
+
+            // End parameter names is just before last ')'
+            let end = str.length - 1;
+
+            let result = str.substring(start, end).split(", ");
+            let params = [];
+            result.forEach(element => {
+
+                // Removing any default value
+                element = element.replace(/=[\s\S]*/g, '').trim();
+                if (element.length > 0)
+                    params.push(element);
+            });
+            return params;
+        }
+
+        function testRTE(name, func, ...args) {
+            const div = document.createElement("div");
+            div.innerHTML = `&circlearrowright; Running test "${name}"...`;
+            div.style.color = "grey";
+            document.body.appendChild(div);
+            (async () => {
+                try {
+                    await func(...args);
+                    div.innerHTML = `&check; Test "${name}" ran without errors!`;
+                    div.style.color = "green";
+                }
+                catch (e) {
+                    console.error(e);
+                    div.innerHTML = `&cross; Test "${name}" encountered an error! Check console for details.`;
+                    div.style.color = "red";
+                }
+            })();
+        }
+
+        function test(name, expected, test) {
+            const div = document.createElement("div");
+            div.innerHTML = `&circlearrowright; Running test "${name}"...`;
+            div.style.color = "grey";
+            document.body.appendChild(div);
+            (async () => {
+                const result = await test();
+                if (result === expected) {
+                    div.innerHTML = `&check; Test "${name}" passed!`;
+                    div.style.color = "green";
+                } else {
+                    div.innerHTML = `&cross; Test "${name}" failed!<br>
+                    &emsp;&emsp;Expected:<br>
+                    &emsp;&emsp;<code>${JSON.stringify(expected)}</code><br>
+                    &emsp;&emsp;Received:<br>
+                    &emsp;&emsp;<code>${JSON.stringify(result)}</code>`;
+                    div.style.color = "red";
+                }
+            })();
+        }
+
+        (async () => {
+            chromaSDK.init();
+
+            await new Promise((resolve) => {
+                const poll = () => {
+                    if (chromaSDK.initialized)
+                        resolve();
+                    else
+                        setTimeout(poll, 100);
+                };
+                poll();
+            });
+
+            test("getHighByte(NUMPAD0)", 0x05, async () => {
+                return getHighByte(RZKEY.RZKEY_NUMPAD0);
+            });
+            test("getHighByte(LCTRL)", 0x05, async () => {
+                return getHighByte(RZKEY.RZKEY_LCTRL);
+            });
+            test("getLowByte(NUMPAD0)", 0x13, async () => {
+                return getLowByte(RZKEY.RZKEY_NUMPAD0);
+            });
+            test("getLowByte(LCTRL)", 0x01, async () => {
+                return getLowByte(RZKEY.RZKEY_LCTRL);
+            });
+
+            // ChromaAnimation
+            for (let funky of getFunctions(ChromaAnimation)) {
+                const funk = ChromaAnimation[funky];
+                testRTE(`ChromaAnimation::${funky}`, funk.bind(ChromaAnimation));
+            }
+
+            // const stdArgs = {
+            //     "device": Chroma.EChromaSDKDeviceEnum.DE_Keyboard,
+            //     "device1D": Chroma.EChromaSDKDevice1DEnum.DE_Mousepad,
+            //     "device2D": Chroma.EChromaSDKDevice2DEnum.DE_Keyboard,
+            //     "deviceD": Chroma.EChromaSDKDevice2DEnum.DE_Keyboard,
+            //     "deviceType": Chroma.EChromaSDKDeviceTypeEnum.DE_2D,
+            //     "animationName": "../animations/BlackAndWhiteRainbow_Keyboard.chroma",
+            //     "start": 0,
+            //     "end": 2,
+            //     "amt": 0.5,
+            //     "from": 0x004000,
+            //     "to": 0x400040,
+            //     "t": 0.5,
+            //     "color1": 0x204060,
+            //     "color2": 0x002040,
+            // };
+            // const expected = {
+            //     getMaxLeds: 15,
+            //     getMaxRow: 6,
+            //     getMaxColumn: 22,
+            //     getDeviceType: Chroma.EChromaSDKDeviceTypeEnum.DE_2D,
+            //     getDevice1D: undefined,
+            //     getDevice2D: Chroma.EChromaSDKDevice2DEnum.DE_Keyboard,
+            //     getDeviceEnum: Chroma.EChromaSDKDeviceEnum.DE_Keyboard,
+            //     getDeviceEnumName: "Keyboard",
+            //     getDeviceName: "Keyboard",
+            //     lerp: 1,
+            //     lerpColor: 0x202020,
+            //     getFrameCount: 0,
+            //     isPlaying: false,
+            //     getKeyColor: 0,
+            //     addColor: 0x2060A0,
+            //     subtractColor: 0x202020,
+            //     createAnimation: { "Name": "../animations/BlackAndWhiteRainbow_Keyboard.chroma", "Device": 2, "Frames": [], "Loop": false, "FrameTime": 0, "DeviceType": 1, "CurrentIndex": 0, "UseChromaCustom": false, "IsPlaying": false }
+            // };
+            // for (let funky of getFunctions(Chroma.ChromaAnimation)) {
+            //     const funk = Chroma.ChromaAnimation[funky];
+            //     const funkParams = getParams(funk);
+            //     const args = funkParams.map((e) => (e in stdArgs) ? stdArgs[e] : undefined)
+
+            //     let funkFullName = `ChromaAnimation::${funky}`;
+            //     funkFullName += funkParams.length > 0 ? `(${funkParams.join(', ')}) with (${args.join(', ')})` : `(${funkParams.join(', ')})`;
+
+            //     test(`ChromaAnimation::${funky}(${funkParams.join(', ')}) with (${args.join(', ')})`, expected[funky], async () => {
+            //         try {
+            //             return funk.call(Chroma.ChromaAnimation, ...args);
+            //         }
+            //         catch (e) {
+            //             console.error(e);
+            //             return "runtime error";
+            //         }
+            //         return true;
+            //     });
+            // }
+        })();
+    </script>
+</body>
+
+
+</html>
