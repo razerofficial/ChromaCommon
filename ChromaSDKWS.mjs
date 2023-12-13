@@ -1002,6 +1002,7 @@ let ChromaAnimation = {
       case EChromaSDKDeviceEnum.DE_Mousepad:
         return EChromaSDKDeviceTypeEnum.DE_1D;
       case EChromaSDKDeviceEnum.DE_Keyboard:
+      case EChromaSDKDeviceEnum.DE_KeyboardExtended:
       case EChromaSDKDeviceEnum.DE_Keypad:
       case EChromaSDKDeviceEnum.DE_Mouse:
         return EChromaSDKDeviceTypeEnum.DE_2D;
@@ -1293,7 +1294,7 @@ let ChromaAnimation = {
   closeAnimation: function (animationName) {
     if (this.LoadedAnimations[animationName] != undefined) {
       this.LoadedAnimations[animationName].stop();
-      this.LoadedAnimations[animationName] = undefined;
+      delete this.LoadedAnimations[animationName];
     }
   },
   /**
@@ -7019,7 +7020,7 @@ let ChromaAnimation = {
    * @param { number } col The column.
    */
   getKey: function (row, col) {
-    return (row << 8) | col;
+    return ((row & 0xFF) << 8) | (col & 0xFF);
   },
 
   /**
@@ -7369,7 +7370,7 @@ class ChromaAnimation1D {
       ++this.CurrentIndex;
     } else {
       //console.log('Animation complete.');
-      if (this.Loop) {
+      if (this.Loop && this.Frames.length > 0) {
         this.play(this.Loop);
       } else {
         this.stop();
@@ -7666,7 +7667,7 @@ class ChromaAnimation2D {
       ++this.CurrentIndex;
     } else {
       //console.log('Animation complete.');
-      if (this.Loop) {
+      if (this.Loop && this.Frames.length > 0) {
         this.play(this.Loop);
       } else {
         this.stop();
