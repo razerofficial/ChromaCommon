@@ -6857,29 +6857,44 @@ let ChromaAnimation = {
     if (animation == undefined) {
       return;
     }
-    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
-      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+    let frames = animation.Frames;
+    if (frames.length == 0) {
       return;
     }
-    let frames = animation.Frames;
-    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
-    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
-    //console.log(animation.Frames);
-    for (let frameId = 0; frameId < frames.length; ++frameId) {
-      let frame = frames[frameId];
-      //console.log(frame);
-      let colors = frame.Colors;
-      for (let i = 0; i < maxRow; ++i) {
-        let row = colors[i];
-        for (let j = 0; j < maxColumn; ++j) {
-          let color = row[j];
-          //console.log('color', color);
+
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
           let red = (color & 0xFF);
           let green = (color & 0xFF00) >> 8;
           let blue = (color & 0xFF0000) >> 16;
           let gray = Math.sqrt(red * red + green * green + blue * blue);
           color = gray | (gray << 8) | (gray << 16);
-          row[j] = color;
+          colors[i] = color;
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
+            let gray = Math.sqrt(red * red + green * green + blue * blue);
+            color = gray | (gray << 8) | (gray << 16);
+            row[j] = color;
+          }
         }
       }
     }
