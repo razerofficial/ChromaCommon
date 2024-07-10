@@ -5639,6 +5639,51 @@ let ChromaAnimation = {
     }
   },
   /**
+   * Replace a color with another color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   * @param { number } color1 Find color1
+   * @param { number } color2 Replace with color2
+   */
+  replaceColorAllFrames: function (animationName, color1, color2) {
+    let animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    let frames = animation.Frames;
+    if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+      let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        //console.log(frame);
+        let colors = frame.Colors;
+        for (let i = 0; i < maxLeds; ++i) {
+          let color = colors[i];
+          if (color == color1) {
+            colors[i] = color2;
+          }
+        }
+      }
+    } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+      let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+      let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+      //console.log(animation.Frames);
+      for (let frameId = 0; frameId < frames.length; ++frameId) {
+        let frame = frames[frameId];
+        //console.log(frame);
+        let colors = frame.Colors;
+        for (let i = 0; i < maxRow; ++i) {
+          let row = colors[i];
+          for (let j = 0; j < maxColumn; ++j) {
+            let color = row[j];
+            if (color == color1) {
+              row[j] = color2;
+            }
+          }
+        }
+      }
+    }
+  },
+  /**
    * Subtracts every color for every frame of an animation.
    * @param { string } animationName The name of the animation.
    * @param { number } color The color.
