@@ -6945,6 +6945,60 @@ let ChromaAnimation = {
       }
     }
   },
+    /**
+   * Grayscale every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   */
+    grayscaleAllFrames: function (animationName) {
+      let animation = this.LoadedAnimations[animationName];
+      if (animation == undefined) {
+        return;
+      }
+      let frames = animation.Frames;
+      if (frames.length == 0) {
+        return;
+      }
+  
+      if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_1D) {
+        let maxLeds = ChromaAnimation.getMaxLeds(animation.Device);
+        for (let frameId = 0; frameId < frames.length; ++frameId) {
+          let frame = frames[frameId];
+          let colors = frame.Colors;
+          for (let i = 0; i < maxLeds; ++i) {
+            let color = colors[i];
+            let red = (color & 0xFF);
+            let green = (color & 0xFF00) >> 8;
+            let blue = (color & 0xFF0000) >> 16;
+            let gray = Math.sqrt(red * red + green * green + blue * blue);
+            color = gray | (gray << 8) | (gray << 16);
+            colors[i] = color;
+          }
+        }
+      } else if (animation.DeviceType == EChromaSDKDeviceTypeEnum.DE_2D) {
+        let maxRow = ChromaAnimation.getMaxRow(animation.Device);
+        let maxColumn = ChromaAnimation.getMaxColumn(animation.Device);
+        //console.log(animation.Frames);
+        for (let frameId = 0; frameId < frames.length; ++frameId) {
+          let frame = frames[frameId];
+          let colors = frame.Colors;
+          for (let i = 0; i < maxRow; ++i) {
+            let row = colors[i];
+            for (let j = 0; j < maxColumn; ++j) {
+              let color = row[j];
+              let red = (color & 0xFF);
+              let green = (color & 0xFF00) >> 8;
+              let blue = (color & 0xFF0000) >> 16;
+              // Calculate the grayscale value
+              let gray = red * 0.299 + green * 0.587 + blue * 0.114;
+          
+              // Set the grayscale color in hexadecimal format
+              color = gray | (gray << 8) | (gray << 16);
+              row[j] = color;
+            }
+          }
+        }
+      }
+    },
   /**
    * Multiplies the color of a given keyboard key for a single frame of an animation by a value component-wise.
    * @param { string } animationName The name of the animation.

@@ -6252,6 +6252,46 @@ let ChromaAnimation = {
     }
   },
   /**
+   * Grayscale every color for every frame of an animation.
+   * @param { string } animationName The name of the animation.
+   */
+  grayscaleAllFrames: function (animationName) {
+    let animation = this.LoadedAnimations[animationName];
+    if (animation == undefined) {
+      return;
+    }
+    if (animation.DeviceType != EChromaSDKDeviceTypeEnum.DE_2D ||
+      animation.Device != EChromaSDKDevice2DEnum.DE_Keyboard) {
+      return;
+    }
+    let frames = animation.Frames;
+    let maxRow = ChromaAnimation.getMaxRow(EChromaSDKDevice2DEnum.DE_Keyboard);
+    let maxColumn = ChromaAnimation.getMaxColumn(EChromaSDKDevice2DEnum.DE_Keyboard);
+    //console.log(animation.Frames);
+    for (let frameId = 0; frameId < frames.length; ++frameId) {
+      let frame = frames[frameId];
+      //console.log(frame);
+      let colors = frame.Colors;
+      for (let i = 0; i < maxRow; ++i) {
+        let row = colors[i];
+        for (let j = 0; j < maxColumn; ++j) {
+          let color = row[j];
+          //console.log('color', color);
+          let red = (color & 0xFF);
+          let green = (color & 0xFF00) >> 8;
+          let blue = (color & 0xFF0000) >> 16;
+
+          // Calculate the grayscale value
+          let gray = red * 0.299 + green * 0.587 + blue * 0.114;
+
+          // Set the grayscale color in hexadecimal format
+          color = (gray << 16) | (gray << 8) | gray;
+          row[j] = color;
+        }
+      }
+    }
+  },
+  /**
    * Multiplies the color of a given keyboard key for a single frame of an animation by a value component-wise.
    * @param { string } animationName The name of the animation.
    * @param { number } frameId The frame index.
